@@ -7,10 +7,9 @@ scroll-snap
 
 Snap page when user stops scrolling, basically implements [CSS Scroll Snap Points](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Scroll_Snap_Points), but with a customizable configuration and a consistent cross browser behaviour.
 
-* ES6 syntax
+* works in all modern browsers
 * `requestAnimationFrame` for 60fps
 * customizable configuration
-* works in all modern browsers
 * no additional libraries
 * no extra stylesheet
 
