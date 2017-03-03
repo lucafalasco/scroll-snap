@@ -12,7 +12,7 @@ module.exports = {
     library: 'scroll-snap',
     libraryTarget: 'umd'
   },
-  devtool: PROD && '#eval-source-map',
+  devtool: PROD ? false : '#eval-source-map',
   devServer: {
     contentBase: './demo',
     port: process.env.PORT || 9000,
