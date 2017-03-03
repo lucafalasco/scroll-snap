@@ -28,8 +28,8 @@
     "webpack-dev-server": "^2.4.1"
   },
   "scripts": {
-    "start": "npm run build && webpack-dev-server",
-    "build": "NODE_ENV=production webpack",
+    "start": "NODE_ENV=development webpack-dev-server --inline --progress",
+    "build": "NODE_ENV=production webpack -p --progress",
     "prebuild": "mkdirp dist && del ./dist/*",
     "lint": "eslint ./src/index.js"
   }
