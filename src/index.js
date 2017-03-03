@@ -27,19 +27,19 @@ export default function (element, config) {
     y: null
   }
 
-  function checkScrollSpeed (value, pos) {
+  function checkScrollSpeed (value, axis) {
     function clear () {
-      lastScrollValue[pos] = null
+      lastScrollValue[axis] = null
     }
 
     const newValue = value
     let delta
-    if (lastScrollValue[pos] !== null) {
-      delta = newValue - lastScrollValue[pos]
+    if (lastScrollValue[axis] !== null) {
+      delta = newValue - lastScrollValue[axis]
     } else {
       delta = 0
     }
-    lastScrollValue[pos] = newValue
+    lastScrollValue[axis] = newValue
     timer && clearTimeout(timer)
     timer = setTimeout(clear, 50)
     return delta
@@ -341,9 +341,11 @@ export default function (element, config) {
   }
 
   /**
-  * ease in out function thanks to:
-  * http://blog.greweb.fr/2012/02/bezier-curve-based-easing-functions-from-concept-to-implementation/
-  * @param  {Number} t timing
+  * ease in cubic function
+  * @param  {Number} t current time of the tween
+  * @param  {Number} b beginning value of the property
+  * @param  {Number} c change between the beginning and destination value
+  * @param  {Number} d is the total time of the tween
   * @return {Number}   easing factor
   */
   function easeInCubic (t, b, c, d) {
@@ -387,7 +389,6 @@ export default function (element, config) {
       window.setTimeout(fn, 15)
     }
     let duration = SCROLL_TIME
-
     let startTime = null
 
     // setup the stepping function
@@ -416,8 +417,6 @@ export default function (element, config) {
           // stop execution and run the callback
           return callback(end)
         }
-
-        // stop execution
       }
     }
     animationFrame = requestAnimationFrame(step)
