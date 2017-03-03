@@ -4,10 +4,22 @@
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
   "main": "dist/scroll-snap_min.js",
   "author": "Luca Falasco <falasco.luca@gmail.com> (http://lucafalasco.com)",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucafalasco/scroll-snap.git"
+  },
+  "keywords": [
+    "scroll",
+    "scrolling",
+    "snap",
+    "scrollsnap",
+    "pagesnap",
+    "custom"
+  ],
   "bugs": {
     "url": "https://github.com/lucafalasco/scroll-snap/issues"
   },
+  "license": "MIT",
   "homepage": "https://github.com/lucafalasco/scroll-snap",
   "devDependencies": {
     "babel-core": "^6.23.1",

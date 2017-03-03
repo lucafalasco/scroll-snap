@@ -58,6 +58,8 @@ snapObject.bind(callback)
 // snapObject.unbind();
 ```
 
+[Here](https://lucafalasco.github.io/scroll-snap/) you can see a working demo.
+
 ## Contributing
 
 ```
