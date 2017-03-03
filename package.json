@@ -1,0 +1,36 @@
+{
+  "name": "scroll-snap",
+  "version": "1.0.0",
+  "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
+  "main": "dist/scroll-snap_min.js",
+  "author": "Luca Falasco <falasco.luca@gmail.com> (http://lucafalasco.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lucafalasco/scroll-snap/issues"
+  },
+  "homepage": "https://github.com/lucafalasco/scroll-snap",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.2",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "del-cli": "^0.2.1",
+    "eslint": "^3.16.1",
+    "eslint-config-standard": "^7.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
+    "mkdirp": "^0.5.1",
+    "path": "^0.12.7",
+    "strip-loader": "^0.1.2",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  },
+  "scripts": {
+    "start": "npm run build && webpack-dev-server",
+    "build": "NODE_ENV=production webpack",
+    "prebuild": "mkdirp dist && del ./dist/*",
+    "lint": "eslint ./src/index.js"
+  }
+}

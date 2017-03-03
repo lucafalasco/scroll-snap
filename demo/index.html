@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Scroll Snap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html, body {
+        margin: 0;
+        font-family: monospace;
+      }
+      #container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+       }
+      .column {
+        font-size: 35px;
+        color: white;
+        padding: 100px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: justify;
+      }
+      .first-column {
+        width: 95%;
+        min-width: 95%;
+        color: #000000;
+        background-color: #ff2800;
+      }
+      .second-column {
+        width: 90%;
+        min-width: 90%;
+        color: #ffffff;
+        background-color: #00d7ff;
+      }
+      .third-column {
+        width: 90%;
+        min-width: 90%;
+        color: #000000;
+        background-color: #58ff00;
+      }
+      .fourth-column {
+        width: 95%;
+        min-width: 95%;
+        color: #ffffff;
+        background-color: #A700FF;
+      }
+      @media (max-width: 1024px) {
+        .column {
+          font-size: 18px;
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id='container'>
+      <div class="column first-column">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </div>
+      <div class="column second-column">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </div>
+      <div class="column third-column">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </div>
+      <div class="column fourth-column">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </div>
+    </div>
+    <script src="scroll-snap.js"></script>
+  </body>
+</html>
