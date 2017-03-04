@@ -2,7 +2,7 @@
   "name": "scroll-snap",
   "version": "1.0.2",
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
-  "main": "dist/scroll-snap_min.js",
+  "main": "dist/scroll-snap.js",
   "author": "Luca Falasco <falasco.luca@gmail.com> (http://lucafalasco.com)",
   "repository": {
     "type": "git",
