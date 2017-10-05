@@ -367,6 +367,16 @@ export default function (element, config) {
     return easeInCubic(elapsed, start, (end - start), duration)
   }
 
+  /**
+  * is the starting position at the edge of the container?
+  * @param  {Object} start    the start coordinates of the scroll
+  * @param  {Object} end      the end coordinates of the scroll
+  * @return {Boolean}
+  */
+  function isEdge (start, end) {
+    return (start.x === 0 && speedDeltaY === 0) || (start.y === 0 && speedDeltaX === 0)
+  }
+
   // a current animation frame
   let animationFrame = null
 
@@ -388,7 +398,7 @@ export default function (element, config) {
     let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (fn) {
       window.setTimeout(fn, 15)
     }
-    let duration = SCROLL_TIME
+    let duration = isEdge(start, end) ? 0 : SCROLL_TIME
     let startTime = null
 
     // setup the stepping function
