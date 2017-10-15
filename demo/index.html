@@ -8,6 +8,7 @@
       html, body {
         margin: 0;
         font-family: monospace;
+        cursor: default;
       }
       #container {
         position: absolute;
@@ -19,61 +20,58 @@
         overflow: auto;
         -webkit-overflow-scrolling: touch;
        }
-      .column {
-        font-size: 35px;
-        color: white;
-        padding: 100px;
+      .page {
+        position: relative;
+        height: 100%;
+        font-size: 50px;
+        padding: 20px;
         box-sizing: border-box;
         display: flex;
         justify-content: center;
         align-items: center;
-        text-align: justify;
+        border-left: 1px solid #2375AC;
+        border-right: 1px solid #2375AC;
+        color: #2375AC;
+        background-color: #04373A;
       }
-      .first-column {
+      .first-page {
         width: 95%;
         min-width: 95%;
-        color: #000000;
-        background-color: #ff2800;
       }
-      .second-column {
+      .second-page {
         width: 90%;
         min-width: 90%;
-        color: #ffffff;
-        background-color: #00d7ff;
       }
-      .third-column {
+      .third-page {
         width: 90%;
         min-width: 90%;
-        color: #000000;
-        background-color: #58ff00;
       }
-      .fourth-column {
+      .fourth-page {
         width: 95%;
         min-width: 95%;
-        color: #ffffff;
-        background-color: #A700FF;
       }
-      @media (max-width: 1024px) {
-        .column {
-          font-size: 18px;
-          padding: 20px;
-        }
+      .hint {
+        font-size: 20px;
+        position: absolute;
+        bottom: 20%;
       }
     </style>
   </head>
   <body>
     <div id='container'>
-      <div class="column first-column">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      <div class="page first-page">
+        <div>1</div>
+        <div class="hint">scroll right ></div>
       </div>
-      <div class="column second-column">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      <div class="page second-page">
+        <div>2</div>
       </div>
-      <div class="column third-column">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      <div class="page third-page">
+        <div>3</div>
       </div>
-      <div class="column fourth-column">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      <div class="page fourth-page">
+        <div>4</div>
+        <div class="hint">< scroll left</div>
       </div>
     </div>
     <script src="scroll-snap.js"></script>
