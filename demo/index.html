@@ -8,50 +8,49 @@
       html, body {
         margin: 0;
         font-family: monospace;
+        font-weight: 700;
+        font-size: 25px;
         cursor: default;
       }
       #container {
+        display: flex;
+        flex-direction: column;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        display: flex;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
        }
       .page {
-        position: relative;
-        height: 100%;
-        font-size: 50px;
-        padding: 20px;
-        box-sizing: border-box;
         display: flex;
         justify-content: center;
         align-items: center;
-        border-left: 1px solid #2375AC;
-        border-right: 1px solid #2375AC;
-        color: #2375AC;
-        background-color: #04373A;
+        position: relative;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        border-top: 2px solid blue;
+        border-bottom: 2px solid blue;
+        color: blue;
+        background-color: white;
       }
       .first-page {
-        width: 95%;
-        min-width: 95%;
+        height: 95%;
+        min-height: 95%;
       }
       .second-page {
-        width: 90%;
-        min-width: 90%;
+        height: 90%;
+        min-height: 90%;
       }
       .third-page {
-        width: 90%;
-        min-width: 90%;
+        height: 90%;
+        min-height: 90%;
       }
       .fourth-page {
-        width: 95%;
-        min-width: 95%;
+        height: 95%;
+        min-height: 95%;
       }
       .hint {
-        font-size: 20px;
         position: absolute;
         bottom: 20%;
       }
@@ -61,7 +60,7 @@
     <div id='container'>
       <div class="page first-page">
         <div>1</div>
-        <div class="hint">scroll right ></div>
+        <div class="hint">scroll down ⇣</div>
       </div>
       <div class="page second-page">
         <div>2</div>
@@ -71,7 +70,7 @@
       </div>
       <div class="page fourth-page">
         <div>4</div>
-        <div class="hint">< scroll left</div>
+        <div class="hint">scroll up ⇡</div>
       </div>
     </div>
     <script src="scroll-snap.js"></script>
