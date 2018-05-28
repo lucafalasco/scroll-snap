@@ -1,7 +1,7 @@
 import path from 'path'
 import webpack from 'webpack'
 
-const PROD = (process.env.NODE_ENV === 'production')
+const PROD = process.env.NODE_ENV === 'production'
 
 module.exports = {
   context: path.resolve(__dirname),
@@ -23,17 +23,21 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     })
-  ].concat(PROD ? [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        unused: true
-      },
-      output: {
-        comments: false
-      }
-    })
-  ] : []),
+  ].concat(
+    PROD
+      ? [
+        new webpack.optimize.UglifyJsPlugin({
+          compress: {
+            warnings: false,
+            unused: true
+          },
+          output: {
+            comments: false
+          }
+        })
+      ]
+      : []
+  ),
   module: {
     loaders: [
       {

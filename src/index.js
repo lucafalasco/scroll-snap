@@ -3,13 +3,26 @@ const SCROLL_TIME_DEFAULT = 2
 const NOOP = () => {}
 
 export default function (element, config) {
-  if (config.scrollTimeout && (isNaN(config.scrollTimeout) || typeof config.scrollTimeout === 'boolean')) throw new Error(`Optional config property 'scrollTimeout' is not valid, expected NUMBER but found ${(typeof config.scrollTimeout).toUpperCase()}`)
+  if (
+    config.scrollTimeout &&
+    (isNaN(config.scrollTimeout) || typeof config.scrollTimeout === 'boolean')
+  ) {
+    throw new Error(
+      `Optional config property 'scrollTimeout' is not valid, expected NUMBER but found ${(typeof config.scrollTimeout).toUpperCase()}`
+    )
+  }
   const SCROLL_TIMEOUT = config.scrollTimeout || SCROLL_TIMEOUT_DEFAULT
 
-  if (config.scrollTime && (isNaN(config.scrollTime) || typeof config.scrollTime === 'boolean')) throw new Error(`Optional config property 'scrollTime' is not valid, expected NUMBER but found ${(typeof config.scrollTime).toUpperCase()}`)
+  if (config.scrollTime && (isNaN(config.scrollTime) || typeof config.scrollTime === 'boolean')) {
+    throw new Error(
+      `Optional config property 'scrollTime' is not valid, expected NUMBER but found ${(typeof config.scrollTime).toUpperCase()}`
+    )
+  }
   const SCROLL_TIME = config.scrollTime || SCROLL_TIME_DEFAULT
 
-  if (!config.scrollSnapDestination) throw new Error('Required config property scrollSnapDestination is not defined')
+  if (!config.scrollSnapDestination) {
+    throw new Error('Required config property scrollSnapDestination is not defined')
+  }
   const SCROLL_SNAP_DESTINATION = config.scrollSnapDestination
 
   let onAnimationEnd
@@ -52,11 +65,20 @@ export default function (element, config) {
   function bindElement (element) {
     target = element === document ? document.body : element
 
+    /**
+     * set webkit-overflow-scrolling to auto.
+     * this prevents momentum scrolling on ios devices
+     * causing flickering behaviours and delayed transitions.
+     */
+    element.style.overflow = 'auto'
+    element.style.webkitOverflowScrolling = 'auto'
+
     element.addEventListener('scroll', startAnimation, false)
     saveDeclaration(target)
   }
 
   function unbindElement (element) {
+    element.style.webkitOverflowScrolling = null
     element.removeEventListener('scroll', startAnimation, false)
   }
 
@@ -71,9 +93,9 @@ export default function (element, config) {
   }
 
   /**
-  * scroll handler
-  * this is the callback for scroll events.
-  */
+   * scroll handler
+   * this is the callback for scroll events.
+   */
   function handler (target) {
     // use evt.target as target-element
     lastObj = target
@@ -111,8 +133,8 @@ export default function (element, config) {
 
     // detect direction of scroll. negative is up, positive is down.
     let direction = {
-      y: (speedDeltaY > 0) ? 1 : -1,
-      x: (speedDeltaX > 0) ? 1 : -1
+      y: speedDeltaY > 0 ? 1 : -1,
+      x: speedDeltaX > 0 ? 1 : -1
     }
     let snapPoint
 
@@ -138,12 +160,12 @@ export default function (element, config) {
   }
 
   /**
-  * calculator for next snap-point
-  * @param  {Object} scrollObj - DOM element
-  * @param  {Object} obj - DOM element
-  * @param  {integer} direction - signed integer indicating the scroll direction
-  * @return {Object}
-  */
+   * calculator for next snap-point
+   * @param  {Object} scrollObj - DOM element
+   * @param  {Object} obj - DOM element
+   * @param  {integer} direction - signed integer indicating the scroll direction
+   * @return {Object}
+   */
   function getNextSnapPoint (scrollObj, obj, direction) {
     // get snap length
     let snapLength = {
@@ -174,18 +196,18 @@ export default function (element, config) {
     }
 
     // stay in bounds (minimum: 0, maxmimum: absolute height)
-    scrollTo.y = stayInBounds(0, getScrollHeight(scrollObj), scrollTo.y)
-    scrollTo.x = stayInBounds(0, getScrollWidth(scrollObj), scrollTo.x)
+    scrollTo.y = stayInBounds(0, scrollObj.scrollHeight, scrollTo.y)
+    scrollTo.x = stayInBounds(0, scrollObj.scrollWidth, scrollTo.x)
 
     return scrollTo
   }
 
   /**
-  * ceil or floor a number based on direction
-  * @param  {Number} direction
-  * @param  {Number} currentPoint
-  * @return {Number}
-  */
+   * ceil or floor a number based on direction
+   * @param  {Number} direction
+   * @param  {Number} currentPoint
+   * @return {Number}
+   */
   function roundByDirection (direction, currentPoint) {
     if (direction === -1) {
       // when we go up, we floor the number to jump to the next snap-point in scroll direction
@@ -196,25 +218,25 @@ export default function (element, config) {
   }
 
   /**
-  * keep scrolling in bounds
-  * @param  {Number} min
-  * @param  {Number} max
-  * @param  {Number} destined
-  * @return {Number}
-  */
+   * keep scrolling in bounds
+   * @param  {Number} min
+   * @param  {Number} max
+   * @param  {Number} destined
+   * @return {Number}
+   */
   function stayInBounds (min, max, destined) {
     return Math.max(Math.min(destined, max), min)
   }
 
   /**
-  * parse snap destination/coordinate values.
-  * @param  {Object} declaration
-  * @return {Object}
-  */
+   * parse snap destination/coordinate values.
+   * @param  {Object} declaration
+   * @return {Object}
+   */
   function parseSnapCoordValue (declaration) {
     // regex to parse lengths
     let regex = /(\d+)(px|%|vw) (\d+)(px|%|vh)/g
-      // defaults
+    // defaults
     let parsed = {
       y: {
         value: 0,
@@ -247,85 +269,57 @@ export default function (element, config) {
   }
 
   /**
-  * calc length of one snap on y-axis
-  * @param  {Object} obj the scroll object
-  * @param  {Object} declaration the parsed declaration
-  * @return {Number}
-  */
+   * calc length of one snap on y-axis
+   * @param  {Object} obj the scroll object
+   * @param  {Object} declaration the parsed declaration
+   * @return {Number}
+   */
   function getYSnapLength (obj, declaration) {
     if (declaration.unit === 'vh') {
       // when using vh, one snap is the length of vh / 100 * value
-      return Math.max(document.documentElement.clientHeight, window.innerHeight || 1) / 100 * declaration.value
+      return (
+        Math.max(document.documentElement.clientHeight, window.innerHeight || 1) /
+        100 *
+        declaration.value
+      )
     } else if (declaration.unit === '%') {
       // when using %, one snap is the length of element height / 100 * value
-      return getHeight(obj) / 100 * declaration.value
+      return obj.offsetHeight / 100 * declaration.value
     } else {
       // when using px, one snap is the length of element height / value
-      return getHeight(obj) / declaration.value
+      return obj.offsetHeight / declaration.value
     }
   }
 
   /**
-  * calc length of one snap on x-axis
-  * @param  {Object} obj the scroll object
-  * @param  {Object} declaration the parsed declaration
-  * @return {Number}
-  */
+   * calc length of one snap on x-axis
+   * @param  {Object} obj the scroll object
+   * @param  {Object} declaration the parsed declaration
+   * @return {Number}
+   */
   function getXSnapLength (obj, declaration) {
     if (declaration.unit === 'vw') {
       // when using vw, one snap is the length of vw / 100 * value
-      return Math.max(document.documentElement.clientWidth, window.innerWidth || 1) / 100 * declaration.value
+      return (
+        Math.max(document.documentElement.clientWidth, window.innerWidth || 1) /
+        100 *
+        declaration.value
+      )
     } else if (declaration.unit === '%') {
       // when using %, one snap is the length of element width / 100 * value
-      return getWidth(obj) / 100 * declaration.value
+      return obj.offsetWidth / 100 * declaration.value
     } else {
       // when using px, one snap is the length of element width / value
-      return getWidth(obj) / declaration.value
+      return obj.offsetWidth / declaration.value
     }
   }
 
   /**
-  * get an elements scrollable height
-  * @param  {Object} obj - DOM element
-  * @return {Number}
-  */
-  function getScrollHeight (obj) {
-    return obj.scrollHeight
-  }
-
-  /**
-  * get an elements scrollable width
-  * @param  {Object} obj - DOM element
-  * @return {Number}
-  */
-  function getScrollWidth (obj) {
-    return obj.scrollWidth
-  }
-
-  /**
-  * get an elements height
-  * @param  {Object} obj - DOM element
-  * @return {Number}
-  */
-  function getHeight (obj) {
-    return obj.offsetHeight
-  }
-
-  /**
-  * get an elements width
-  * @param  {Object} obj - DOM element
-  * @return {Number}
-  */
-  function getWidth (obj) {
-    return obj.offsetWidth
-  }
-
-  /**
-  * return the element scrolling values are applied to.
-  * when receiving window.onscroll events, the actual scrolling is on the body.
-  * @param  {Object} obj - DOM element
-  * @return {Object}
-  */
+   * return the element scrolling values are applied to.
+   * when receiving window.onscroll events, the actual scrolling is on the body.
+   * @param  {Object} obj - DOM element
+   * @return {Object}
+   */
   function getScrollObj (obj) {
     // if the scroll container is body, the scrolling is invoked on window/document.
     if (obj === document || obj === window) {
@@ -341,38 +335,38 @@ export default function (element, config) {
   }
 
   /**
-  * ease in cubic function
-  * @param  {Number} t current time of the tween
-  * @param  {Number} b beginning value of the property
-  * @param  {Number} c change between the beginning and destination value
-  * @param  {Number} d is the total time of the tween
-  * @return {Number}   easing factor
-  */
+   * ease in cubic function
+   * @param  {Number} t current time of the tween
+   * @param  {Number} b beginning value of the property
+   * @param  {Number} c change between the beginning and destination value
+   * @param  {Number} d is the total time of the tween
+   * @return {Number}   easing factor
+   */
   function easeInCubic (t, b, c, d) {
-    return (c * (t = t / d) * t * t) + b
+    return c * (t = t / d) * t * t + b
   }
 
   /**
-  * calculate the scroll position we should be in
-  * @param  {Number} start    the start point of the scroll
-  * @param  {Number} end      the end point of the scroll
-  * @param  {Number} elapsed  the time elapsed from the beginning of the scroll
-  * @param  {Number} duration the total duration of the scroll (default 500ms)
-  * @return {Number}          the next position
-  */
+   * calculate the scroll position we should be in
+   * @param  {Number} start    the start point of the scroll
+   * @param  {Number} end      the end point of the scroll
+   * @param  {Number} elapsed  the time elapsed from the beginning of the scroll
+   * @param  {Number} duration the total duration of the scroll (default 500ms)
+   * @return {Number}          the next position
+   */
   function position (start, end, elapsed, duration) {
     if (elapsed > duration) {
       return end
     }
-    return easeInCubic(elapsed, start, (end - start), duration)
+    return easeInCubic(elapsed, start, end - start, duration)
   }
 
   /**
-  * is the starting position at the edge of the container?
-  * @param  {Object} start    the start coordinates of the scroll
-  * @param  {Object} end      the end coordinates of the scroll
-  * @return {Boolean}
-  */
+   * is the starting position at the edge of the container?
+   * @param  {Object} start    the start coordinates of the scroll
+   * @param  {Object} end      the end coordinates of the scroll
+   * @return {Boolean}
+   */
   function isEdge (start, end) {
     return (start.x === 0 && speedDeltaY === 0) || (start.y === 0 && speedDeltaX === 0)
   }
@@ -381,23 +375,27 @@ export default function (element, config) {
   let animationFrame = null
 
   /**
-  * smoothScroll function by Alice Lietieur.
-  * @see https://github.com/alicelieutier/smoothScroll
-  * we use requestAnimationFrame to be called by the browser before every repaint
-  * @param  {Object}   obj      the scroll context
-  * @param  {Number}  end      where to scroll to
-  * @param  {Function} callback called when the scrolling is finished
-  */
+   * smoothScroll function by Alice Lietieur.
+   * @see https://github.com/alicelieutier/smoothScroll
+   * we use requestAnimationFrame to be called by the browser before every repaint
+   * @param  {Object}   obj      the scroll context
+   * @param  {Number}  end      where to scroll to
+   * @param  {Function} callback called when the scrolling is finished
+   */
   function smoothScroll (obj, end, callback) {
     let start = {
       y: obj.scrollTop,
       x: obj.scrollLeft
     }
 
-      // get animation frame or a fallback
-    let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (fn) {
-      window.setTimeout(fn, 15)
-    }
+    // get animation frame or a fallback
+    let requestAnimationFrame =
+      window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      function (fn) {
+        window.setTimeout(fn, 15)
+      }
     let duration = isEdge(start, end) ? 0 : SCROLL_TIME
     let startTime = null
 
@@ -433,7 +431,7 @@ export default function (element, config) {
   }
 
   this.bind = function (callback) {
-    onAnimationEnd = (typeof callback === 'function') ? callback : NOOP
+    onAnimationEnd = typeof callback === 'function' ? callback : NOOP
 
     bindElement(element)
   }
