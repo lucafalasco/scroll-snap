@@ -1,4 +1,4 @@
-import ScrollSnap from '../src/index'
+import ScrollSnap from '../../src/index'
 
 const snapConfig = {
   scrollSnapDestination: '0% 90%', // scroll-snap-destination css property

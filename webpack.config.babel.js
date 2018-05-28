@@ -5,16 +5,16 @@ const PROD = process.env.NODE_ENV === 'production'
 
 module.exports = {
   context: path.resolve(__dirname),
-  entry: PROD ? './src/index.js' : './demo/index.js',
+  entry: PROD ? './src/index.js' : './demo/src/index.js',
   output: {
-    path: path.resolve('./dist'),
+    path: path.resolve(PROD ? './dist' : './demo/dist'),
     filename: 'scroll-snap.js',
     library: 'scroll-snap',
     libraryTarget: 'umd'
   },
   devtool: PROD ? false : '#eval-source-map',
   devServer: {
-    contentBase: './demo',
+    contentBase: './demo/src',
     port: process.env.PORT || 9000,
     host: 'localhost',
     open: true
