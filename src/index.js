@@ -154,7 +154,7 @@ export default function (element, config) {
     })
 
     // we just jumped to the snapPoint, so this will be our next scrollStart
-    if (!isNaN(snapPoint.x || !isNaN(snapPoint.y))) {
+    if (!isNaN(snapPoint.x) || !isNaN(snapPoint.y)) {
       scrollStart = snapPoint
     }
   }
