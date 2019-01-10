@@ -57,7 +57,9 @@ snapObject.bind(callback)
 // snapObject.unbind();
 ```
 
-[Here](https://lucafalasco.github.io/scroll-snap/) you can see a working demo.
+[Demo](https://lucafalasco.github.io/scroll-snap/)
+
+[Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
 
 ## Contributing
 
