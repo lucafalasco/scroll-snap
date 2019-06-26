@@ -1,27 +1,34 @@
 {
   "name": "scroll-snap",
   "version": "1.0.6",
-  "description":
-    "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
-  "main": "dist/scroll-snap.js",
+  "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Luca Falasco <falasco.luca@gmail.com> (http://lucafalasco.com)",
   "repository": {
     "type": "git",
     "url": "https://github.com/lucafalasco/scroll-snap.git"
   },
-  "keywords": ["scroll", "scrolling", "snap", "scrollsnap", "pagesnap", "custom"],
+  "keywords": [
+    "scroll",
+    "scrolling",
+    "snap",
+    "scrollsnap",
+    "pagesnap",
+    "custom"
+  ],
   "bugs": {
     "url": "https://github.com/lucafalasco/scroll-snap/issues"
   },
   "license": "MIT",
   "homepage": "https://github.com/lucafalasco/scroll-snap",
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.3.2",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-0": "^6.22.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "del-cli": "^0.2.1",
     "eslint": "^3.16.1",
     "eslint-config-standard": "^7.0.0",
@@ -30,15 +37,17 @@
     "mkdirp": "^0.5.1",
     "path": "^0.12.7",
     "strip-loader": "^0.1.2",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.4.1"
+    "ts-loader": "^5.2.2",
+    "typescript": "^3.1.3",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
   },
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server --inline --progress",
-    "build": "NODE_ENV=production webpack -p --progress",
+    "build": "tsc",
     "prebuild": "mkdirp dist && del ./dist/*",
-    "build:demo":
-      "mkdirp ./demo/dist && del ./demo/dist/* && webpack -p --progress && cp ./demo/src/index.html ./demo/dist/",
+    "build:demo": "mkdirp ./demo/dist && del ./demo/dist/* && webpack -p --progress && cp ./demo/src/index.html ./demo/dist/",
     "push:demo": "git subtree push --prefix demo/dist origin gh-pages",
     "lint": "eslint ./src/index.js"
   }
