@@ -1,5 +1,6 @@
-scroll-snap
-===========
+<p align="center">
+  <img src="./logo.svg" width="500px" style="margin: 100px;"/>
+</p
 
 [![npm](https://img.shields.io/badge/npm-scroll--snap-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/scroll-snap)
 [![npm version](https://img.shields.io/npm/v/scroll-snap.svg?style=flat-square)](https://www.npmjs.com/package/scroll-snap)
@@ -7,18 +8,20 @@ scroll-snap
 
 Snap page when user stops scrolling, basically implements [CSS Scroll Snap Points](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Scroll_Snap_Points), but with a customizable configuration and a consistent cross browser behaviour.
 
-* works in all modern browsers
-* `requestAnimationFrame` for 60fps
-* customizable configuration
-* no additional libraries
-* no extra stylesheet
+- works in all modern browsers
+- `requestAnimationFrame` for 60fps
+- customizable configuration
+- no additional libraries
+- no extra stylesheet
 
 ## Installation
 
 ```sh
 npm install scroll-snap --save
 ```
+
 or
+
 ```sh
 yarn add scroll-snap
 ```
@@ -41,10 +44,10 @@ import ScrollSnap from 'scroll-snap'
 const snapConfig = {
   scrollSnapDestination: '90% 0%', // *REQUIRED* scroll-snap-destination css property, as defined here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-destination
   scrollTimeout: 100, // *OPTIONAL* (default = 100) time in ms after which scrolling is considered finished
-  scrollTime: 300 // *OPTIONAL* (default = 300) time in ms for the smooth snap
+  scrollTime: 300, // *OPTIONAL* (default = 300) time in ms for the smooth snap
 }
 
-function callback () {
+function callback() {
   console.log('called when snap animation ends')
 }
 
@@ -70,11 +73,13 @@ npm install
 ```
 
 Start the test app from `demo/` and fire up the dev server
+
 ```
 npm start
 ```
 
 Build for production:
+
 ```
 npm run build
 ```
