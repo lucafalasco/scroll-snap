@@ -44,7 +44,7 @@
     "webpack-dev-server": "^3.1.9"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --inline --progress",
+    "start": "webpack-dev-server --inline --progress",
     "build": "tsc",
     "prebuild": "mkdirp dist && del ./dist/*",
     "build:demo": "mkdirp ./demo/dist && del ./demo/dist/* && webpack -p --progress && cp ./demo/src/index.html ./demo/dist/",

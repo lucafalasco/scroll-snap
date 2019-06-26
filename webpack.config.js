@@ -4,7 +4,7 @@ module.exports = {
   context: path.resolve(__dirname),
   entry: './demo/src/index.ts',
   output: {
-    path: '/demo/dist',
+    path: path.resolve(`${__dirname}/demo/dist`),
     filename: 'scroll-snap.js',
     library: 'scroll-snap',
     libraryTarget: 'umd'
