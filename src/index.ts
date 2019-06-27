@@ -51,10 +51,10 @@ export default class ScrollSnap {
   target: HTMLElement
   config: ConfigurationObject
   onAnimationEnd: () => void
-  timeOutId: number
+  scrollHandlerTimer: NodeJS.Timer
+  scrollSpeedTimer: NodeJS.Timer
   scrollStart: Coords
   animating = false
-  timer = 0
   speedDeltaX: number
   speedDeltaY: number
   snapLengthUnit: SnapCoord
@@ -103,8 +103,8 @@ export default class ScrollSnap {
       delta = 0
     }
     this.lastScrollValue[axis] = newValue
-    this.timer && clearTimeout(this.timer)
-    this.timer = setTimeout(clear, 50)
+    this.scrollSpeedTimer && clearTimeout(this.scrollSpeedTimer)
+    this.scrollSpeedTimer = setTimeout(clear, 50)
     return delta
   }
 
@@ -155,9 +155,9 @@ export default class ScrollSnap {
     }
 
     // if a previous timeout exists, clear it.
-    if (this.timeOutId) {
+    if (this.scrollHandlerTimer) {
       // we only want to call a timeout once after scrolling..
-      clearTimeout(this.timeOutId)
+      clearTimeout(this.scrollHandlerTimer)
     } else {
       this.scrollStart = {
         y: target.scrollTop,
@@ -165,7 +165,7 @@ export default class ScrollSnap {
       }
     }
 
-    this.timeOutId = setTimeout(this.animationHandler, this.SCROLL_TIMEOUT)
+    this.scrollHandlerTimer = setTimeout(this.animationHandler, this.SCROLL_TIMEOUT)
   }
 
   animationHandler = () => {
@@ -179,7 +179,7 @@ export default class ScrollSnap {
     }
 
     // detect direction of scroll. negative is up, positive is down.
-    let direction = {
+    const direction = {
       y: this.speedDeltaY > 0 ? 1 : -1,
       x: this.speedDeltaX > 0 ? 1 : -1,
     }
@@ -207,7 +207,7 @@ export default class ScrollSnap {
 
   getNextSnapPoint(target: HTMLElement, direction: Coords) {
     // get snap length
-    let snapLength = {
+    const snapLength = {
       y: this.roundByDirection(
         direction.y,
         this.getYSnapLength(this.target, this.snapLengthUnit.y),
@@ -217,15 +217,15 @@ export default class ScrollSnap {
         this.getXSnapLength(this.target, this.snapLengthUnit.x),
       ),
     }
-    let top = this.target.scrollTop
-    let left = this.target.scrollLeft
+    const top = this.target.scrollTop
+    const left = this.target.scrollLeft
 
     // calc current and initial snappoint
-    let currentPoint = {
+    const currentPoint = {
       y: top / snapLength.y || 1,
       x: left / snapLength.x || 1,
     }
-    let nextPoint = {
+    const nextPoint = {
       y: 0,
       x: 0,
     }
@@ -262,9 +262,9 @@ export default class ScrollSnap {
 
   parseSnapCoordValue(declaration: string) {
     // regex to parse lengths
-    let regex = /(\d+)(px|%|vw) (\d+)(px|%|vh)/g
+    const regex = /(\d+)(px|%|vw) (\d+)(px|%|vh)/g
     // defaults
-    let parsed = {
+    const parsed = {
       y: {
         value: 0,
         unit: 'px',
@@ -332,19 +332,19 @@ export default class ScrollSnap {
   }
 
   smoothScroll(obj: HTMLElement, end: Coords, callback: (...args: any) => void) {
-    let start = {
+    const start = {
       y: obj.scrollTop,
       x: obj.scrollLeft,
     }
 
     // get animation frame or a fallback
-    let requestAnimationFrame =
+    const requestAnimationFrame =
       window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       function(fn) {
         return window.setTimeout(fn, 15)
       }
-    let duration = this.isEdge(start) ? 0 : this.SCROLL_TIME
+    const duration = this.isEdge(start) ? 0 : this.SCROLL_TIME
     let startTime: number
 
     // setup the stepping function
