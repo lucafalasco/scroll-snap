@@ -26,7 +26,7 @@ or
 yarn add scroll-snap
 ```
 
-You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap/dist/scroll-snap.js)
+You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap/dist/index.js)
 
 ## Usage
 
