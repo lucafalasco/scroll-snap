@@ -38,13 +38,23 @@ Just call the constructor passing a DOM element and a configuration object as pa
 
 Check out the following code:
 
-```javascript
+```js
 import ScrollSnap from 'scroll-snap'
 
 const snapConfig = {
-  scrollSnapDestination: '90% 0%', // *REQUIRED* scroll-snap-destination css property, as defined here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-destination
-  scrollTimeout: 100, // *OPTIONAL* (default = 100) time in ms after which scrolling is considered finished
-  scrollTime: 300, // *OPTIONAL* (default = 300) time in ms for the smooth snap
+  /** REQUIRED
+   * scroll-snap-destination css property, as defined here:
+   * https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-destination
+   **/
+  scrollSnapDestination: '0% 90%',
+  /** OPTIONAL [default: 100]
+   * time in ms after which scrolling is considered finished
+   **/
+  scrollTimeout: 100,
+  /** OPTIONAL [default: 300]
+   * time in ms for the smooth snap
+   **/
+  scrollTime: 300,
 }
 
 function callback() {
