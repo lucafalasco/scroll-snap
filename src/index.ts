@@ -208,12 +208,10 @@ export default class ScrollSnap {
   getNextSnapPoint(target: HTMLElement, direction: Coords) {
     // get snap length
     const snapLength = {
-      y: this.roundByDirection(
-        direction.y,
+      y: this.round(
         this.getYSnapLength(this.target, this.snapLengthUnit.y),
       ),
-      x: this.roundByDirection(
-        direction.x,
+      x: this.round(
         this.getXSnapLength(this.target, this.snapLengthUnit.x),
       ),
     }
@@ -231,8 +229,8 @@ export default class ScrollSnap {
     }
 
     // set target and bounds by direction
-    nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
-    nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+    nextPoint.y = this.round(currentPoint.y)
+    nextPoint.x = this.round(currentPoint.x)
 
     // calculate where to scroll
     const scrollTo = {
@@ -247,13 +245,8 @@ export default class ScrollSnap {
     return scrollTo
   }
 
-  roundByDirection(direction: number, currentPoint: number) {
-    if (direction === -1) {
-      // when we go up, we floor the number to jump to the next snap-point in scroll direction
-      return Math.floor(currentPoint)
-    }
-    // go down, we ceil the number to jump to the next in view.
-    return Math.ceil(currentPoint)
+  round(currentPoint: number) {
+    return Math.round(currentPoint)
   }
 
   stayInBounds(min: number, max: number, destined: number) {
