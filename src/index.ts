@@ -208,12 +208,10 @@ export default class ScrollSnap {
   getNextSnapPoint(target: HTMLElement, direction: Coords) {
     // get snap length
     const snapLength = {
-      y: this.roundByDirection(
-        direction.y,
+      y: Math.round(
         this.getYSnapLength(this.target, this.snapLengthUnit.y),
       ),
-      x: this.roundByDirection(
-        direction.x,
+      x: Math.round(
         this.getXSnapLength(this.target, this.snapLengthUnit.x),
       ),
     }
