@@ -26,7 +26,7 @@ or
 yarn add scroll-snap
 ```
 
-You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap/dist/index.js)
+You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap/)
 
 ## Usage
 
@@ -39,14 +39,14 @@ Just call the constructor passing a DOM element and a configuration object as pa
 Check out the following code:
 
 ```js
-import ScrollSnap from 'scroll-snap'
+import ScrollSnap from "scroll-snap";
 
 const snapConfig = {
   /** REQUIRED
    * scroll-snap-destination css property, as defined here:
    * https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-destination
    **/
-  scrollSnapDestination: '0% 90%',
+  scrollSnapDestination: "0% 90%",
   /** OPTIONAL [default: 100]
    * time in ms after which scrolling is considered finished
    **/
@@ -54,17 +54,17 @@ const snapConfig = {
   /** OPTIONAL [default: 300]
    * time in ms for the smooth snap
    **/
-  scrollTime: 300,
-}
+  scrollTime: 300
+};
 
 function callback() {
-  console.log('called when snap animation ends')
+  console.log("called when snap animation ends");
 }
 
-const element = document.getElementById('container')
-const snapObject = new ScrollSnap(element, snapConfig)
+const element = document.getElementById("container");
+const snapObject = new ScrollSnap(element, snapConfig);
 
-snapObject.bind(callback)
+snapObject.bind(callback);
 
 // unbind the element
 // snapObject.unbind();
