@@ -2,9 +2,18 @@
   "name": "scroll-snap",
   "version": "2.0.4",
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "author": "Luca Falasco <falasco.luca@gmail.com> (http://lucafalasco.com)",
+  "main": "dist/umd/index.js",
+  "types": "dist/umd/index.d.ts",
+  "module": "dist/es6/index.js",
+  "files": [
+    "es6/*",
+    "umd/*"
+  ],
+  "author": {
+    "name": "Luca Falasco",
+    "email": "falasco.luca@gmail.com",
+    "url": "https://lucafalasco.com"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/lucafalasco/scroll-snap.git"
@@ -34,7 +43,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --inline --progress",
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.es6.json && tsc -p ./tsconfig.umd.json",
     "prebuild": "mkdirp dist && del ./dist/*",
     "prepare": "yarn build",
     "build:demo": "mkdirp ./demo/dist && del ./demo/dist/* && webpack -p --progress && cp ./demo/src/index.html ./demo/dist/",
