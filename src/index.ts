@@ -72,14 +72,14 @@ export default class ScrollSnap {
       (isNaN(config.scrollTimeout) || typeof config.scrollTimeout === 'boolean')
     ) {
       throw new Error(
-        `Optional config property 'scrollTimeout' is not valid, expected NUMBER but found ${(typeof config.scrollTimeout).toUpperCase()}`,
+        `Optional config property 'scrollTimeout' is not valid, expected NUMBER but found ${(typeof config.scrollTimeout).toUpperCase()}`
       )
     }
     this.SCROLL_TIMEOUT = config.scrollTimeout || SCROLL_TIMEOUT_DEFAULT
 
     if (config.scrollTime && (isNaN(config.scrollTime) || typeof config.scrollTime === 'boolean')) {
       throw new Error(
-        `Optional config property 'scrollTime' is not valid, expected NUMBER but found ${(typeof config.scrollTime).toUpperCase()}`,
+        `Optional config property 'scrollTime' is not valid, expected NUMBER but found ${(typeof config.scrollTime).toUpperCase()}`
       )
     }
     this.SCROLL_TIME = config.scrollTime || SCROLL_TIME_DEFAULT
@@ -208,12 +208,8 @@ export default class ScrollSnap {
   getNextSnapPoint(target: HTMLElement, direction: Coords) {
     // get snap length
     const snapLength = {
-      y: Math.round(
-        this.getYSnapLength(this.target, this.snapLengthUnit.y),
-      ),
-      x: Math.round(
-        this.getXSnapLength(this.target, this.snapLengthUnit.x),
-      ),
+      y: Math.round(this.getYSnapLength(this.target, this.snapLengthUnit.y)),
+      x: Math.round(this.getXSnapLength(this.target, this.snapLengthUnit.x)),
     }
     const top = this.target.scrollTop
     const left = this.target.scrollLeft
