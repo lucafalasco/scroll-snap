@@ -114,6 +114,7 @@ export default class ScrollSnap {
 
   bindElement(element: HTMLElement) {
     this.target = element
+    const listenerElement = element === document.documentElement ? window : element
 
     /**
      * set webkit-overflow-scrolling to auto.
@@ -124,7 +125,7 @@ export default class ScrollSnap {
     // @ts-ignore
     this.target.style.webkitOverflowScrolling = 'auto'
 
-    this.target.addEventListener('scroll', this.startAnimation, false)
+    listenerElement.addEventListener('scroll', this.startAnimation, false)
     this.saveDeclaration(this.target)
   }
 
@@ -298,10 +299,10 @@ export default class ScrollSnap {
       )
     } else if (declaration.unit === '%') {
       // when using %, one snap is the length of element height / 100 * value
-      return (obj.offsetHeight / 100) * declaration.value
+      return (obj.clientHeight / 100) * declaration.value
     } else {
       // when using px, one snap is the length of element height / value
-      return obj.offsetHeight / declaration.value
+      return obj.clientHeight / declaration.value
     }
   }
 
