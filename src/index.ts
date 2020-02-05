@@ -48,6 +48,7 @@ export default class ScrollSnap {
   SCROLL_TIME: number
   SCROLL_SNAP_DESTINATION: string
   element: HTMLElement
+  listenerElement: HTMLElement | Window
   target: HTMLElement
   config: ConfigurationObject
   onAnimationEnd: () => void
@@ -114,7 +115,7 @@ export default class ScrollSnap {
 
   bindElement(element: HTMLElement) {
     this.target = element
-    const listenerElement = element === document.documentElement ? window : element
+    this.listenerElement = element === document.documentElement ? window : element
 
     /**
      * set webkit-overflow-scrolling to auto.
@@ -125,14 +126,14 @@ export default class ScrollSnap {
     // @ts-ignore
     this.target.style.webkitOverflowScrolling = 'auto'
 
-    listenerElement.addEventListener('scroll', this.startAnimation, false)
+    this.listenerElement.addEventListener('scroll', this.startAnimation, false)
     this.saveDeclaration(this.target)
   }
 
   unbindElement(element: HTMLElement) {
     // @ts-ignore
     element.style.webkitOverflowScrolling = null
-    element.removeEventListener('scroll', this.startAnimation, false)
+    this.listenerElement.removeEventListener('scroll', this.startAnimation, false)
   }
 
   startAnimation = () => {
@@ -188,7 +189,7 @@ export default class ScrollSnap {
     // get the next snap-point to snap-to
     const snapPoint = this.getNextSnapPoint(this.target, direction)
 
-    this.target.removeEventListener('scroll', this.startAnimation, false)
+    this.listenerElement.removeEventListener('scroll', this.startAnimation, false)
 
     this.animating = true
 
@@ -196,7 +197,7 @@ export default class ScrollSnap {
     this.smoothScroll(this.target, snapPoint, () => {
       // after moving to the snap point, rebind the scroll event handler
       this.animating = false
-      this.target.addEventListener('scroll', this.startAnimation, false)
+      this.listenerElement.addEventListener('scroll', this.startAnimation, false)
       this.onAnimationEnd()
     })
 
