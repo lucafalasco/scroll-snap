@@ -316,10 +316,10 @@ export default class ScrollSnap {
       )
     } else if (declaration.unit === '%') {
       // when using %, one snap is the length of element width / 100 * value
-      return (obj.offsetWidth / 100) * declaration.value
+      return (obj.clientWidth / 100) * declaration.value
     } else {
       // when using px, one snap is the length of element width / value
-      return obj.offsetWidth / declaration.value
+      return obj.clientWidth / declaration.value
     }
   }
 
