@@ -1,5 +1,5 @@
-const SCROLL_TIMEOUT_DEFAULT = 300
-const SCROLL_TIME_DEFAULT = 2
+const SCROLL_TIMEOUT_DEFAULT = 100
+const SCROLL_TIME_DEFAULT = 300
 const NOOP = () => {}
 
 interface ConfigurationObject {
@@ -10,11 +10,11 @@ interface ConfigurationObject {
   /**
    * time in ms after which scrolling is considered finished
    **/
-  scrollTimeout: number
+  scrollTimeout?: number
   /**
    * time in ms for the smooth snap
    **/
-  scrollTime: number
+  scrollTime?: number
 }
 
 interface SnapLength {
