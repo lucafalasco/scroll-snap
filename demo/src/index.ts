@@ -1,9 +1,11 @@
 import ScrollSnap from '../../src/index'
 
 const snapConfig = {
-  scrollSnapDestination: '0% 90%', // scroll-snap-destination css property
-  scrollTimeout: 100, // time in ms after which scrolling is considered finished
-  scrollTime: 300, // time in ms for the smooth snap
+  snapDestinationX: '0%',
+  snapDestinationY: '90%',
+  timeout: 100,
+  duration: 300,
+  easing: (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
 }
 
 function callback() {

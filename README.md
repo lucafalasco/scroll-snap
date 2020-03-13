@@ -39,32 +39,41 @@ Just call the constructor passing a DOM element and a configuration object as pa
 Check out the following code:
 
 ```js
-import ScrollSnap from "scroll-snap";
+import ScrollSnap from 'scroll-snap'
 
 const snapConfig = {
-  /** REQUIRED
-   * scroll-snap-destination css property, as defined here:
-   * https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-destination
+  /**
+   * snap-destination for x and y axes
+   * should be a valid css value expressed as px|%|vw|vh
    **/
-  scrollSnapDestination: "0% 90%",
-  /** OPTIONAL [default: 100]
+  snapDestinationX: "0%",
+  snapDestinationY: "90%,
+  /**
    * time in ms after which scrolling is considered finished
+   * [default: 100]
    **/
-  scrollTimeout: 100,
-  /** OPTIONAL [default: 300]
-   * time in ms for the smooth snap
+  timeout: 100,
+  /**
+   * duration in ms for the smooth snap
+   * [default: 300]
    **/
-  scrollTime: 300
-};
-
-function callback() {
-  console.log("called when snap animation ends");
+  duration: 300,
+  /**
+   * custom easing function
+   * [default: easeInOutQuad]
+   * @param t Normalized time typically in the range [0, 1]
+   **/
+  easing: easeInOutQuad,
 }
 
-const element = document.getElementById("container");
-const snapObject = new ScrollSnap(element, snapConfig);
+function callback() {
+  console.log('called when snap animation ends')
+}
 
-snapObject.bind(callback);
+const element = document.getElementById('container')
+const snapObject = new ScrollSnap(element, snapConfig)
+
+snapObject.bind(callback)
 
 // unbind the element
 // snapObject.unbind();
@@ -79,19 +88,19 @@ snapObject.bind(callback);
 ```
 git clone https://github.com/lucafalasco/scroll-snap.git
 cd scroll-snap
-npm install
+yarn install
 ```
 
 Start the test app from `demo/` and fire up the dev server
 
 ```
-npm start
+yarn start
 ```
 
 Build for production:
 
 ```
-npm run build
+yarn build
 ```
 
 ## License
