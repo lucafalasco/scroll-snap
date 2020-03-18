@@ -13,8 +13,9 @@ module.exports = {
   devServer: {
     contentBase: './demo/src',
     port: process.env.PORT || 9000,
-    host: 'localhost',
+    host: '0.0.0.0',
     open: true,
+    stats: 'minimal',
   },
   module: {
     rules: [

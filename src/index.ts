@@ -55,8 +55,8 @@ export default class ScrollSnap {
   target: HTMLElement
   animating = false
   private onAnimationEnd: () => void
-  private scrollHandlerTimer: NodeJS.Timer
-  private scrollSpeedTimer: NodeJS.Timer
+  private scrollHandlerTimer: number
+  private scrollSpeedTimer: number
   private scrollStart: Coords
   private speedDeltaX: number
   private speedDeltaY: number
@@ -119,7 +119,7 @@ export default class ScrollSnap {
     }
     this.lastScrollValue[axis] = newValue
     this.scrollSpeedTimer && clearTimeout(this.scrollSpeedTimer)
-    this.scrollSpeedTimer = setTimeout(clear, 100)
+    this.scrollSpeedTimer = window.setTimeout(clear, 100)
     return delta
   }
 
@@ -171,7 +171,7 @@ export default class ScrollSnap {
       }
     }
 
-    this.scrollHandlerTimer = setTimeout(this.animationHandler, this.timeout)
+    this.scrollHandlerTimer = window.setTimeout(this.animationHandler, this.timeout)
   }
 
   private animationHandler = () => {

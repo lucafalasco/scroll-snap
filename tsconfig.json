@@ -1,8 +1,20 @@
 {
   "include": ["src"],
   "compilerOptions": {
-    "declaration": true,
-    "noImplicitAny": true,
-    "target": "es5"
+    "target": "es5",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": false,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true
   }
 }
