@@ -104,6 +104,21 @@ code {
   width: 200px;
   margin: 20px 0;
 }
+.credits {
+  position: absolute;
+  bottom: 20px;
+  margin: 0 auto;
+  font-weight: 700;
+  font-size: 14px;
+}
+.credits a {
+  color: #ff4a5e;
+  text-decoration: none;
+}
+.credits a:hover {
+  color: #c93849;
+  text-decoration: underline;
+}
 .bind,
 .unbind {
   margin: 0 5px;
