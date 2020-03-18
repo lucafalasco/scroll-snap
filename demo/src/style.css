@@ -1,0 +1,197 @@
+html,
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: default;
+  background-color: #fafafa;
+  color: #212121;
+  font-size: 18px;
+}
+button {
+  padding: 7px 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ececec;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+button:hover {
+  background-color: #ffffff;
+}
+button:active {
+  background-color: #e4e4e4;
+  margin-bottom: -1px;
+  box-shadow: none;
+}
+p {
+  width: 80%;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 1.5rem;
+}
+code {
+  font-size: 16px;
+}
+#container {
+  display: flex;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  box-sizing: border-box;
+}
+.first-page {
+  height: 95%;
+  min-height: 95%;
+}
+.second-page {
+  height: 90%;
+  min-height: 90%;
+}
+.third-page {
+  height: 95%;
+  min-height: 95%;
+  overflow: hidden;
+}
+#container-horizontal {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.first-page-horizontal {
+  width: 95%;
+  min-width: 95%;
+  background-color: #ff4a5e;
+}
+.second-page-horizontal {
+  width: 95%;
+  min-width: 95%;
+  background-color: #c93849;
+}
+.hint {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 200px;
+  margin: 20px 0;
+}
+.bind,
+.unbind {
+  margin: 0 5px;
+}
+.highlight {
+  color: initial;
+  text-decoration: none;
+  padding: 2px 5px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+a.highlight:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.logo {
+  background: url('assets/logo.svg') center no-repeat;
+  background-size: contain;
+  max-width: 80%;
+  width: 500px;
+  height: 400px;
+}
+.scroll {
+  background: url('assets/scroll.svg') center no-repeat;
+  background-size: contain;
+  height: 60px;
+  width: 60px;
+}
+.arrow-down {
+  background: url('assets/arrow-down.svg') center no-repeat;
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+}
+.arrow-big {
+  background: url('assets/arrow-down.svg') center no-repeat;
+  background-size: contain;
+  position: absolute;
+  z-index: 2;
+  transform: rotate(270deg);
+  width: 400px;
+  height: 400px;
+  right: -200px;
+  opacity: 0.1;
+}
+.arrow-keys {
+  background: url('assets/arrow-keys.svg') center no-repeat;
+  background-size: contain;
+  height: 60px;
+  width: 60px;
+}
+.snippet-constructor {
+  background: url('assets/snippet-constructor.png') center no-repeat;
+  background-size: contain;
+  height: 300px;
+  width: 700px;
+  max-width: 100%;
+}
+.snippet-unbind {
+  background: url('assets/snippet-unbind.png') center no-repeat;
+  background-size: contain;
+  height: 450px;
+  width: 700px;
+  max-width: 100%;
+}
+.github {
+  background: url('assets/github.svg') center no-repeat;
+  background-size: contain;
+  position: absolute;
+  right: -100px;
+  bottom: -100px;
+  z-index: 2;
+  width: 400px;
+  height: 400px;
+  opacity: 0.1;
+}
+@media screen and (max-width: 600px) {
+  .snippet-constructor {
+    background: url('assets/snippet-constructor-mobile.png') center no-repeat;
+    background-size: cover;
+    height: 300px;
+  }
+  .snippet-unbind {
+    background: url('assets/snippet-unbind-mobile.png') center no-repeat;
+    background-size: cover;
+    height: 350px;
+  }
+  .arrow-big {
+    width: 300px;
+    height: 300px;
+    right: -150px;
+  }
+}

@@ -1,76 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Scroll Snap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      html, body {
-        margin: 0;
-        font-family: monospace;
-        font-weight: 700;
-        font-size: 25px;
-        cursor: default;
-      }
-      #container {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-       }
-      .page {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-        border-top: 2px solid blue;
-        border-bottom: 2px solid blue;
-        color: blue;
-        background-color: white;
-      }
-      .first-page {
-        height: 95%;
-        min-height: 95%;
-      }
-      .second-page {
-        height: 90%;
-        min-height: 90%;
-      }
-      .third-page {
-        height: 90%;
-        min-height: 90%;
-      }
-      .fourth-page {
-        height: 95%;
-        min-height: 95%;
-      }
-      .hint {
-        position: absolute;
-        bottom: 20%;
-      }
-    </style>
+    <meta charset="utf-8" />
+    <title>↯ scroll-snap ↯</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <div id='container'>
+    <div id="container">
       <div class="page first-page">
-        <div>1</div>
-        <div class="hint">scroll down ⇣</div>
+        <div class="logo"></div>
+        <div class="hint" style="position: absolute; bottom: 10%;">
+          <div class="scroll"></div>
+          <div class="arrow-keys"></div>
+        </div>
       </div>
       <div class="page second-page">
-        <div>2</div>
+        <div id="container-horizontal">
+          <div class="page first-page-horizontal">
+            <div class="snippet-constructor"></div>
+            <p>
+              <span class="highlight">Snap</span> page when user stops scrolling, <br />
+              with a <span class="highlight">customizable</span> configuration <br />
+              and a consistent <span class="highlight">cross browser</span> behaviour
+            </p>
+            <div class="arrow-big" style="top: -50px;"></div>
+            <div class="arrow-big" style="transform: rotate(90deg); bottom: 100px;"></div>
+          </div>
+          <div class="page second-page-horizontal">
+            <p>
+              Manually <code class="highlight">bind()</code> and
+              <code class="highlight">unbind()</code> <br />
+              the scrolling element
+            </p>
+            <div class="snippet-unbind"></div>
+            <div class="actions">
+              <button class="unbind" onclick="unbind()">UNBIND</button>
+              <button class="bind" onclick="bind()">BIND</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="page third-page">
-        <div>3</div>
-      </div>
-      <div class="page fourth-page">
-        <div>4</div>
-        <div class="hint">scroll up ⇡</div>
+        <p>
+          Check the docs on <br />
+          <a class="highlight" target="_blank" href="https://github.com/lucafalasco/scroll-snap"
+            >Github</a
+          >
+          <br />
+          <br />
+          ⁙ ⁙ ⁙
+          <br />
+          <br />
+          Play with the code in <br />
+          <a
+            class="highlight"
+            target="_blank"
+            href="https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1"
+            >CodeSandbox
+          </a>
+        </p>
+        <div class="github"></div>
       </div>
     </div>
     <script src="scroll-snap.js"></script>

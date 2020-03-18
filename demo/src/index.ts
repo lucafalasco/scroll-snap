@@ -1,20 +1,29 @@
 import ScrollSnap from '../../src/index'
 
-const snapConfig = {
-  snapDestinationX: '0%',
-  snapDestinationY: '90%',
-  timeout: 100,
-  duration: 300,
-  easing: (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
-}
-
 function callback() {
   console.log('snap')
 }
 
-const element = document.getElementById('container')
-const snapObject = new ScrollSnap(element, snapConfig)
-snapObject.bind(callback)
+const containerVertical = document.getElementById('container')
+const snapVertical = new ScrollSnap(containerVertical, {
+  snapDestinationY: '90%',
+  timeout: 100,
+  duration: 300,
+  easing: t => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+}).bind(callback)
 
-// unbind element
-// snapObject.unbind();
+const containerHorizontal = document.getElementById('container-horizontal')
+const snapHorizontal = new ScrollSnap(containerHorizontal, {
+  snapDestinationX: '90%',
+  timeout: 100,
+  duration: 300,
+  easing: t => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+}).bind(callback)
+;(window as any).unbind = () => {
+  snapVertical.unbind()
+  snapHorizontal.unbind()
+}
+;(window as any).bind = () => {
+  snapVertical.bind(callback)
+  snapHorizontal.bind(callback)
+}

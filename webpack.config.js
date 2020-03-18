@@ -7,25 +7,25 @@ module.exports = {
     path: path.resolve(`${__dirname}/demo/dist`),
     filename: 'scroll-snap.js',
     library: 'scroll-snap',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   devtool: '#eval-source-map',
   devServer: {
     contentBase: './demo/src',
     port: process.env.PORT || 9000,
     host: 'localhost',
-    open: true
+    open: true,
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/,
         loader: require.resolve('ts-loader'),
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
-    extensions: ['.ts', '.js']
-  }
+    extensions: ['.ts', '.js'],
+  },
 }

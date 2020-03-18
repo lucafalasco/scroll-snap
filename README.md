@@ -17,12 +17,6 @@ Snap page when user stops scrolling, basically implements [CSS Scroll Snap Point
 ## Installation
 
 ```sh
-npm install scroll-snap --save
-```
-
-or
-
-```sh
 yarn add scroll-snap
 ```
 
@@ -30,11 +24,11 @@ You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap
 
 ## Usage
 
-Just call the constructor passing a DOM element and a configuration object as parameters, then use:
+Call the constructor passing a DOM element and a configuration object as parameters, then use:
 
-`bind()` to initialize the scroll snap and bind the listener, accepts an optional callback as parameter to execute once the animation ends.
+`bind()` to initialize the scroll snap and attach the scroll event listener, takes an optional callback as parameter to execute once the animation ends.
 
-`unbind()` to remove the listener.
+`unbind()` to remove the listener on the element.
 
 Check out the following code:
 
@@ -67,7 +61,7 @@ const snapConfig = {
 }
 
 function callback() {
-  console.log('called when snap animation ends')
+  console.log('element snapped')
 }
 
 const element = document.getElementById('container')
