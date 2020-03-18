@@ -119,7 +119,7 @@ export default class ScrollSnap {
     }
     this.lastScrollValue[axis] = newValue
     this.scrollSpeedTimer && clearTimeout(this.scrollSpeedTimer)
-    this.scrollSpeedTimer = setTimeout(clear, 50)
+    this.scrollSpeedTimer = setTimeout(clear, 100)
     return delta
   }
 
@@ -131,28 +131,18 @@ export default class ScrollSnap {
     this.target = element
     this.listenerElement = element === document.documentElement ? window : element
 
-    /**
-     * set webkit-overflow-scrolling to auto.
-     * this prevents momentum scrolling on ios devices
-     * causing flickering behaviours and delayed transitions.
-     */
-    this.target.style.overflow = 'auto'
-    // @ts-ignore
-    this.target.style.webkitOverflowScrolling = 'auto'
-
     this.listenerElement.addEventListener('scroll', this.startAnimation, false)
     this.saveDeclaration(this.target)
   }
 
-  private unbindElement(element: HTMLElement) {
-    // @ts-ignore
-    element.style.webkitOverflowScrolling = null
+  private unbindElement() {
     this.listenerElement.removeEventListener('scroll', this.startAnimation, false)
   }
 
   private startAnimation = () => {
     this.speedDeltaX = this.checkScrollSpeed(this.target.scrollLeft, 'x')
     this.speedDeltaY = this.checkScrollSpeed(this.target.scrollTop, 'y')
+
     if (this.animating || (this.speedDeltaX === 0 && this.speedDeltaY === 0)) {
       return
     }
@@ -404,7 +394,7 @@ export default class ScrollSnap {
   }
 
   unbind() {
-    this.unbindElement(this.element)
+    this.unbindElement()
     return this
   }
 }
