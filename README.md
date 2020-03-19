@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/lucafalasco/scroll-snap/master/logo.svg?sanitize=true" width="500px" style="margin: 100px;"/>
+  <img src="https://raw.githubusercontent.com/lucafalasco/scroll-snap/master/logo.svg?sanitize=true" width="300px" style="margin: 20px;""/>
 </p
 
-[![npm](https://img.shields.io/badge/npm-scroll--snap-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/scroll-snap)
-[![npm version](https://img.shields.io/npm/v/scroll-snap.svg?style=flat-square)](https://www.npmjs.com/package/scroll-snap)
-[![npm downloads](https://img.shields.io/npm/dm/scroll-snap.svg?style=flat-square)](https://www.npmjs.com/package/scroll-snap)
+[![npm](https://img.shields.io/badge/npm-scroll--snap-red.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/scroll-snap)
+[![npm](https://img.shields.io/npm/v/scroll-snap.svg?style=for-the-badge&label)](https://www.npmjs.com/scroll-snap)
+[![npm downloads](https://img.shields.io/npm/dm/scroll-snap.svg?style=for-the-badge)](https://www.npmjs.com/package/scroll-snap)
 
-Snap page when user stops scrolling, basically implements [CSS Scroll Snap Points](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Scroll_Snap_Points), but with a customizable configuration and a consistent cross browser behaviour.
+Snap page when user stops scrolling, basically implements [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap), but with a customizable configuration and a consistent cross browser behaviour.
 
 - works in all modern browsers
 - `requestAnimationFrame` for 60fps
@@ -40,8 +40,8 @@ const snapConfig = {
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
    **/
-  snapDestinationX: "0%",
-  snapDestinationY: "90%,
+  snapDestinationX: '0%',
+  snapDestinationY: '90%',
   /**
    * time in ms after which scrolling is considered finished
    * [default: 100]
@@ -55,7 +55,8 @@ const snapConfig = {
   /**
    * custom easing function
    * [default: easeInOutQuad]
-   * @param t Normalized time typically in the range [0, 1]
+   * for reference: https://gist.github.com/gre/1650294
+   * @param t normalized time typically in the range [0, 1]
    **/
   easing: easeInOutQuad,
 }
@@ -73,9 +74,9 @@ snapObject.bind(callback)
 // snapObject.unbind();
 ```
 
-[Demo](https://lucafalasco.github.io/scroll-snap/)
+#### [Demo](https://lucafalasco.github.io/scroll-snap/)
 
-[Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
+#### [Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
 
 ## Contributing
 
@@ -85,13 +86,13 @@ cd scroll-snap
 yarn install
 ```
 
-Start the test app from `demo/` and fire up the dev server
+Start the test app from `demo/`:
 
 ```
 yarn start
 ```
 
-Build for production:
+Build lib for production:
 
 ```
 yarn build

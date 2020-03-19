@@ -24,7 +24,7 @@ interface ScrollSnapConfiguration {
   duration?: number
   /**
    * custom easing function
-   * @param t Normalized time typically in the range [0, 1]
+   * @param t normalized time typically in the range [0, 1]
    **/
   easing?: (t: number) => number
 }
