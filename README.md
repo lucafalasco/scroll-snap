@@ -6,12 +6,12 @@
 [![npm](https://img.shields.io/npm/v/scroll-snap.svg?style=for-the-badge&label)](https://www.npmjs.com/scroll-snap)
 [![npm downloads](https://img.shields.io/npm/dm/scroll-snap.svg?style=for-the-badge)](https://www.npmjs.com/package/scroll-snap)
 
-Snap page when user stops scrolling, basically implements [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap), but with a customizable configuration and a consistent cross browser behaviour.
+Snap page when user stops scrolling, basically implements [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap), adding a customizable configuration and a consistent cross browser behaviour.
 
 - works in all modern browsers
 - `requestAnimationFrame` for 60fps
-- customizable configuration
-- no additional libraries
+- customizable configuration (including easing functions)
+- no additional dependencies
 - no extra stylesheet
 
 ## Installation
