@@ -2,6 +2,7 @@ function easeInOutQuad(t: number) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
+const TIMEOUT_MIN = 50
 const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
 const EASING_DEFAULT = easeInOutQuad
@@ -69,40 +70,44 @@ export default class ScrollSnap {
 
   constructor(element: HTMLElement, config: ScrollSnapConfiguration) {
     this.element = element
-    if (config.timeout && (isNaN(config.timeout) || typeof config.timeout === 'boolean')) {
-      throw new Error(
-        `Optional config property 'timeout' is not valid, expected NUMBER but found ${(typeof config.timeout).toUpperCase()}`
-      )
-    }
-    this.timeout = config.timeout || TIMEOUT_DEFAULT
+    const { timeout, duration, easing, snapDestinationX, snapDestinationY } = config
 
-    if (config.duration && (isNaN(config.duration) || typeof config.duration === 'boolean')) {
+    if (timeout && (isNaN(timeout) || typeof timeout === 'boolean')) {
       throw new Error(
-        `Optional config property 'duration' is not valid, expected NUMBER but found ${(typeof config.duration).toUpperCase()}`
+        `Optional config property 'timeout' is not valid, expected NUMBER but found ${(typeof timeout).toUpperCase()}`
       )
     }
-    this.duration = config.duration || DURATION_DEFAULT
+    // any value less then TIMEOUT_MIN may cause weird bahaviour on some devices (especially on mobile with momentum scrolling)
+    this.timeout = timeout && timeout >= TIMEOUT_MIN ? timeout : TIMEOUT_DEFAULT
 
-    if (config.easing && typeof config.easing !== 'function') {
+    if (duration && (isNaN(duration) || typeof duration === 'boolean')) {
       throw new Error(
-        `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof config.easing).toUpperCase()}`
+        `Optional config property 'duration' is not valid, expected NUMBER but found ${(typeof duration).toUpperCase()}`
       )
     }
-    this.easing = config.easing || EASING_DEFAULT
+    this.duration = duration || DURATION_DEFAULT
 
-    if (config.snapDestinationX && typeof config.snapDestinationX !== 'string') {
+    if (easing && typeof easing !== 'function') {
       throw new Error(
-        `Optional config property 'snapDestinationX' is not valid, expected STRING but found ${(typeof config.easing).toUpperCase()}`
+        `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof easing).toUpperCase()}`
       )
     }
-    this.snapDestinationX = config.snapDestinationX
+    this.easing = easing || EASING_DEFAULT
 
-    if (config.snapDestinationY && typeof config.snapDestinationY !== 'string') {
+    if (snapDestinationX && typeof snapDestinationX !== 'string') {
       throw new Error(
-        `Optional config property 'snapDestinationY' is not valid, expected STRING but found ${(typeof config.easing).toUpperCase()}`
+        `Optional config property 'snapDestinationX' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
       )
     }
-    this.snapDestinationY = config.snapDestinationY
+    this.snapDestinationX = snapDestinationX
+
+    if (snapDestinationY && typeof snapDestinationY !== 'string') {
+      throw new Error(
+        `Optional config property 'snapDestinationY' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+      )
+    }
+
+    this.snapDestinationY = snapDestinationY
   }
 
   private checkScrollSpeed(value: number, axis: 'x' | 'y') {
@@ -112,14 +117,17 @@ export default class ScrollSnap {
 
     const newValue = value
     let delta
+
     if (this.lastScrollValue[axis] !== null) {
       delta = newValue - this.lastScrollValue[axis]
     } else {
       delta = 0
     }
+
     this.lastScrollValue[axis] = newValue
     this.scrollSpeedTimer && clearTimeout(this.scrollSpeedTimer)
     this.scrollSpeedTimer = window.setTimeout(clear, 100)
+
     return delta
   }
 
@@ -155,7 +163,7 @@ export default class ScrollSnap {
    * this is the callback for scroll events.
    */
   private handler(target: HTMLElement) {
-    // if currently this.animating, stop it. this prevents flickering.
+    // if currently animating, stop it. this prevents flickering.
     if (this.animationFrame) {
       clearTimeout(this.animationFrame)
     }
@@ -350,7 +358,7 @@ export default class ScrollSnap {
     const requestAnimationFrame =
       window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
-      function(fn) {
+      function (fn) {
         return window.setTimeout(fn, 15)
       }
     const duration = this.isEdge(start) ? 0 : this.duration
