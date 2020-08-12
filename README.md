@@ -54,7 +54,7 @@ const snapConfig = {
   duration: 300,
   /**
    * threshold to pass for scroll to next element to start
-   *
+   * [default: 0]
    **/
   threshold: 0,
   /**
