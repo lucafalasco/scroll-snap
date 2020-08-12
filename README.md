@@ -53,6 +53,11 @@ const snapConfig = {
    **/
   duration: 300,
   /**
+   * threshold to pass for scroll to next element to start
+   *
+   **/
+  threshold: 0,
+  /**
    * custom easing function
    * [default: easeInOutQuad]
    * for reference: https://gist.github.com/gre/1650294
