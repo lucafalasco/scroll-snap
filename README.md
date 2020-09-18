@@ -53,10 +53,10 @@ const snapConfig = {
    **/
   duration: 300,
   /**
-   * threshold to pass for scroll to next element to start
-   * [default: 0]
+   * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
+   * [default: 0.2]
    **/
-  threshold: 0,
+  threshold: 0.2,
   /**
    * custom easing function
    * [default: easeInOutQuad]

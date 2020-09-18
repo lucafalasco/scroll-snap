@@ -5,7 +5,7 @@ function easeInOutQuad(t: number) {
 const TIMEOUT_MIN = 50
 const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
-const THRESHOLD_DEFAULT = 0.0
+const THRESHOLD_DEFAULT = 0.2
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
@@ -22,7 +22,7 @@ interface ScrollSnapConfiguration {
   timeout?: number
 
   /**
-   * threshold to pass before scrolling to next/prev element (0-1)
+   * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
    */
   threshold?: number
   /**
@@ -251,17 +251,21 @@ export default class ScrollSnap {
       y: 0,
       x: 0,
     }
-    if (
-      this.checkThreshold(direction.y, currentPoint.y) ||
-      this.checkThreshold(direction.x, currentPoint.x)
-    ) {
-      // if threshold not passed, scroll back to currentPoint
-      nextPoint.y = this.roundByDirection(direction.y * -1, currentPoint.y)
-      nextPoint.x = this.roundByDirection(direction.x * -1, currentPoint.x)
-    } else {
-      // set target and bounds by direction
+
+    /**
+     * Set target and bounds by direction,
+     * if threshold has not been reached, scroll back to currentPoint
+     **/
+    if (this.isAboveThreshold(direction.y, currentPoint.y)) {
       nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
+    } else {
+      nextPoint.y = this.roundByDirection(direction.y * -1, currentPoint.y)
+    }
+
+    if (this.isAboveThreshold(direction.x, currentPoint.x)) {
       nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+    } else {
+      nextPoint.x = this.roundByDirection(direction.x * -1, currentPoint.x)
     }
 
     // calculate where to scroll
@@ -277,13 +281,10 @@ export default class ScrollSnap {
     return scrollTo
   }
 
-  // get decimalpart of number and check if its in threshold
-  private checkThreshold(direction: number, currentPoint: number) {
-    return (
-      this.threshold &&
-      ((direction > 0 && currentPoint % 1 < this.threshold) ||
-        currentPoint % 1 > 1.0 - this.threshold)
-    )
+  private isAboveThreshold(direction: number, currentPoint: number) {
+    return direction > 0
+      ? currentPoint % 1 > this.threshold
+      : 1 - (currentPoint % 1) > this.threshold
   }
 
   private roundByDirection(direction: number, currentPoint: number) {
