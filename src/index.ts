@@ -5,6 +5,7 @@ function easeInOutQuad(t: number) {
 const TIMEOUT_MIN = 50
 const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
+const THRESHOLD_DEFAULT = 0.2
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
@@ -19,6 +20,11 @@ interface ScrollSnapConfiguration {
    * time in ms after which scrolling is considered finished
    **/
   timeout?: number
+
+  /**
+   * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
+   */
+  threshold?: number
   /**
    * duration in ms for the smooth snap
    **/
@@ -50,6 +56,7 @@ export default class ScrollSnap {
   snapDestinationY: ScrollSnapConfiguration['snapDestinationY']
   timeout: ScrollSnapConfiguration['timeout']
   duration: ScrollSnapConfiguration['duration']
+  threshold: ScrollSnapConfiguration['threshold']
   easing: ScrollSnapConfiguration['easing']
   element: HTMLElement
   listenerElement: HTMLElement | Window
@@ -70,7 +77,7 @@ export default class ScrollSnap {
 
   constructor(element: HTMLElement, config: ScrollSnapConfiguration) {
     this.element = element
-    const { timeout, duration, easing, snapDestinationX, snapDestinationY } = config
+    const { timeout, duration, easing, snapDestinationX, snapDestinationY, threshold } = config
 
     if (timeout && (isNaN(timeout) || typeof timeout === 'boolean')) {
       throw new Error(
@@ -108,6 +115,13 @@ export default class ScrollSnap {
     }
 
     this.snapDestinationY = snapDestinationY
+
+    if (threshold && (isNaN(threshold) || typeof threshold === 'boolean')) {
+      throw new Error(
+        `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof threshold).toUpperCase()}`
+      )
+    }
+    this.threshold = threshold || THRESHOLD_DEFAULT
   }
 
   private checkScrollSpeed(value: number, axis: 'x' | 'y') {
@@ -238,9 +252,21 @@ export default class ScrollSnap {
       x: 0,
     }
 
-    // set target and bounds by direction
-    nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
-    nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+    /**
+     * Set target and bounds by direction,
+     * if threshold has not been reached, scroll back to currentPoint
+     **/
+    if (this.isAboveThreshold(direction.y, currentPoint.y)) {
+      nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
+    } else {
+      nextPoint.y = this.roundByDirection(direction.y * -1, currentPoint.y)
+    }
+
+    if (this.isAboveThreshold(direction.x, currentPoint.x)) {
+      nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+    } else {
+      nextPoint.x = this.roundByDirection(direction.x * -1, currentPoint.x)
+    }
 
     // calculate where to scroll
     const scrollTo = {
@@ -253,6 +279,12 @@ export default class ScrollSnap {
     scrollTo.x = this.stayInBounds(0, target.scrollWidth, scrollTo.x)
 
     return scrollTo
+  }
+
+  private isAboveThreshold(direction: number, currentPoint: number) {
+    return direction > 0
+      ? currentPoint % 1 > this.threshold
+      : 1 - (currentPoint % 1) > this.threshold
   }
 
   private roundByDirection(direction: number, currentPoint: number) {

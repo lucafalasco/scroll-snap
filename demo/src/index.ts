@@ -4,21 +4,25 @@ function callback() {
   console.log('snap')
 }
 
+const baseConfig = {
+  timeout: 100,
+  duration: 300,
+  threshold: 0.2,
+  easing: (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+}
+
 const containerVertical = document.getElementById('container')
 const snapVertical = new ScrollSnap(containerVertical, {
   snapDestinationY: '90%',
-  timeout: 100,
-  duration: 300,
-  easing: (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+  ...baseConfig,
 }).bind(callback)
 
 const containerHorizontal = document.getElementById('container-horizontal')
 const snapHorizontal = new ScrollSnap(containerHorizontal, {
   snapDestinationX: '90%',
-  timeout: 100,
-  duration: 300,
-  easing: (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+  ...baseConfig,
 }).bind(callback)
+
 ;(window as any).unbind = () => {
   snapVertical.unbind()
   snapHorizontal.unbind()
