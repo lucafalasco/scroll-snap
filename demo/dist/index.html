@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>↯ scroll-snap ↯</title>
+    <title>Scroll Snap - Customizable page snapping</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
@@ -10,33 +10,70 @@
     <div id="container">
       <div class="page first-page">
         <div class="logo"></div>
-        <div class="hint" style="position: absolute; bottom: 10%;">
+        <div class="hint" style="position: absolute; bottom: 10%">
           <div class="scroll"></div>
-          <div class="arrow-keys"></div>
         </div>
       </div>
       <div class="page second-page">
         <div id="container-horizontal">
           <div class="page first-page-horizontal">
-            <div class="snippet-constructor"></div>
+            <div class="snippet">
+              <code>
+                <pre>
+const <b>snapObj</b> = new <b>ScrollSnap</b>(container, {
+  snapDestinationX: '90%',
+  timeout: 100,
+  duration: 300,
+  threshold: 0.2,
+  easing: (t: number) => (
+    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t   
+  ),
+}).bind(callback)
+</pre
+                >
+              </code>
+            </div>
+
             <p>
-              <span class="highlight">Snap</span> page when user stops scrolling, <br />
-              with a <span class="highlight">customizable</span> configuration <br />
-              and a consistent <span class="highlight">cross browser</span> behaviour
+              <span class="highlight">Snap page</span> when user stops scrolling, <br />
+              with a <span class="highlight">customizable configuration</span> <br />
+              and a consistent <span class="highlight">cross browser behaviour</span>
             </p>
-            <div class="arrow-big" style="top: -50px;"></div>
-            <div class="arrow-big" style="transform: rotate(90deg); bottom: 100px;"></div>
+            <div class="arrow-big" style="top: -50px"></div>
+            <div class="arrow-big" style="transform: rotate(90deg); bottom: 50px"></div>
           </div>
           <div class="page second-page-horizontal">
             <p>
-              Manually <code class="highlight">bind()</code> and
-              <code class="highlight">unbind()</code> <br />
+              Manually <code class="highlight">bind</code> and
+              <code class="highlight">unbind</code> <br />
               the scrolling element
             </p>
-            <div class="snippet-unbind"></div>
+            <div class="snippet">
+              <code>
+                <pre>
+const <b>snapObj</b> = new <b>ScrollSnap</b>(container, {
+  snapDestinationX: '90%',
+  timeout: 100,
+  duration: 300,
+  threshold: 0.2,
+  easing: (t: number) => (
+    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t   
+  ),
+})
+
+function <b>unbind()</b> {
+  console.log('element snapped')
+  snapObj.unbind()
+}
+
+snapObj.bind(unbind)
+</pre
+                >
+              </code>
+            </div>
             <div class="actions">
-              <button class="unbind" onclick="unbind()">UNBIND</button>
-              <button class="bind" onclick="bind()">BIND</button>
+              <button class="unbind" onclick="unbind()">Unbind</button>
+              <button class="bind" onclick="bind()">Bind</button>
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ body {
 }
 button {
   padding: 7px 10px;
-  border-radius: 5px;
+  border-radius: 2px;
   border: none;
   background-color: #ececec;
   font-size: 14px;
@@ -20,6 +20,7 @@ button {
   letter-spacing: 1px;
   box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
   outline: none;
+  cursor: pointer;
 }
 button:hover {
   background-color: #ffffff;
@@ -95,7 +96,6 @@ code {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 200px;
 }
 .actions {
   display: flex;
@@ -142,14 +142,8 @@ a.highlight:hover {
 .scroll {
   background: url('assets/scroll.svg') center no-repeat;
   background-size: contain;
-  height: 60px;
-  width: 60px;
-}
-.arrow-down {
-  background: url('assets/arrow-down.svg') center no-repeat;
-  background-size: contain;
-  height: 20px;
-  width: 20px;
+  height: 80px;
+  width: 80px;
 }
 .arrow-big {
   background: url('assets/arrow-down.svg') center no-repeat;
@@ -161,26 +155,27 @@ a.highlight:hover {
   height: 400px;
   right: -200px;
   opacity: 0.1;
+  pointer-events: none;
 }
-.arrow-keys {
-  background: url('assets/arrow-keys.svg') center no-repeat;
-  background-size: contain;
-  height: 60px;
-  width: 60px;
+.snippet {
+  max-width: 90%;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
 }
-.snippet-constructor {
-  background: url('assets/snippet-constructor.png') center no-repeat;
-  background-size: contain;
-  height: 300px;
-  width: 700px;
-  max-width: 100%;
+.snippet code {
+  overflow: auto;
+  background-color: #2e3440;
+  color: #eceff4;
+  text-align: left;
+  display: block;
+  border: 1px solid #4c566a;
+  padding: 20px;
+  border-radius: 5px;
+  font-family: monospace;
 }
-.snippet-unbind {
-  background: url('assets/snippet-unbind.png') center no-repeat;
-  background-size: contain;
-  height: 450px;
-  width: 700px;
-  max-width: 100%;
+.snippet code pre {
+  margin: 0;
 }
 .github {
   background: url('assets/github.svg') center no-repeat;
@@ -194,19 +189,26 @@ a.highlight:hover {
   opacity: 0.1;
 }
 @media screen and (max-width: 600px) {
-  .snippet-constructor {
-    background: url('assets/snippet-constructor-mobile.png') center no-repeat;
-    background-size: cover;
-    height: 300px;
+  html,
+  body {
+    font-size: 14px;
   }
-  .snippet-unbind {
-    background: url('assets/snippet-unbind-mobile.png') center no-repeat;
-    background-size: cover;
-    height: 350px;
+  code {
+    font-size: 12px;
+  }
+  p {
+    width: 90%;
   }
   .arrow-big {
     width: 300px;
     height: 300px;
     right: -150px;
+  }
+  .snippet {
+    margin: 10px auto;
+  }
+  .scroll {
+    height: 60px;
+    width: 60px;
   }
 }
