@@ -19,7 +19,7 @@ const snapVertical = new ScrollSnap(containerVertical, {
 
 const containerHorizontal = document.getElementById('container-horizontal')
 const snapHorizontal = new ScrollSnap(containerHorizontal, {
-  snapDestinationX: '90%',
+  snapDestinationX: '100%',
   ...baseConfig,
 }).bind(callback)
 

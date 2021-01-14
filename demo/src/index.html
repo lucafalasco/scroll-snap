@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Scroll Snap - Customizable page snapping</title>
+    <title>scroll-snap - Customizable page snapping</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
@@ -17,70 +17,66 @@
       <div class="page second-page">
         <div id="container-horizontal">
           <div class="page first-page-horizontal">
+            <div class="first-page-paragraph">
+              <h2><span class="highlight">Snap page</span> when user stops scrolling</h2>
+              <p>
+                With a <b>customizable configuration</b> and a consistent
+                <b>cross browser behaviour</b>
+              </p>
+            </div>
             <div class="snippet">
               <code>
                 <pre>
-const <b>snapObj</b> = new <b>ScrollSnap</b>(container, {
-  snapDestinationX: '90%',
-  timeout: 100,
-  duration: 300,
-  threshold: 0.2,
-  easing: (t: number) => (
-    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t   
-  ),
+const snappy = new <b>ScrollSnap</b>(element, {
+  <b>snapDestinationX</b>: '90%',
+  <b>timeout</b>: 100,
+  <b>duration</b>: 300,
 }).bind(callback)
 </pre
                 >
               </code>
             </div>
 
-            <p>
-              <span class="highlight">Snap page</span> when user stops scrolling, <br />
-              with a <span class="highlight">customizable configuration</span> <br />
-              and a consistent <span class="highlight">cross browser behaviour</span>
-            </p>
-            <div class="arrow-big" style="top: -50px"></div>
-            <div class="arrow-big" style="transform: rotate(90deg); bottom: 50px"></div>
+            <div class="arrow-big right"></div>
           </div>
           <div class="page second-page-horizontal">
-            <p>
-              Manually <code class="highlight">bind</code> and
-              <code class="highlight">unbind</code> <br />
-              the scrolling element
-            </p>
+            <div class="second-page-paragraph">
+              <h2><span class="highlight">Complete control</span> over the scroll behaviour</h2>
+              <p>
+                Manually <b>bind</b> and <b>unbind</b> the scrolling element, set a
+                <b>threshold</b>, and <b>fine-tune the animation</b>.
+              </p>
+            </div>
             <div class="snippet">
               <code>
                 <pre>
-const <b>snapObj</b> = new <b>ScrollSnap</b>(container, {
+const snappy = new <b>ScrollSnap</b>(element, {
   snapDestinationX: '90%',
   timeout: 100,
   duration: 300,
-  threshold: 0.2,
-  easing: (t: number) => (
+  <b>threshold</b>: 0.2,
+  <b>easing</b>: (t: number) => (
     t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t   
   ),
 })
 
-function <b>unbind()</b> {
+function <b>unbind</b>() {
   console.log('element snapped')
-  snapObj.unbind()
+  snappy.unbind()
 }
 
-snapObj.bind(unbind)
-</pre
-                >
+<span class="comment">// Only snap once</span>
+snappy.bind(unbind)
+</pre>
               </code>
             </div>
-            <div class="actions">
-              <button class="unbind" onclick="unbind()">Unbind</button>
-              <button class="bind" onclick="bind()">Bind</button>
-            </div>
+            <div class="arrow-big left"></div>
           </div>
         </div>
       </div>
       <div class="page third-page">
         <p>
-          Check the docs on <br />
+          Check the code<br />
           <a class="highlight" target="_blank" href="https://github.com/lucafalasco/scroll-snap"
             >Github</a
           >
@@ -89,7 +85,7 @@ snapObj.bind(unbind)
           ⁙ ⁙ ⁙
           <br />
           <br />
-          Play with the code in <br />
+          Play with the demo<br />
           <a
             class="highlight"
             target="_blank"

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
 html,
 body {
   margin: 0;
@@ -6,38 +8,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: default;
-  background-color: #fafafa;
-  color: #212121;
+  background-color: #212121;
+  color: #fafafa;
   font-size: 18px;
-}
-button {
-  padding: 7px 10px;
-  border-radius: 2px;
-  border: none;
-  background-color: #ececec;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
-  outline: none;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #ffffff;
-}
-button:active {
-  background-color: #e4e4e4;
-  margin-bottom: -1px;
-  box-shadow: none;
 }
 p {
   width: 80%;
-  letter-spacing: 1px;
-  text-align: center;
-  line-height: 1.5rem;
+  text-align: left;
+  line-height: 1.5;
 }
-code {
-  font-size: 16px;
+code,
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  margin: 0;
+}
+code b {
+  color: #ff4a5e;
+}
+code .comment {
+  color: #6d6d6d;
 }
 #container {
   display: flex;
@@ -57,7 +47,6 @@ code {
   justify-content: center;
   align-items: center;
   position: relative;
-  text-align: center;
   box-sizing: border-box;
 }
 .first-page {
@@ -65,6 +54,7 @@ code {
   min-height: 95%;
 }
 .second-page {
+  color: #212121;
   height: 90%;
   min-height: 90%;
 }
@@ -82,27 +72,35 @@ code {
   overflow-y: hidden;
 }
 .first-page-horizontal {
-  width: 95%;
-  min-width: 95%;
+  width: 100%;
+  min-width: 100%;
   background-color: #ff4a5e;
+  display: flex;
+  flex-direction: row;
+  padding: 0 3rem;
+}
+.first-page-paragraph {
+  width: 50%;
 }
 .second-page-horizontal {
-  width: 95%;
-  min-width: 95%;
+  width: 100%;
+  min-width: 100%;
   background-color: #c93849;
+  align-items: start;
+}
+.second-page-paragraph {
+  width: 100%;
+  padding-left: 10%;
+  margin: 4rem 0;
+}
+.second-page-paragraph p {
+  width: 50%;
 }
 .hint {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-}
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 200px;
-  margin: 20px 0;
 }
 .credits {
   position: absolute;
@@ -124,20 +122,27 @@ code {
   margin: 0 5px;
 }
 .highlight {
-  color: initial;
+  color: inherit;
   text-decoration: none;
   padding: 2px 5px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 a.highlight:hover {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.third-page .highlight {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.third-page a.highlight:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 .logo {
   background: url('assets/logo.svg') center no-repeat;
   background-size: contain;
   max-width: 80%;
-  width: 500px;
-  height: 400px;
+  width: 450px;
+  height: 350px;
 }
 .scroll {
   background: url('assets/scroll.svg') center no-repeat;
@@ -150,26 +155,42 @@ a.highlight:hover {
   background-size: contain;
   position: absolute;
   z-index: 2;
-  transform: rotate(270deg);
-  width: 400px;
-  height: 400px;
-  right: -200px;
-  opacity: 0.1;
+  width: 30px;
+  height: 30px;
   pointer-events: none;
+  opacity: 0.5;
+}
+.arrow-big.right {
+  bottom: 20px;
+  right: 15px;
+  animation: leftright 1s infinite alternate-reverse;
+}
+.arrow-big.left {
+  top: 20px;
+  left: 15px;
+  animation: rightleft 1s infinite alternate-reverse;
+}
+.second-page-horizontal .snippet {
+  width: 100%;
+  min-width: 100%;
+  background-color: #212121;
+}
+.second-page-horizontal .snippet code {
+  width: 100%;
+  padding-left: 4rem;
+  background-color: #212121;
 }
 .snippet {
-  max-width: 90%;
   margin: 20px auto;
   display: flex;
   justify-content: center;
 }
 .snippet code {
   overflow: auto;
-  background-color: #2e3440;
+  background-color: #212121;
   color: #eceff4;
   text-align: left;
   display: block;
-  border: 1px solid #4c566a;
   padding: 20px;
   border-radius: 5px;
   font-family: monospace;
@@ -188,27 +209,88 @@ a.highlight:hover {
   height: 400px;
   opacity: 0.1;
 }
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 768px) {
   html,
   body {
-    font-size: 14px;
+    font-size: 16px;
   }
   code {
-    font-size: 12px;
+    font-size: 14px;
   }
   p {
     width: 90%;
   }
-  .arrow-big {
-    width: 300px;
-    height: 300px;
-    right: -150px;
-  }
   .snippet {
-    margin: 10px auto;
+    margin: 0;
   }
   .scroll {
     height: 60px;
     width: 60px;
+  }
+  .first-page-paragraph {
+    width: 90%;
+    margin-bottom: 4rem;
+  }
+  .second-page-paragraph {
+    width: 90%;
+  }
+  .second-page-paragraph p {
+    width: 100%;
+  }
+  .first-page-horizontal {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .first-page-horizontal {
+    padding: 0;
+  }
+  .first-page-paragraph {
+    padding-left: 5%;
+  }
+  .snippet {
+    width: 100%;
+  }
+  .snippet code {
+    border-radius: 0;
+  }
+  .second-page-horizontal {
+    padding: 1rem 0;
+  }
+  .second-page-paragraph {
+    padding-left: 5%;
+  }
+  .second-page-horizontal .snippet code {
+    padding-left: 1rem;
+  }
+  .arrow-big.left {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .page {
+    padding: 0 10rem;
+  }
+}
+
+@keyframes leftright {
+  0% {
+    transform: rotate(270deg) translateY(-20px);
+  }
+  100% {
+    transform: rotate(270deg) translateY(0px);
+  }
+}
+
+@keyframes rightleft {
+  0% {
+    transform: rotate(90deg) translateY(-20px);
+  }
+  100% {
+    transform: rotate(90deg) translateY(0px);
   }
 }
