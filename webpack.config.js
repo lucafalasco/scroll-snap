@@ -2,16 +2,16 @@ const path = require('path')
 
 module.exports = {
   context: path.resolve(__dirname),
-  entry: './demo/src/index.ts',
+  entry: './docs/src/index.ts',
   output: {
-    path: path.resolve(`${__dirname}/demo/dist`),
+    path: path.resolve(`${__dirname}/docs/dist`),
     filename: 'scroll-snap.js',
     library: 'scroll-snap',
     libraryTarget: 'umd',
   },
   devtool: '#eval-source-map',
   devServer: {
-    contentBase: './demo/src',
+    contentBase: './docs/src',
     port: process.env.PORT || 9000,
     host: '0.0.0.0',
     open: true,

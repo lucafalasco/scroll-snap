@@ -46,7 +46,7 @@
     "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.umd.json",
     "prebuild": "mkdirp dist && del ./dist/*",
     "prepare": "yarn build",
-    "build:demo": "mkdirp ./demo/dist && del ./demo/dist/* && webpack -p --progress && cp -R ./demo/src/{index.html,style.css,assets} ./demo/dist/",
-    "push:demo": "git subtree push --prefix demo/dist origin gh-pages"
+    "build:docs": "mkdirp ./docs/dist && del ./docs/dist/* && webpack -p --progress && cp -R ./docs/src/{index.html,style.css,assets} ./docs/dist/",
+    "push:docs": "git subtree push --prefix docs/dist origin gh-pages"
   }
 }

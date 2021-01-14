@@ -79,7 +79,7 @@ snapObject.bind(callback)
 // snapObject.unbind();
 ```
 
-#### [Demo](https://lucafalasco.github.io/scroll-snap/)
+#### [Docs](https://lucafalasco.github.io/scroll-snap/)
 
 #### [Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
 
@@ -91,7 +91,7 @@ cd scroll-snap
 yarn install
 ```
 
-Start the test app from `demo/`:
+Start the test app from `docs/`:
 
 ```
 yarn start
