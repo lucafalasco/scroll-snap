@@ -1,6 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/lucafalasco/scroll-snap/master/logo.svg?sanitize=true" width="300px" style="margin: 20px;"/>
-</p
+  <img src="https://raw.githubusercontent.com/lucafalasco/scroll-snap/master/logo.svg?sanitize=true" width="100px"/>
+  <h3 align="center"><code>scroll-snap</code></h3>
+</p>
+
+---
 
 [![npm](https://img.shields.io/badge/npm-scroll--snap-red.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/scroll-snap)
 [![npm](https://img.shields.io/npm/v/scroll-snap.svg?style=for-the-badge&label)](https://www.npmjs.com/scroll-snap)
