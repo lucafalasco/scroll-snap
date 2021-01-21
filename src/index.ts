@@ -6,6 +6,7 @@ const TIMEOUT_MIN = 50
 const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
 const THRESHOLD_DEFAULT = 0.2
+const SNAPSTOP_DEFAULT = false
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
@@ -13,26 +14,29 @@ interface ScrollSnapConfiguration {
   /**
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
-   **/
+   */
   snapDestinationX?: string
   snapDestinationY?: string
   /**
    * time in ms after which scrolling is considered finished
-   **/
+   */
   timeout?: number
-
+  /**
+   * duration in ms for the smooth snap
+   */
+  duration?: number
   /**
    * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
    */
   threshold?: number
   /**
-   * duration in ms for the smooth snap
-   **/
-  duration?: number
+   * when true, the scroll container is not allowed to "pass over" the other snap positions
+   */
+  snapStop?: boolean
   /**
    * custom easing function
    * @param t normalized time typically in the range [0, 1]
-   **/
+   */
   easing?: (t: number) => number
 }
 
@@ -57,11 +61,14 @@ export default class ScrollSnap {
   timeout: ScrollSnapConfiguration['timeout']
   duration: ScrollSnapConfiguration['duration']
   threshold: ScrollSnapConfiguration['threshold']
+  snapStop: ScrollSnapConfiguration['snapStop']
   easing: ScrollSnapConfiguration['easing']
+
   element: HTMLElement
   listenerElement: HTMLElement | Window
   target: HTMLElement
   animating = false
+
   private onAnimationEnd: () => void
   private scrollHandlerTimer: number
   private scrollSpeedTimer: number
@@ -77,7 +84,29 @@ export default class ScrollSnap {
 
   constructor(element: HTMLElement, config: ScrollSnapConfiguration) {
     this.element = element
-    const { timeout, duration, easing, snapDestinationX, snapDestinationY, threshold } = config
+    const {
+      snapDestinationX,
+      snapDestinationY,
+      timeout,
+      duration,
+      threshold,
+      snapStop,
+      easing,
+    } = config
+
+    if (snapDestinationX && typeof snapDestinationX !== 'string') {
+      throw new Error(
+        `Config property 'snapDestinationX' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+      )
+    }
+    this.snapDestinationX = snapDestinationX
+
+    if (snapDestinationY && typeof snapDestinationY !== 'string') {
+      throw new Error(
+        `Config property 'snapDestinationY' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+      )
+    }
+    this.snapDestinationY = snapDestinationY
 
     if (timeout && (isNaN(timeout) || typeof timeout === 'boolean')) {
       throw new Error(
@@ -94,6 +123,13 @@ export default class ScrollSnap {
     }
     this.duration = duration || DURATION_DEFAULT
 
+    if (threshold && (isNaN(threshold) || typeof threshold === 'boolean')) {
+      throw new Error(
+        `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof threshold).toUpperCase()}`
+      )
+    }
+    this.threshold = threshold || THRESHOLD_DEFAULT
+
     if (easing && typeof easing !== 'function') {
       throw new Error(
         `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof easing).toUpperCase()}`
@@ -101,27 +137,12 @@ export default class ScrollSnap {
     }
     this.easing = easing || EASING_DEFAULT
 
-    if (snapDestinationX && typeof snapDestinationX !== 'string') {
+    if (snapStop && typeof snapStop !== 'boolean') {
       throw new Error(
-        `Optional config property 'snapDestinationX' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+        `Optional config property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof snapStop).toUpperCase()}`
       )
     }
-    this.snapDestinationX = snapDestinationX
-
-    if (snapDestinationY && typeof snapDestinationY !== 'string') {
-      throw new Error(
-        `Optional config property 'snapDestinationY' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
-      )
-    }
-
-    this.snapDestinationY = snapDestinationY
-
-    if (threshold && (isNaN(threshold) || typeof threshold === 'boolean')) {
-      throw new Error(
-        `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof threshold).toUpperCase()}`
-      )
-    }
-    this.threshold = threshold || THRESHOLD_DEFAULT
+    this.snapStop = snapStop || SNAPSTOP_DEFAULT
   }
 
   private checkScrollSpeed(value: number, axis: 'x' | 'y') {
@@ -208,8 +229,8 @@ export default class ScrollSnap {
 
     // detect direction of scroll. negative is up, positive is down.
     const direction = {
-      y: this.speedDeltaY > 0 ? 1 : -1,
-      x: this.speedDeltaX > 0 ? 1 : -1,
+      y: Math.sign(this.speedDeltaY),
+      x: Math.sign(this.speedDeltaX),
     }
 
     // get the next snap-point to snap-to
@@ -225,12 +246,13 @@ export default class ScrollSnap {
       this.animating = false
       this.listenerElement.addEventListener('scroll', this.startAnimation, false)
       this.onAnimationEnd()
-    })
 
-    // we just jumped to the snapPoint, so this will be our next this.scrollStart
-    if (!isNaN(snapPoint.x) || !isNaN(snapPoint.y)) {
-      this.scrollStart = snapPoint
-    }
+      // reset scrollStart
+      this.scrollStart = {
+        y: this.target.scrollTop,
+        x: this.target.scrollLeft,
+      }
+    })
   }
 
   private getNextSnapPoint(target: HTMLElement, direction: Coords) {
@@ -242,10 +264,13 @@ export default class ScrollSnap {
     const top = this.target.scrollTop
     const left = this.target.scrollLeft
 
-    // calc current and initial snappoint
+    const startPoint = {
+      y: this.scrollStart.y / snapLength.y || 0,
+      x: this.scrollStart.x / snapLength.x || 0,
+    }
     const currentPoint = {
-      y: top / snapLength.y || 1,
-      x: left / snapLength.x || 1,
+      y: top / snapLength.y || 0,
+      x: left / snapLength.x || 0,
     }
     const nextPoint = {
       y: 0,
@@ -257,16 +282,30 @@ export default class ScrollSnap {
      * if threshold has not been reached, scroll back to currentPoint
      **/
     if (this.isAboveThreshold(direction.y, currentPoint.y)) {
-      nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
+      if (this.snapStop) {
+        nextPoint.y = this.roundByDirection(-direction.y, startPoint.y + direction.y)
+      } else {
+        nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
+      }
     } else {
       nextPoint.y = this.roundByDirection(direction.y * -1, currentPoint.y)
     }
 
     if (this.isAboveThreshold(direction.x, currentPoint.x)) {
-      nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+      if (this.snapStop) {
+        nextPoint.x = this.roundByDirection(-direction.x, startPoint.x + direction.x)
+      } else {
+        nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+      }
     } else {
       nextPoint.x = this.roundByDirection(direction.x * -1, currentPoint.x)
     }
+
+    // DEBUG
+    // console.log('direction', direction)
+    // console.log('startPoint', startPoint)
+    // console.log('currentPoint', currentPoint)
+    // console.log('nextPoint', nextPoint)
 
     // calculate where to scroll
     const scrollTo = {
@@ -281,19 +320,17 @@ export default class ScrollSnap {
     return scrollTo
   }
 
-  private isAboveThreshold(direction: number, currentPoint: number) {
-    return direction > 0
-      ? currentPoint % 1 > this.threshold
-      : 1 - (currentPoint % 1) > this.threshold
+  private isAboveThreshold(direction: number, value: number) {
+    return direction > 0 ? value % 1 > this.threshold : 1 - (value % 1) > this.threshold
   }
 
-  private roundByDirection(direction: number, currentPoint: number) {
+  private roundByDirection(direction: number, value: number) {
     if (direction === -1) {
       // when we go up, we floor the number to jump to the next snap-point in scroll direction
-      return Math.floor(currentPoint)
+      return Math.floor(value)
     }
     // go down, we ceil the number to jump to the next in view.
-    return Math.ceil(currentPoint)
+    return Math.ceil(value)
   }
 
   private stayInBounds(min: number, max: number, destined: number) {
