@@ -15,8 +15,8 @@ interface ScrollSnapConfiguration {
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
    */
-  snapDestinationX?: string
-  snapDestinationY?: string
+  snapDestinationX?: string | number
+  snapDestinationY?: string | number
   /**
    * time in ms after which scrolling is considered finished
    */
@@ -94,16 +94,24 @@ export default class ScrollSnap {
       easing,
     } = config
 
-    if (snapDestinationX && typeof snapDestinationX !== 'string') {
+    if (
+      snapDestinationX &&
+      typeof snapDestinationX !== 'string' &&
+      typeof snapDestinationX !== 'number'
+    ) {
       throw new Error(
-        `Config property 'snapDestinationX' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+        `Config property 'snapDestinationX' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationX).toUpperCase()}`
       )
     }
     this.snapDestinationX = snapDestinationX
 
-    if (snapDestinationY && typeof snapDestinationY !== 'string') {
+    if (
+      snapDestinationY &&
+      typeof snapDestinationY !== 'string' &&
+      typeof snapDestinationY !== 'number'
+    ) {
       throw new Error(
-        `Config property 'snapDestinationY' is not valid, expected STRING but found ${(typeof easing).toUpperCase()}`
+        `Config property 'snapDestinationY' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationY).toUpperCase()}`
       )
     }
     this.snapDestinationY = snapDestinationY
@@ -337,9 +345,12 @@ export default class ScrollSnap {
     return Math.max(Math.min(destined, max), min)
   }
 
-  private parseSnapCoordValue(x: string, y: string) {
+  private parseSnapCoordValue(
+    x: ScrollSnapConfiguration['snapDestinationX'],
+    y: ScrollSnapConfiguration['snapDestinationY']
+  ) {
     // regex to parse lengths
-    const regex = /(\d+)(px|%|vw|vh)/
+    const regex = /([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?)(px|%|vw|vh)/
     // defaults
     const parsed = {
       y: {
@@ -352,21 +363,27 @@ export default class ScrollSnap {
       },
     }
 
-    // parse value and unit
-    const resultX = regex.exec(x)
-    const resultY = regex.exec(y)
-
-    // if regexp fails, value is null
-    if (resultX !== null) {
-      parsed.x = {
-        value: Number(resultX[1]),
-        unit: resultX[2],
+    if (typeof y === 'number') {
+      parsed.y.value = y
+    } else {
+      const resultY = regex.exec(y)
+      if (resultY !== null) {
+        parsed.y = {
+          value: Number(resultY[1]),
+          unit: resultY[2],
+        }
       }
     }
-    if (resultY !== null) {
-      parsed.y = {
-        value: Number(resultY[1]),
-        unit: resultY[2],
+
+    if (typeof x === 'number') {
+      parsed.x.value = x
+    } else {
+      const resultX = regex.exec(x)
+      if (resultX !== null) {
+        parsed.x = {
+          value: Number(resultX[1]),
+          unit: resultX[2],
+        }
       }
     }
 
@@ -374,34 +391,30 @@ export default class ScrollSnap {
   }
 
   private getYSnapLength(obj: HTMLElement, declaration: SnapLength) {
+    // get y snap length based on declaration unit
     if (declaration.unit === 'vh') {
-      // when using vh, one snap is the length of vh / 100 * value
       return (
         (Math.max(document.documentElement.clientHeight, window.innerHeight || 1) / 100) *
         declaration.value
       )
     } else if (declaration.unit === '%') {
-      // when using %, one snap is the length of element height / 100 * value
       return (obj.clientHeight / 100) * declaration.value
     } else {
-      // when using px, one snap is the length of element height / value
-      return obj.clientHeight / declaration.value
+      return declaration.value
     }
   }
 
   private getXSnapLength(obj: HTMLElement, declaration: SnapLength) {
+    // get x snap length based on declaration unit
     if (declaration.unit === 'vw') {
-      // when using vw, one snap is the length of vw / 100 * value
       return (
         (Math.max(document.documentElement.clientWidth, window.innerWidth || 1) / 100) *
         declaration.value
       )
     } else if (declaration.unit === '%') {
-      // when using %, one snap is the length of element width / 100 * value
       return (obj.clientWidth / 100) * declaration.value
     } else {
-      // when using px, one snap is the length of element width / value
-      return obj.clientWidth / declaration.value
+      return declaration.value
     }
   }
 
