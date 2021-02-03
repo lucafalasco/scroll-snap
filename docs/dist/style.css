@@ -89,12 +89,8 @@ code .comment {
   align-items: start;
 }
 .second-page-paragraph {
-  width: 100%;
   padding-left: 10%;
   margin: 4rem 0;
-}
-.second-page-paragraph p {
-  width: 50%;
 }
 .hint {
   display: flex;
@@ -107,7 +103,7 @@ code .comment {
   bottom: 20px;
   margin: 0 auto;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.85rem;
 }
 .credits a {
   color: #ff4a5e;
@@ -208,6 +204,7 @@ a.highlight:hover {
   width: 400px;
   height: 400px;
   opacity: 0.1;
+  pointer-events: none;
 }
 
 @media screen and (max-width: 768px) {
@@ -231,12 +228,6 @@ a.highlight:hover {
   .first-page-paragraph {
     width: 90%;
     margin-bottom: 4rem;
-  }
-  .second-page-paragraph {
-    width: 90%;
-  }
-  .second-page-paragraph p {
-    width: 100%;
   }
   .first-page-horizontal {
     align-items: start;
@@ -268,6 +259,14 @@ a.highlight:hover {
   }
   .arrow-big.left {
     display: none;
+  }
+}
+@media screen and (max-width: 350px) {
+  html,
+  body,
+  code,
+  pre {
+    font-size: 12px;
   }
 }
 
