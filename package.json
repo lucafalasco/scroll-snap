@@ -6,8 +6,8 @@
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/index.js",
-    "dist/esm/index.js"
+    "dist",
+    "dist/esm"
   ],
   "author": {
     "name": "Luca Falasco",
