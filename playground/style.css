@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+html,
+body {
+  margin: 0;
+  background-color: #212121;
+  color: #212121;
+  font-weight: 300;
+  font-size: 25px;
+  cursor: default;
+}
+.ruler {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+.row {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.row.hr {
+  border-top: 2px solid #fff;
+  width: 90%;
+  top: 50%;
+}
+.row.vr {
+  border-left: 2px solid #fff;
+  left: 50%;
+  height: 90%;
+}
+#container {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.column {
+  min-width: 95vw;
+}
+.second-column {
+  min-width: 90vw;
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ff4a5e;
+}
+.page.first-page {
+  height: 95%;
+  min-height: 95%;
+}
+.page.second-page {
+  height: 90%;
+  min-height: 90%;
+}
+.page.third-page {
+  height: 95%;
+  min-height: 95%;
+}
+.hint {
+  position: absolute;
+  bottom: 20%;
+  font-size: 16px;
+}

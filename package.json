@@ -45,8 +45,6 @@
     "start": "webpack-dev-server --inline --progress",
     "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.umd.json",
     "prebuild": "mkdirp dist && del ./dist/*",
-    "prepare": "yarn build",
-    "build:docs": "mkdirp ./docs/dist && del ./docs/dist/* && webpack -p --progress && cp -R ./docs/src/{index.html,style.css,assets} ./docs/dist/",
-    "push:docs": "git push origin `git subtree split --prefix docs/dist master`:gh-pages --force"
+    "prepare": "yarn build"
   }
 }
