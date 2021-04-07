@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
 html,
 body {
+  font-family: 'JetBrains Mono', monospace;
   background-color: #212121;
   color: #212121;
   font-weight: 300;
-  font-size: 25px;
+  font-size: 14px;
   margin: 0;
 }
 .ruler {
@@ -68,8 +71,17 @@ body {
   height: 95%;
   min-height: 95%;
 }
-.hint {
-  position: absolute;
-  bottom: 20%;
-  font-size: 16px;
+.debug {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff4a5e;
+  border-radius: 5px;
+  padding: 15px;
+}
+.debug .value {
+  font-weight: 700;
 }
