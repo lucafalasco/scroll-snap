@@ -443,7 +443,7 @@ export default class ScrollSnap {
       function (fn) {
         return window.setTimeout(fn, 15)
       }
-    const duration = this.isEdge(start) ? 0 : this.duration
+    const duration = this.isEdge(start) ? 1 : this.duration
     let startTime: number
 
     // setup the stepping function
