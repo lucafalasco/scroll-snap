@@ -1,13 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
-
 html,
 body {
-  margin: 0;
   background-color: #212121;
   color: #212121;
   font-weight: 300;
   font-size: 25px;
-  cursor: default;
+  margin: 0;
 }
 .ruler {
   position: fixed;
@@ -23,12 +20,12 @@ body {
   left: 0;
 }
 .row.hr {
-  border-top: 2px solid #fff;
+  border-top: 1px dashed #fff;
   width: 90%;
   top: 50%;
 }
 .row.vr {
-  border-left: 2px solid #fff;
+  border-left: 1px dashed #fff;
   left: 50%;
   height: 90%;
 }
@@ -45,7 +42,7 @@ body {
 .column {
   min-width: 95vw;
 }
-.second-column {
+.column.second-column {
   min-width: 90vw;
 }
 .page {
