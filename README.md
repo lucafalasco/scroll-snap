@@ -33,41 +33,24 @@ Call the constructor passing a DOM element and a configuration object as paramet
 
 `unbind()` to remove the listener on the element.
 
-Check out the following code:
-
 ```js
 import ScrollSnap from 'scroll-snap'
 
 const snapConfig = {
-  /**
-   * snap-destination for x and y axes
-   * should be a valid css value expressed as px|%|vw|vh
-   */
+  // snap-destination for x axis, should be a valid css value expressed as px|%|vw|vh
   snapDestinationX: '0%',
+  // snap-destination for y axis, should be a valid css value expressed as px|%|vw|vh
   snapDestinationY: '90%',
-  /**
-   * time in ms after which scrolling is considered finished
-   * [default: 100]
-   */
+  // time in ms after which scrolling is considered finished [default: 100]
   timeout: 100,
-  /**
-   * duration in ms for the smooth snap
-   * [default: 300]
-   */
+  // duration in ms for the smooth snap [default: 300]
   duration: 300,
-  /**
-   * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
-   * [default: 0.2]
-   */
+  // threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1] [default: 0.2]
   threshold: 0.2,
-  /**
-   * when true, the scroll container is not allowed to "pass over" the other snap positions
-   * [default: false]
-   */
+  // when true, the scroll container is not allowed to "pass over" the other snap positions [default: false]
   snapStop: false,
   /**
-   * custom easing function
-   * [default: easeInOutQuad]
+   * custom easing function [default: easeInOutQuad]
    * for reference: https://gist.github.com/gre/1650294
    * @param t normalized time typically in the range [0, 1]
    */
@@ -99,7 +82,7 @@ cd scroll-snap
 yarn install
 ```
 
-Start the test app from `docs/`:
+Start the testing environment from `playground/`:
 
 ```
 yarn start
