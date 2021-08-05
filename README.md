@@ -55,6 +55,11 @@ const snapConfig = {
    * @param t normalized time typically in the range [0, 1]
    */
   easing: easeInOutQuad,
+  /**
+   * last Snap Interval after which scroll snapping is disabled. first section is 0. default = Infinity means scroll snapping is never disabled.
+   */
+  lastSnapPointX: 4
+  lastSnapPointY: 5
 }
 
 function callback() {
