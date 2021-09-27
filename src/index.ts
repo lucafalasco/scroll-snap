@@ -8,6 +8,7 @@ const DURATION_DEFAULT = 300
 const THRESHOLD_DEFAULT = 0.2
 const SNAPSTOP_DEFAULT = false
 const EASING_DEFAULT = easeInOutQuad
+const LAST_SNAP_POINT_DEFAULT = Infinity
 const NOOP = () => {}
 
 interface ScrollSnapConfiguration {
@@ -38,6 +39,11 @@ interface ScrollSnapConfiguration {
    * @param t normalized time typically in the range [0, 1]
    */
   easing?: (t: number) => number
+  /**
+   * last Snap Interval after which scroll snapping is disabled. first section is 0. default = Infinity means scroll snapping is never disabled.
+   */
+  lastSnapPointX?: number
+  lastSnapPointY?: number
 }
 
 interface SnapLength {
@@ -63,6 +69,8 @@ export default class ScrollSnap {
   threshold: ScrollSnapConfiguration['threshold']
   snapStop: ScrollSnapConfiguration['snapStop']
   easing: ScrollSnapConfiguration['easing']
+  lastSnapPointX: ScrollSnapConfiguration['lastSnapPointX']
+  lastSnapPointY: ScrollSnapConfiguration['lastSnapPointY']
 
   element: HTMLElement
   listenerElement: HTMLElement | Window
@@ -92,6 +100,8 @@ export default class ScrollSnap {
       threshold,
       snapStop,
       easing,
+      lastSnapPointX,
+      lastSnapPointY,
     } = config
 
     if (
@@ -144,6 +154,10 @@ export default class ScrollSnap {
       )
     }
     this.easing = easing || EASING_DEFAULT
+
+    this.lastSnapPointX = lastSnapPointX || LAST_SNAP_POINT_DEFAULT;
+
+    this.lastSnapPointY = lastSnapPointY || LAST_SNAP_POINT_DEFAULT;
 
     if (snapStop && typeof snapStop !== 'boolean') {
       throw new Error(
@@ -315,11 +329,11 @@ export default class ScrollSnap {
     // console.log('currentPoint', currentPoint)
     // console.log('nextPoint', nextPoint)
 
-    // calculate where to scroll
+    // calculate where to scroll - scroll normally (not ot snap point) if above last snap point
     const scrollTo = {
-      y: nextPoint.y * snapLength.y,
-      x: nextPoint.x * snapLength.x,
-    }
+      y: currentPoint.y < this.lastSnapPointY ? nextPoint.y * snapLength.y : top,
+      x: currentPoint.x < this.lastSnapPointX ? nextPoint.x * snapLength.x : left,
+    };
 
     // stay in bounds (minimum: 0, maxmimum: absolute height)
     scrollTo.y = this.stayInBounds(0, target.scrollHeight, scrollTo.y)
