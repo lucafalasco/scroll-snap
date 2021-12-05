@@ -11,11 +11,11 @@
 
 Snap page when user stops scrolling, basically implements [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap), adding a customizable configuration and a consistent cross browser behaviour.
 
-- works in all modern browsers
+- Works in all modern browsers
 - `requestAnimationFrame` for 60fps
-- customizable configuration (including easing functions)
-- no additional dependencies
-- no extra stylesheet
+- Customizable configuration (including easing functions)
+- No additional dependencies
+- No extra stylesheet
 
 ## Installation
 
@@ -27,50 +27,95 @@ You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap
 
 ## Usage
 
-Call the constructor passing a DOM element and a configuration object as parameters, then use:
-
-`bind()` to initialize the scroll snap and attach the scroll event listener, takes an optional callback as parameter to execute once the animation ends.
-
-`unbind()` to remove the listener on the element.
-
 ```js
-import ScrollSnap from 'scroll-snap'
-
-const snapConfig = {
-  // snap-destination for x axis, should be a valid css value expressed as px|%|vw|vh
-  snapDestinationX: '0%',
-  // snap-destination for y axis, should be a valid css value expressed as px|%|vw|vh
-  snapDestinationY: '90%',
-  // time in ms after which scrolling is considered finished [default: 100]
-  timeout: 100,
-  // duration in ms for the smooth snap [default: 300]
-  duration: 300,
-  // threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1] [default: 0.2]
-  threshold: 0.2,
-  // when true, the scroll container is not allowed to "pass over" the other snap positions [default: false]
-  snapStop: false,
-  /**
-   * custom easing function [default: easeInOutQuad]
-   * for reference: https://gist.github.com/gre/1650294
-   * @param t normalized time typically in the range [0, 1]
-   */
-  easing: easeInOutQuad,
-}
-
-function callback() {
-  console.log('element snapped')
-}
-
-const element = document.getElementById('container')
-const snapObject = new ScrollSnap(element, snapConfig)
-
-snapObject.bind(callback)
-
-// unbind the element
-// snapObject.unbind();
+createScrollSnap(element, configuration, [callback])
 ```
 
-#### [Docs](https://lucafalasco.github.io/scroll-snap/)
+## Arguments 
+
+### `element: HTMLElement`
+
+The HTML DOM Element to attach the scroll listener to.
+
+### `configuration: ScrollSnapConfiguration`
+
+A configuraiton object consisting of one or more of the following keys:
+
+#### `snapDestinationX: string | number`
+
+> Snap destination for x axis, should be a valid css value expressed as `px | % | vw | vh`
+
+#### `snapDestinationY: string | number`
+
+> Snap destination for y axis, should be a valid css value expressed as `px | % | vw | vh`
+
+#### `timeout: number`
+
+> Time in ms after which scrolling is considered finished  
+> [default: 100]
+
+#### `duration: number`
+
+> Duration in ms for the smooth snap   
+> [default: 300]
+
+#### `threshold: number`
+
+> Threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]  
+> [default: 0.2]
+
+#### `snapStop: boolean`
+
+> When true, the scroll container is not allowed to "pass over" the other snap positions  
+> [default: false]
+
+#### `easing: (t: number) => number`
+
+> Custom easing function  
+> `@param t`: normalized time typically in the range [0, 1]  
+> [default: `easeInOutQuad`]  
+>
+> For reference: https://gist.github.com/gre/1650294 
+
+### `callback: () => void` [Optional]
+
+Optional callback to execute once the animation ends.
+
+## Returns
+
+An object including two handlers to manually attach and remove the scroll event listener
+
+```js
+{
+  // attaches the scroll event listener 
+  bind: () => void 
+  // removes the scroll event listener
+  unbind: () => void 
+}
+```
+
+## Example
+```js
+import createScrollSnap from 'scroll-snap'
+
+const element = document.getElementById('container')
+
+const { bind, unbind } = createScrollSnap(element, {
+  snapDestinationX: '0%',
+  snapDestinationY: '90%',
+  timeout: 100,
+  duration: 300,
+  threshold: 0.2,
+  snapStop: false,
+  easing: easeInOutQuad,
+}, () => console.log('element snapped'))
+
+// remove the listener 
+// unbind();
+
+// re-instantiate the listener 
+// bind();
+```
 
 #### [Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
 
