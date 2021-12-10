@@ -55,226 +55,202 @@ interface Coords {
   x?: number
 }
 
-export default class ScrollSnap {
-  snapDestinationX: ScrollSnapConfiguration['snapDestinationX']
-  snapDestinationY: ScrollSnapConfiguration['snapDestinationY']
-  timeout: ScrollSnapConfiguration['timeout']
-  duration: ScrollSnapConfiguration['duration']
-  threshold: ScrollSnapConfiguration['threshold']
-  snapStop: ScrollSnapConfiguration['snapStop']
-  easing: ScrollSnapConfiguration['easing']
+export default function createScrollSnap(
+  element: HTMLElement,
+  config: ScrollSnapConfiguration = {},
+  callback: () => void
+) {
+  const onAnimationEnd = typeof callback === 'function' ? callback : NOOP
 
-  element: HTMLElement
-  listenerElement: HTMLElement | Window
-  target: HTMLElement
-  animating = false
+  let listenerElement: HTMLElement | Window
+  let target: HTMLElement
+  let animating = false
 
-  private onAnimationEnd: () => void
-  private scrollHandlerTimer: number
-  private scrollSpeedTimer: number
-  private scrollStart: Coords
-  private speedDeltaX: number
-  private speedDeltaY: number
-  private snapLengthUnit: SnapCoord
-  private lastScrollValue: Coords = {
+  let scrollHandlerTimer: number
+  let scrollSpeedTimer: number
+  let scrollStart: Coords
+  let speedDeltaX: number
+  let speedDeltaY: number
+  let snapLengthUnit: SnapCoord
+  let lastScrollValue: Coords = {
     x: 0,
     y: 0,
   }
-  private animationFrame: number
+  let animationFrame: number
 
-  constructor(element: HTMLElement, config: ScrollSnapConfiguration) {
-    this.element = element
-    const {
-      snapDestinationX,
-      snapDestinationY,
-      timeout,
-      duration,
-      threshold,
-      snapStop,
-      easing,
-    } = config
+  const { snapDestinationX, snapDestinationY } = config
 
-    if (
-      snapDestinationX &&
-      typeof snapDestinationX !== 'string' &&
-      typeof snapDestinationX !== 'number'
-    ) {
-      throw new Error(
-        `Config property 'snapDestinationX' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationX).toUpperCase()}`
-      )
-    }
-    this.snapDestinationX = snapDestinationX
-
-    if (
-      snapDestinationY &&
-      typeof snapDestinationY !== 'string' &&
-      typeof snapDestinationY !== 'number'
-    ) {
-      throw new Error(
-        `Config property 'snapDestinationY' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationY).toUpperCase()}`
-      )
-    }
-    this.snapDestinationY = snapDestinationY
-
-    if (timeout && (isNaN(timeout) || typeof timeout === 'boolean')) {
-      throw new Error(
-        `Optional config property 'timeout' is not valid, expected NUMBER but found ${(typeof timeout).toUpperCase()}`
-      )
-    }
-    // any value less then TIMEOUT_MIN may cause weird bahaviour on some devices (especially on mobile with momentum scrolling)
-    this.timeout = timeout && timeout >= TIMEOUT_MIN ? timeout : TIMEOUT_DEFAULT
-
-    if (duration && (isNaN(duration) || typeof duration === 'boolean')) {
-      throw new Error(
-        `Optional config property 'duration' is not valid, expected NUMBER but found ${(typeof duration).toUpperCase()}`
-      )
-    }
-    this.duration = duration || DURATION_DEFAULT
-
-    if (threshold && (isNaN(threshold) || typeof threshold === 'boolean')) {
-      throw new Error(
-        `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof threshold).toUpperCase()}`
-      )
-    }
-    this.threshold = threshold || THRESHOLD_DEFAULT
-
-    if (easing && typeof easing !== 'function') {
-      throw new Error(
-        `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof easing).toUpperCase()}`
-      )
-    }
-    this.easing = easing || EASING_DEFAULT
-
-    if (snapStop && typeof snapStop !== 'boolean') {
-      throw new Error(
-        `Optional config property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof snapStop).toUpperCase()}`
-      )
-    }
-    this.snapStop = snapStop || SNAPSTOP_DEFAULT
+  if (
+    snapDestinationX &&
+    typeof snapDestinationX !== 'string' &&
+    typeof snapDestinationX !== 'number'
+  ) {
+    throw new Error(
+      `Config property 'snapDestinationX' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationX).toUpperCase()}`
+    )
   }
 
-  private checkScrollSpeed(value: number, axis: 'x' | 'y') {
+  if (
+    snapDestinationY &&
+    typeof snapDestinationY !== 'string' &&
+    typeof snapDestinationY !== 'number'
+  ) {
+    throw new Error(
+      `Config property 'snapDestinationY' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationY).toUpperCase()}`
+    )
+  }
+
+  if (config.timeout && (isNaN(config.timeout) || typeof config.timeout === 'boolean')) {
+    throw new Error(
+      `Optional config property 'timeout' is not valid, expected NUMBER but found ${(typeof config.timeout).toUpperCase()}`
+    )
+  }
+  // any value less then TIMEOUT_MIN may cause weird bahaviour on some devices (especially on mobile with momentum scrolling)
+  const timeout = config.timeout && config.timeout >= TIMEOUT_MIN ? config.timeout : TIMEOUT_DEFAULT
+
+  if (config.duration && (isNaN(config.duration) || typeof config.duration === 'boolean')) {
+    throw new Error(
+      `Optional config property 'duration' is not valid, expected NUMBER but found ${(typeof config.duration).toUpperCase()}`
+    )
+  }
+  const duration = config.duration || DURATION_DEFAULT
+
+  if (config.threshold && (isNaN(config.threshold) || typeof config.threshold === 'boolean')) {
+    throw new Error(
+      `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof config.threshold).toUpperCase()}`
+    )
+  }
+  const threshold = config.threshold || THRESHOLD_DEFAULT
+
+  if (config.easing && typeof config.easing !== 'function') {
+    throw new Error(
+      `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof config.easing).toUpperCase()}`
+    )
+  }
+  const easing = config.easing || EASING_DEFAULT
+
+  if (config.snapStop && typeof config.snapStop !== 'boolean') {
+    throw new Error(
+      `Optional config property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof config.snapStop).toUpperCase()}`
+    )
+  }
+  const snapStop = config.snapStop || SNAPSTOP_DEFAULT
+
+  function checkScrollSpeed(value: number, axis: 'x' | 'y') {
     const clear = () => {
-      this.lastScrollValue[axis] = null
+      lastScrollValue[axis] = null
     }
 
     const newValue = value
     let delta
 
-    if (this.lastScrollValue[axis] !== null) {
-      delta = newValue - this.lastScrollValue[axis]
+    if (lastScrollValue[axis] !== null) {
+      delta = newValue - lastScrollValue[axis]
     } else {
       delta = 0
     }
 
-    this.lastScrollValue[axis] = newValue
-    this.scrollSpeedTimer && clearTimeout(this.scrollSpeedTimer)
-    this.scrollSpeedTimer = window.setTimeout(clear, 100)
+    lastScrollValue[axis] = newValue
+    scrollSpeedTimer && clearTimeout(scrollSpeedTimer)
+    scrollSpeedTimer = window.setTimeout(clear, 100)
 
     return delta
   }
 
-  private saveDeclaration(obj: HTMLElement) {
-    this.snapLengthUnit = this.parseSnapCoordValue(this.snapDestinationX, this.snapDestinationY)
+  function bindElement(element: HTMLElement) {
+    target = element
+    listenerElement = element === document.documentElement ? window : element
+
+    listenerElement.addEventListener('scroll', startAnimation, false)
+    snapLengthUnit = parseSnapCoordValue(snapDestinationX, snapDestinationY)
   }
 
-  private bindElement(element: HTMLElement) {
-    this.target = element
-    this.listenerElement = element === document.documentElement ? window : element
-
-    this.listenerElement.addEventListener('scroll', this.startAnimation, false)
-    this.saveDeclaration(this.target)
+  function unbindElement() {
+    listenerElement.removeEventListener('scroll', startAnimation, false)
   }
 
-  private unbindElement() {
-    this.listenerElement.removeEventListener('scroll', this.startAnimation, false)
-  }
+  function startAnimation() {
+    speedDeltaX = checkScrollSpeed(target.scrollLeft, 'x')
+    speedDeltaY = checkScrollSpeed(target.scrollTop, 'y')
 
-  private startAnimation = () => {
-    this.speedDeltaX = this.checkScrollSpeed(this.target.scrollLeft, 'x')
-    this.speedDeltaY = this.checkScrollSpeed(this.target.scrollTop, 'y')
-
-    if (this.animating || (this.speedDeltaX === 0 && this.speedDeltaY === 0)) {
+    if (animating || (speedDeltaX === 0 && speedDeltaY === 0)) {
       return
     }
 
-    this.handler(this.target)
+    handler(target)
   }
 
   /**
    * scroll handler
    * this is the callback for scroll events.
    */
-  private handler(target: HTMLElement) {
+  function handler(target: HTMLElement) {
     // if currently animating, stop it. this prevents flickering.
-    if (this.animationFrame) {
-      clearTimeout(this.animationFrame)
+    if (animationFrame) {
+      clearTimeout(animationFrame)
     }
 
     // if a previous timeout exists, clear it.
-    if (this.scrollHandlerTimer) {
+    if (scrollHandlerTimer) {
       // we only want to call a timeout once after scrolling..
-      clearTimeout(this.scrollHandlerTimer)
+      clearTimeout(scrollHandlerTimer)
     } else {
-      this.scrollStart = {
+      scrollStart = {
         y: target.scrollTop,
         x: target.scrollLeft,
       }
     }
 
-    this.scrollHandlerTimer = window.setTimeout(this.animationHandler, this.timeout)
+    scrollHandlerTimer = window.setTimeout(animationHandler, timeout)
   }
 
-  private animationHandler = () => {
-    // if we don't move a thing, we can ignore the timeout: if we did, there'd be another timeout added for this.scrollStart+1.
-    if (
-      this.scrollStart.y === this.target.scrollTop &&
-      this.scrollStart.x === this.target.scrollLeft
-    ) {
+  function animationHandler() {
+    // if we don't move a thing, we can ignore the timeout: if we did, there'd be another timeout added for scrollStart+1.
+    if (scrollStart.y === target.scrollTop && scrollStart.x === target.scrollLeft) {
       // ignore timeout
       return
     }
 
     // detect direction of scroll. negative is up, positive is down.
     const direction = {
-      y: Math.sign(this.speedDeltaY),
-      x: Math.sign(this.speedDeltaX),
+      y: Math.sign(speedDeltaY),
+      x: Math.sign(speedDeltaX),
     }
 
     // get the next snap-point to snap-to
-    const snapPoint = this.getNextSnapPoint(this.target, direction)
+    const snapPoint = getNextSnapPoint(target, direction)
 
-    this.listenerElement.removeEventListener('scroll', this.startAnimation, false)
+    listenerElement.removeEventListener('scroll', startAnimation, false)
 
-    this.animating = true
+    animating = true
 
     // smoothly move to the snap point
-    this.smoothScroll(this.target, snapPoint, () => {
+    smoothScroll(target, snapPoint, () => {
       // after moving to the snap point, rebind the scroll event handler
-      this.animating = false
-      this.listenerElement.addEventListener('scroll', this.startAnimation, false)
-      this.onAnimationEnd()
+      animating = false
+      listenerElement.addEventListener('scroll', startAnimation, false)
+      onAnimationEnd()
 
       // reset scrollStart
-      this.scrollStart = {
-        y: this.target.scrollTop,
-        x: this.target.scrollLeft,
+      scrollStart = {
+        y: target.scrollTop,
+        x: target.scrollLeft,
       }
     })
   }
 
-  private getNextSnapPoint(target: HTMLElement, direction: Coords) {
+  function getNextSnapPoint(target: HTMLElement, direction: Coords) {
     // get snap length
     const snapLength = {
-      y: Math.round(this.getYSnapLength(this.target, this.snapLengthUnit.y)),
-      x: Math.round(this.getXSnapLength(this.target, this.snapLengthUnit.x)),
+      y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
+      x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
     }
-    const top = this.target.scrollTop
-    const left = this.target.scrollLeft
+    const top = target.scrollTop
+    const left = target.scrollLeft
 
     const startPoint = {
-      y: this.scrollStart.y / snapLength.y || 0,
-      x: this.scrollStart.x / snapLength.x || 0,
+      y: scrollStart.y / snapLength.y || 0,
+      x: scrollStart.x / snapLength.x || 0,
     }
     const currentPoint = {
       y: top / snapLength.y || 0,
@@ -289,24 +265,24 @@ export default class ScrollSnap {
      * Set target and bounds by direction,
      * if threshold has not been reached, scroll back to currentPoint
      **/
-    if (this.isAboveThreshold(direction.y, currentPoint.y)) {
-      if (this.snapStop) {
-        nextPoint.y = this.roundByDirection(-direction.y, startPoint.y + direction.y)
+    if (isAboveThreshold(direction.y, currentPoint.y)) {
+      if (snapStop) {
+        nextPoint.y = roundByDirection(-direction.y, startPoint.y + direction.y)
       } else {
-        nextPoint.y = this.roundByDirection(direction.y, currentPoint.y)
+        nextPoint.y = roundByDirection(direction.y, currentPoint.y)
       }
     } else {
-      nextPoint.y = this.roundByDirection(direction.y * -1, currentPoint.y)
+      nextPoint.y = roundByDirection(direction.y * -1, currentPoint.y)
     }
 
-    if (this.isAboveThreshold(direction.x, currentPoint.x)) {
-      if (this.snapStop) {
-        nextPoint.x = this.roundByDirection(-direction.x, startPoint.x + direction.x)
+    if (isAboveThreshold(direction.x, currentPoint.x)) {
+      if (snapStop) {
+        nextPoint.x = roundByDirection(-direction.x, startPoint.x + direction.x)
       } else {
-        nextPoint.x = this.roundByDirection(direction.x, currentPoint.x)
+        nextPoint.x = roundByDirection(direction.x, currentPoint.x)
       }
     } else {
-      nextPoint.x = this.roundByDirection(direction.x * -1, currentPoint.x)
+      nextPoint.x = roundByDirection(direction.x * -1, currentPoint.x)
     }
 
     // DEBUG
@@ -322,17 +298,17 @@ export default class ScrollSnap {
     }
 
     // stay in bounds (minimum: 0, maxmimum: absolute height)
-    scrollTo.y = this.stayInBounds(0, target.scrollHeight, scrollTo.y)
-    scrollTo.x = this.stayInBounds(0, target.scrollWidth, scrollTo.x)
+    scrollTo.y = stayInBounds(0, target.scrollHeight, scrollTo.y)
+    scrollTo.x = stayInBounds(0, target.scrollWidth, scrollTo.x)
 
     return scrollTo
   }
 
-  private isAboveThreshold(direction: number, value: number) {
-    return direction > 0 ? value % 1 > this.threshold : 1 - (value % 1) > this.threshold
+  function isAboveThreshold(direction: number, value: number) {
+    return direction > 0 ? value % 1 > threshold : 1 - (value % 1) > threshold
   }
 
-  private roundByDirection(direction: number, value: number) {
+  function roundByDirection(direction: number, value: number) {
     if (direction === -1) {
       // when we go up, we floor the number to jump to the next snap-point in scroll direction
       return Math.floor(value)
@@ -341,11 +317,11 @@ export default class ScrollSnap {
     return Math.ceil(value)
   }
 
-  private stayInBounds(min: number, max: number, destined: number) {
+  function stayInBounds(min: number, max: number, destined: number) {
     return Math.max(Math.min(destined, max), min)
   }
 
-  private parseSnapCoordValue(
+  function parseSnapCoordValue(
     x: ScrollSnapConfiguration['snapDestinationX'],
     y: ScrollSnapConfiguration['snapDestinationY']
   ) {
@@ -390,7 +366,7 @@ export default class ScrollSnap {
     return parsed
   }
 
-  private getYSnapLength(obj: HTMLElement, declaration: SnapLength) {
+  function getYSnapLength(obj: HTMLElement, declaration: SnapLength) {
     // get y snap length based on declaration unit
     if (declaration.unit === 'vh') {
       return (
@@ -404,7 +380,7 @@ export default class ScrollSnap {
     }
   }
 
-  private getXSnapLength(obj: HTMLElement, declaration: SnapLength) {
+  function getXSnapLength(obj: HTMLElement, declaration: SnapLength) {
     // get x snap length based on declaration unit
     if (declaration.unit === 'vw') {
       return (
@@ -418,17 +394,17 @@ export default class ScrollSnap {
     }
   }
 
-  private isEdge(coords: Coords) {
-    return (coords.x === 0 && this.speedDeltaY === 0) || (coords.y === 0 && this.speedDeltaX === 0)
+  function isEdge(coords: Coords) {
+    return (coords.x === 0 && speedDeltaY === 0) || (coords.y === 0 && speedDeltaX === 0)
   }
 
-  private smoothScroll(obj: HTMLElement, end: Coords, callback: (...args: any) => void) {
-    const position = (start: number, end: number, elapsed: number, duration: number) => {
-      if (elapsed > duration) {
+  function smoothScroll(obj: HTMLElement, end: Coords, callback: (...args: any) => void) {
+    const position = (start: number, end: number, elapsed: number, period: number) => {
+      if (elapsed > period) {
         return end
       }
 
-      return start + (end - start) * this.easing(elapsed / duration)
+      return start + (end - start) * easing(elapsed / period)
     }
 
     const start = {
@@ -443,7 +419,7 @@ export default class ScrollSnap {
       function (fn) {
         return window.setTimeout(fn, 15)
       }
-    const duration = this.isEdge(start) ? 1 : this.duration
+    const period = isEdge(start) ? 1 : duration
     let startTime: number
 
     // setup the stepping function
@@ -455,16 +431,16 @@ export default class ScrollSnap {
 
       // change position on y-axis if result is a number.
       if (!isNaN(end.y)) {
-        obj.scrollTop = position(start.y, end.y, elapsed, duration)
+        obj.scrollTop = position(start.y, end.y, elapsed, period)
       }
 
       // change position on x-axis if result is a number.
       if (!isNaN(end.x)) {
-        obj.scrollLeft = position(start.x, end.x, elapsed, duration)
+        obj.scrollLeft = position(start.x, end.x, elapsed, period)
       }
 
       // check if we are over due;
-      if (elapsed < duration) {
+      if (elapsed < period) {
         requestAnimationFrame(step)
       } else {
         // is there a callback?
@@ -474,17 +450,21 @@ export default class ScrollSnap {
         }
       }
     }
-    this.animationFrame = requestAnimationFrame(step)
+    animationFrame = requestAnimationFrame(step)
   }
 
-  bind(callback?: () => void) {
-    this.onAnimationEnd = typeof callback === 'function' ? callback : NOOP
-    this.bindElement(this.element)
-    return this
+  function bind() {
+    bindElement(element)
   }
 
-  unbind() {
-    this.unbindElement()
-    return this
+  function unbind() {
+    unbindElement()
+  }
+
+  bind()
+
+  return {
+    bind,
+    unbind,
   }
 }

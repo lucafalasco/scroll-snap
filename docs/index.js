@@ -1,4 +1,4 @@
-import ScrollSnap from 'https://unpkg.com/scroll-snap/dist/esm/index.js'
+import createScrollSnap from 'https://unpkg.com/scroll-snap/dist/esm/index.js'
 
 function callback() {
   console.log('snap')
@@ -12,13 +12,21 @@ const baseConfig = {
 }
 
 const containerVertical = document.getElementById('container')
-const snapVertical = new ScrollSnap(containerVertical, {
-  snapDestinationY: '90%',
-  ...baseConfig,
-}).bind(callback)
-
 const containerHorizontal = document.getElementById('container-horizontal')
-const snapHorizontal = new ScrollSnap(containerHorizontal, {
-  snapDestinationX: '100%',
-  ...baseConfig,
-}).bind(callback)
+
+createScrollSnap(
+  containerVertical,
+  {
+    snapDestinationY: '90%',
+    ...baseConfig,
+  },
+  callback
+)
+createScrollSnap(
+  containerHorizontal,
+  {
+    snapDestinationX: '100%',
+    ...baseConfig,
+  },
+  callback
+)
