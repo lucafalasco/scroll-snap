@@ -10,7 +10,7 @@ body {
   cursor: default;
   background-color: rgb(240, 248, 246);
   color: #212121;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
 }
 p {
@@ -185,11 +185,6 @@ a.highlight:hover {
   right: 15px;
   animation: leftright 1s infinite alternate-reverse;
 }
-.arrow-big.left {
-  top: 20px;
-  left: 15px;
-  animation: rightleft 1s infinite alternate-reverse;
-}
 .first-page-paragraph code b {
   color: #212121;
 }
@@ -236,14 +231,14 @@ a.highlight:hover {
   z-index: 2;
   width: 400px;
   height: 400px;
-  opacity: 0.9;
+  opacity: 0.1;
   pointer-events: none;
 }
 
 @media screen and (max-width: 768px) {
   html,
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
   h1 {
     font-size: 3em;
@@ -252,7 +247,7 @@ a.highlight:hover {
     font-size: 2em;
   }
   code {
-    font-size: 14px;
+    font-size: 13px;
   }
   p {
     width: 90%;
@@ -260,9 +255,8 @@ a.highlight:hover {
   .snippet {
     margin: 0;
   }
-  .scroll {
-    height: 60px;
-    width: 60px;
+  .hint {
+    display: none;
   }
   .first-page-paragraph {
     width: 90%;
@@ -299,9 +293,6 @@ a.highlight:hover {
   .second-page-horizontal .snippet code {
     padding-left: 1rem;
   }
-  .arrow-big.left {
-    display: none;
-  }
 }
 @media screen and (max-width: 350px) {
   html,
@@ -325,14 +316,5 @@ a.highlight:hover {
   }
   100% {
     transform: rotate(270deg) translateY(0px);
-  }
-}
-
-@keyframes rightleft {
-  0% {
-    transform: rotate(90deg) translateY(-20px);
-  }
-  100% {
-    transform: rotate(90deg) translateY(0px);
   }
 }
