@@ -8,9 +8,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: default;
-  background-color: #212121;
-  color: #fafafa;
+  background-color: rgb(240, 248, 246);
+  color: #212121;
   font-size: 18px;
+  font-weight: 500;
 }
 p {
   width: 80%;
@@ -23,11 +24,29 @@ pre {
   font-size: 14px;
   margin: 0;
 }
-code b {
-  color: #ff4a5e;
+a:hover {
+  text-decoration: underline;
 }
 code .comment {
   color: #6d6d6d;
+}
+h1 {
+  font-size: 4em;
+}
+h2 {
+  font-size: 2.5em;
+  line-height: 1.3;
+}
+h3 {
+  font-weight: normal;
+  font-size: 1.3em;
+  margin: 0;
+}
+.first-page b,
+.first-page a {
+  font-weight: 700;
+  text-decoration: none;
+  color: rgb(32, 158, 134);
 }
 #container {
   display: flex;
@@ -54,14 +73,16 @@ code .comment {
   min-height: 95%;
 }
 .second-page {
-  color: #212121;
+  color: #fff;
   height: 90%;
   min-height: 90%;
+  background-image: linear-gradient(rgb(32, 158, 134), rgb(14, 62, 47));
 }
 .third-page {
   height: 95%;
   min-height: 95%;
   overflow: hidden;
+  font-size: 1.4rem;
 }
 #container-horizontal {
   width: 100%;
@@ -74,18 +95,20 @@ code .comment {
 .first-page-horizontal {
   width: 100%;
   min-width: 100%;
-  background-color: #ff4a5e;
   display: flex;
-  flex-direction: row;
   padding: 0 3rem;
 }
 .first-page-paragraph {
-  width: 50%;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 2rem 0;
 }
 .second-page-horizontal {
   width: 100%;
   min-width: 100%;
-  background-color: #c93849;
+  color: #fff;
+  background-image: linear-gradient(rgb(32, 118, 158), rgb(14, 52, 62));
   align-items: start;
 }
 .second-page-paragraph {
@@ -106,11 +129,11 @@ code .comment {
   font-size: 0.85rem;
 }
 .credits a {
-  color: #ff4a5e;
+  color: rgb(14, 62, 47);
   text-decoration: none;
 }
 .credits a:hover {
-  color: #c93849;
+  color: rgb(32, 158, 134);
   text-decoration: underline;
 }
 .bind,
@@ -127,18 +150,18 @@ code .comment {
 a.highlight:hover {
   background-color: rgba(0, 0, 0, 0.2);
 }
-.third-page .highlight {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.third-page a.highlight:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
 .logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  margin: auto;
   background: url('assets/logo.svg') center no-repeat;
   background-size: contain;
-  max-width: 80%;
-  width: 450px;
-  height: 350px;
+  opacity: 0.1;
+  pointer-events: none;
 }
 .scroll {
   background: url('assets/scroll.svg') center no-repeat;
@@ -147,6 +170,7 @@ a.highlight:hover {
   width: 80px;
 }
 .arrow-big {
+  filter: invert();
   background: url('assets/arrow-down.svg') center no-repeat;
   background-size: contain;
   position: absolute;
@@ -154,7 +178,7 @@ a.highlight:hover {
   width: 30px;
   height: 30px;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 .arrow-big.right {
   bottom: 20px;
@@ -166,15 +190,24 @@ a.highlight:hover {
   left: 15px;
   animation: rightleft 1s infinite alternate-reverse;
 }
+.first-page-paragraph code b {
+  color: #212121;
+}
+.first-page-horizontal code b {
+  color: #4aff91;
+}
+.second-page-horizontal code b {
+  color: #4aaeff;
+}
 .second-page-horizontal .snippet {
   width: 100%;
   min-width: 100%;
-  background-color: #212121;
+  background-color: #2121215e;
 }
 .second-page-horizontal .snippet code {
   width: 100%;
   padding-left: 4rem;
-  background-color: #212121;
+  background-color: #2121215e;
 }
 .snippet {
   margin: 20px auto;
@@ -183,7 +216,7 @@ a.highlight:hover {
 }
 .snippet code {
   overflow: auto;
-  background-color: #212121;
+  background-color: #2121215e;
   color: #eceff4;
   text-align: left;
   display: block;
@@ -203,7 +236,7 @@ a.highlight:hover {
   z-index: 2;
   width: 400px;
   height: 400px;
-  opacity: 0.1;
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -211,6 +244,12 @@ a.highlight:hover {
   html,
   body {
     font-size: 16px;
+  }
+  h1 {
+    font-size: 3em;
+  }
+  h2 {
+    font-size: 2em;
   }
   code {
     font-size: 14px;
@@ -232,6 +271,9 @@ a.highlight:hover {
   .first-page-horizontal {
     align-items: start;
     flex-direction: column;
+  }
+  .logo {
+    width: 90%;
   }
 }
 
@@ -271,7 +313,8 @@ a.highlight:hover {
 }
 
 @media screen and (min-width: 1500px) {
-  .page {
+  .first-page,
+  .third-page {
     padding: 0 10rem;
   }
 }
