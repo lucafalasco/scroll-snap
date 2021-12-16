@@ -10,7 +10,7 @@ const SNAPSTOP_DEFAULT = false
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
-interface ScrollSnapConfiguration {
+interface Settings {
   /**
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
@@ -45,19 +45,19 @@ interface SnapLength {
   unit: string
 }
 
-interface SnapCoord {
+interface SnapCoordinates {
   y: SnapLength
   x: SnapLength
 }
 
-interface Coords {
+interface Coordinates {
   y?: number
   x?: number
 }
 
 export default function createScrollSnap(
   element: HTMLElement,
-  config: ScrollSnapConfiguration = {},
+  settings: Settings = {},
   callback: () => void
 ) {
   const onAnimationEnd = typeof callback === 'function' ? callback : NOOP
@@ -68,17 +68,17 @@ export default function createScrollSnap(
 
   let scrollHandlerTimer: number
   let scrollSpeedTimer: number
-  let scrollStart: Coords
+  let scrollStart: Coordinates
   let speedDeltaX: number
   let speedDeltaY: number
-  let snapLengthUnit: SnapCoord
-  let lastScrollValue: Coords = {
+  let snapLengthUnit: SnapCoordinates
+  let lastScrollValue: Coordinates = {
     x: 0,
     y: 0,
   }
   let animationFrame: number
 
-  const { snapDestinationX, snapDestinationY } = config
+  const { snapDestinationX, snapDestinationY } = settings
 
   if (
     snapDestinationX &&
@@ -86,7 +86,7 @@ export default function createScrollSnap(
     typeof snapDestinationX !== 'number'
   ) {
     throw new Error(
-      `Config property 'snapDestinationX' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationX).toUpperCase()}`
+      `Settings property 'snapDestinationX' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationX).toUpperCase()}`
     )
   }
 
@@ -96,45 +96,49 @@ export default function createScrollSnap(
     typeof snapDestinationY !== 'number'
   ) {
     throw new Error(
-      `Config property 'snapDestinationY' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationY).toUpperCase()}`
+      `Settings property 'snapDestinationY' is not valid, expected STRING or NUMBER but found ${(typeof snapDestinationY).toUpperCase()}`
     )
   }
 
-  if (config.timeout && (isNaN(config.timeout) || typeof config.timeout === 'boolean')) {
+  if (settings.timeout && (isNaN(settings.timeout) || typeof settings.timeout === 'boolean')) {
     throw new Error(
-      `Optional config property 'timeout' is not valid, expected NUMBER but found ${(typeof config.timeout).toUpperCase()}`
+      `Optional settings property 'timeout' is not valid, expected NUMBER but found ${(typeof settings.timeout).toUpperCase()}`
     )
   }
   // any value less then TIMEOUT_MIN may cause weird bahaviour on some devices (especially on mobile with momentum scrolling)
-  const timeout = config.timeout && config.timeout >= TIMEOUT_MIN ? config.timeout : TIMEOUT_DEFAULT
+  const timeout =
+    settings.timeout && settings.timeout >= TIMEOUT_MIN ? settings.timeout : TIMEOUT_DEFAULT
 
-  if (config.duration && (isNaN(config.duration) || typeof config.duration === 'boolean')) {
+  if (settings.duration && (isNaN(settings.duration) || typeof settings.duration === 'boolean')) {
     throw new Error(
-      `Optional config property 'duration' is not valid, expected NUMBER but found ${(typeof config.duration).toUpperCase()}`
+      `Optional settings property 'duration' is not valid, expected NUMBER but found ${(typeof settings.duration).toUpperCase()}`
     )
   }
-  const duration = config.duration || DURATION_DEFAULT
+  const duration = settings.duration || DURATION_DEFAULT
 
-  if (config.threshold && (isNaN(config.threshold) || typeof config.threshold === 'boolean')) {
+  if (
+    settings.threshold &&
+    (isNaN(settings.threshold) || typeof settings.threshold === 'boolean')
+  ) {
     throw new Error(
-      `Optional config property 'threshold' is not valid, expected NUMBER but found ${(typeof config.threshold).toUpperCase()}`
+      `Optional settings property 'threshold' is not valid, expected NUMBER but found ${(typeof settings.threshold).toUpperCase()}`
     )
   }
-  const threshold = config.threshold || THRESHOLD_DEFAULT
+  const threshold = settings.threshold || THRESHOLD_DEFAULT
 
-  if (config.easing && typeof config.easing !== 'function') {
+  if (settings.easing && typeof settings.easing !== 'function') {
     throw new Error(
-      `Optional config property 'easing' is not valid, expected FUNCTION but found ${(typeof config.easing).toUpperCase()}`
+      `Optional settings property 'easing' is not valid, expected FUNCTION but found ${(typeof settings.easing).toUpperCase()}`
     )
   }
-  const easing = config.easing || EASING_DEFAULT
+  const easing = settings.easing || EASING_DEFAULT
 
-  if (config.snapStop && typeof config.snapStop !== 'boolean') {
+  if (settings.snapStop && typeof settings.snapStop !== 'boolean') {
     throw new Error(
-      `Optional config property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof config.snapStop).toUpperCase()}`
+      `Optional settings property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof settings.snapStop).toUpperCase()}`
     )
   }
-  const snapStop = config.snapStop || SNAPSTOP_DEFAULT
+  const snapStop = settings.snapStop || SNAPSTOP_DEFAULT
 
   function checkScrollSpeed(value: number, axis: 'x' | 'y') {
     const clear = () => {
@@ -162,7 +166,7 @@ export default function createScrollSnap(
     listenerElement = element === document.documentElement ? window : element
 
     listenerElement.addEventListener('scroll', startAnimation, false)
-    snapLengthUnit = parseSnapCoordValue(snapDestinationX, snapDestinationY)
+    snapLengthUnit = parseSnapCoordinatesValue(snapDestinationX, snapDestinationY)
   }
 
   function unbindElement() {
@@ -239,7 +243,7 @@ export default function createScrollSnap(
     })
   }
 
-  function getNextSnapPoint(target: HTMLElement, direction: Coords) {
+  function getNextSnapPoint(target: HTMLElement, direction: Coordinates) {
     // get snap length
     const snapLength = {
       y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
@@ -321,9 +325,9 @@ export default function createScrollSnap(
     return Math.max(Math.min(destined, max), min)
   }
 
-  function parseSnapCoordValue(
-    x: ScrollSnapConfiguration['snapDestinationX'],
-    y: ScrollSnapConfiguration['snapDestinationY']
+  function parseSnapCoordinatesValue(
+    x: Settings['snapDestinationX'],
+    y: Settings['snapDestinationY']
   ) {
     // regex to parse lengths
     const regex = /([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?)(px|%|vw|vh)/
@@ -394,11 +398,11 @@ export default function createScrollSnap(
     }
   }
 
-  function isEdge(coords: Coords) {
-    return (coords.x === 0 && speedDeltaY === 0) || (coords.y === 0 && speedDeltaX === 0)
+  function isEdge(Coordinates: Coordinates) {
+    return (Coordinates.x === 0 && speedDeltaY === 0) || (Coordinates.y === 0 && speedDeltaX === 0)
   }
 
-  function smoothScroll(obj: HTMLElement, end: Coords, callback: (...args: any) => void) {
+  function smoothScroll(obj: HTMLElement, end: Coordinates, callback: (...args: any) => void) {
     const position = (start: number, end: number, elapsed: number, period: number) => {
       if (elapsed > period) {
         return end

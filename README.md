@@ -13,7 +13,7 @@ Snap page when user stops scrolling, basically implements [CSS Scroll Snap](http
 
 - Works in all modern browsers
 - `requestAnimationFrame` for 60fps
-- Customizable configuration (including easing functions)
+- Customizable settings (including easing functions)
 - No additional dependencies
 - No extra stylesheet
 
@@ -28,7 +28,7 @@ You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap
 ## Usage
 
 ```js
-createScrollSnap(element, configuration, [callback])
+createScrollSnap(element, settings, [callback])
 ```
 
 ## Arguments 
@@ -37,7 +37,7 @@ createScrollSnap(element, configuration, [callback])
 
 The HTML DOM Element to attach the scroll listener to.
 
-### `configuration: ScrollSnapConfiguration`
+### `settings: Settings`
 
 A configuraiton object consisting of one or more of the following keys:
 
