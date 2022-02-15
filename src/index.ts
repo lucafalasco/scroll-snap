@@ -58,7 +58,7 @@ interface Coordinates {
 export default function createScrollSnap(
   element: HTMLElement,
   settings: Settings = {},
-  callback: () => void
+  callback?: () => void
 ) {
   const onAnimationEnd = typeof callback === 'function' ? callback : NOOP
 
