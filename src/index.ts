@@ -10,7 +10,7 @@ const SNAPSTOP_DEFAULT = false
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
-interface Settings {
+export interface Settings {
   /**
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
