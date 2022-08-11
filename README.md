@@ -39,7 +39,7 @@ The HTML DOM Element to attach the scroll listener to.
 
 ### `settings: Settings`
 
-A configuraiton object consisting of one or more of the following keys:
+A configuration object consisting of one or more of the following keys:
 
 #### `snapDestinationX: string | number`
 
