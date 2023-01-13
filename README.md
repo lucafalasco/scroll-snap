@@ -117,7 +117,7 @@ const { bind, unbind } = createScrollSnap(element, {
 // bind();
 ```
 
-#### [Usage with React](https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1)
+#### [Usage with React (custom hook)](https://codesandbox.io/s/scroll-snap-react-hooks-pppv8w?autoresize=1&hidenavigation=1)
 
 ## Contributing
 
