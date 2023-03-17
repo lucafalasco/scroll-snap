@@ -10,7 +10,7 @@ const SNAPSTOP_DEFAULT = false
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
-export interface Settings {
+export interface ScrollSnapSettings {
   /**
    * snap-destination for x and y axes
    * should be a valid css value expressed as px|%|vw|vh
@@ -57,7 +57,7 @@ interface Coordinates {
 
 export default function createScrollSnap(
   element: HTMLElement,
-  settings: Settings = {},
+  settings: ScrollSnapSettings = {},
   callback?: () => void
 ) {
   const onAnimationEnd = typeof callback === 'function' ? callback : NOOP
@@ -326,8 +326,8 @@ export default function createScrollSnap(
   }
 
   function parseSnapCoordinatesValue(
-    x: Settings['snapDestinationX'],
-    y: Settings['snapDestinationY']
+    x: ScrollSnapSettings['snapDestinationX'],
+    y: ScrollSnapSettings['snapDestinationY']
   ) {
     // regex to parse lengths
     const regex = /([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?)(px|%|vw|vh)/
