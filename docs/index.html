@@ -7,45 +7,57 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
+    <div class="header">
+      <div class="header-inner">
+        <div class="logo-wrapper">
+          <div class="logo"></div>
+          <h2>
+            <b class="header-title">scroll-snap</b>
+          </h2>
+        </div>
+        <div class="links">
+          <a class="highlight" target="_blank" href="https://github.com/lucafalasco/scroll-snap"
+            >Github</a
+          >
+          <a
+            class="highlight"
+            target="_blank"
+            href="https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1"
+            >Playground
+          </a>
+        </div>
+      </div>
+    </div>
     <div id="container">
       <div class="page first-page">
         <div class="first-page-paragraph">
-          <h1><b>Page Snapping</b> done right.</h1>
-          <div class="logo"></div>
-          <h2>
-            With a <b>customizable configuration</b> and a consistent
-            <b>cross browser</b> behaviour. <br />
-          </h2>
-          <br />
-          <p>
-            <b>
-              Check out the project and the documentation on
-              <a target="_blank" href="https://github.com/lucafalasco/scroll-snap">Github</a>
-            </b>
+          <div class="title"><b>Page Snapping</b> done right.</div>
+          <p class="text-center subtitle">
+            With a <b>customizable configuration</b> <br />
+            and a consistent <b>cross browser</b> behaviour. <br />
+          </p>
+          <p class="text-center">
+            <code> npm install scroll-snap </code>
           </p>
         </div>
-        <div class="hint" style="position: absolute; bottom: 5%">
+        <div class="hint">
           <div class="scroll"></div>
         </div>
       </div>
       <div class="page second-page">
         <div id="container-horizontal">
           <div class="page first-page-horizontal">
-            <div class="first-page-paragraph">
-              <h2><span class="highlight">Vanilla JS</span> implementation</h2>
-              <h3>
-                A native, consistent <b>cross-browser</b> implementation and a <b>simple API</b> to
-                initialize the scroll listener.
-              </h3>
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-            </div>
-            <div class="snippet">
-              <code>
-                <pre>
+            <div class="container-inner">
+              <div class="container-content">
+                <div class="container-title"><b>Vanilla JS</b> implementation</div>
+                <div>
+                  A native, consistent <b>cross-browser</b> implementation and a
+                  <b>simple API</b> to initialize the scroll listener.
+                </div>
+              </div>
+              <div class="snippet">
+                <code>
+                  <pre>
 import createScrollSnap from <b>'scroll-snap'</b>
 
 <b>createScrollSnap</b>(element, {
@@ -54,26 +66,27 @@ import createScrollSnap from <b>'scroll-snap'</b>
   <b>duration</b>: 300,
 })
 </pre
-                >
-              </code>
+                  >
+                </code>
+              </div>
             </div>
 
             <div class="arrow-big right"></div>
           </div>
           <div class="page second-page-horizontal">
             <div class="second-page-paragraph">
-              <h2>
-                <span class="highlight">Complete control</span> over the scroll snap behaviour
-              </h2>
-              <h3>
-                Manually <b>bind</b> and <b>unbind</b> the scrolling element. <br />
-                Customize the settings, set a <b>threshold</b>, and
-                <b>fine-tune the animation</b> through custom easing functions.
-              </h3>
-            </div>
-            <div class="snippet">
-              <code>
-                <pre>
+              <div class="container-inner">
+                <div class="container-content">
+                  <div class="container-title">
+                    <b>Complete control</b> over the scroll snap behaviour
+                  </div>
+                  Manually <b>bind</b> and <b>unbind</b> the scrolling element. <br />
+                  Customize the settings, set a <b>threshold</b>, and
+                  <b>fine-tune the animation</b> through custom easing functions.
+                </div>
+                <div class="snippet">
+                  <code>
+                    <pre>
 <span class="comment">// Only snap once</span>
 const { unbind } = <b>createScrollSnap</b>(
   element, 
@@ -89,32 +102,15 @@ const { unbind } = <b>createScrollSnap</b>(
   () => unbind()
 )
 </pre>
-              </code>
+                  </code>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="page third-page">
-        <p>
-          Check out the
-          <a class="highlight" target="_blank" href="https://github.com/lucafalasco/scroll-snap"
-            >code</a
-          >
-          <br />
-          ―
-          <br />
-          Play with the
-          <a
-            class="highlight"
-            target="_blank"
-            href="https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1"
-            >demo
-          </a>
-        </p>
-        <div class="github"></div>
         <div class="credits">
-          Made by
-          <a target="_blank" href="https://lucafalasco.com">Luca Falasco</a>
+          &lt;/&gt;
+          <a target="_blank" href="https://liuc.codes">Luca Falasco</a>
         </div>
       </div>
     </div>

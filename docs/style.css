@@ -1,15 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 
 html,
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  cursor: default;
-  background-color: #e3e3e3;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
+  background-color: #f0f0f0;
   color: #303030;
+  letter-spacing: -0.05rem;
   font-size: 16px;
   font-weight: 400;
 }
@@ -31,26 +29,79 @@ code .comment {
   color: #6d6d6d;
 }
 h1 {
-  font-size: 4em;
+  font-size: 5em;
 }
-h2 b,
-h1 b {
-  font-weight: 800;
+b {
+  display: inline-block;
+  font-weight: 500;
 }
 h1 {
-  font-weight: 400;;
+  font-weight: 500;
 }
 h2 {
-  font-size: 1.7em;
+  font-size: 1.5em;
   line-height: 1.3;
-  font-weight: 400;;
+  font-weight: 500;
 }
-h3 { 
+h3 {
   font-weight: normal;
   font-size: 1.3em;
   opacity: 0.8;
   margin: 0;
 }
+.title {
+  font-size: 3rem;
+  text-align: center;
+}
+.subtitle {
+  opacity: 0.8;
+  font-size: 1.4rem;
+}
+.text-center {
+  text-align: center;
+}
+.monospace {
+  font-family: 'JetBrains Mono', monospace;
+}
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: #f0f0f0;
+  z-index: 999;
+}
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  padding: 15px 20px;
+}
+.header-title {
+  font-size: 1.2rem;
+}
+.links {
+  display: flex;
+  flex-direction: row;
+}
+.links a {
+  margin: 0 5px;
+}
+.logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  background: url('assets/logo.svg') center no-repeat;
+  background-size: contain;
+}
+
 .first-page a {
   text-decoration: none;
   color: #fff;
@@ -58,16 +109,27 @@ h3 {
   border-radius: 5px;
   background-color: #212121;
 }
+.container-inner {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.container-content {
+  padding: 20px;
+  font-size: 1.1rem;
+}
+.container-title {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
 #container {
   display: flex;
   overflow-x: hidden;
   overflow-y: auto;
   flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 .page {
   width: 100%;
@@ -79,23 +141,12 @@ h3 {
   box-sizing: border-box;
 }
 .first-page {
-  height: 95%;
-  min-height: 95%;
+  height: 95vh;
+  min-height: 95vh;
 }
 .second-page {
-  color: #fff;
-  height: 90%;
-  min-height: 90%;
-  background: #303030;
-}
-.third-page {
-  height: 95%;
-  min-height: 95%;
-  overflow: hidden;
-  font-size: 1.4rem;
-}
-.third-page p {
-  text-align: center;
+  height: 90vh;
+  min-height: 90vh;
 }
 #container-horizontal {
   width: 100%;
@@ -114,21 +165,23 @@ h3 {
 .first-page-paragraph {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
   width: 90%;
-  margin: 2rem 0;
+  max-width: 1100px;
+  margin: auto;
 }
 .second-page-horizontal {
   width: 100%;
   min-width: 100%;
-  color: #fff;
-  background-color: #2c2c2c;
   align-items: start;
 }
 .second-page-paragraph {
-  padding-left: 10%;
-  margin: 4rem 0;
+  margin: 4rem auto;
 }
 .hint {
+  position: absolute;
+  bottom: 5%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -136,67 +189,61 @@ h3 {
 }
 .credits {
   position: absolute;
-  bottom: 20px;
+  bottom: 0;
+  background-color: #e2e2e2;
+  padding: 20px 0;
   margin: 0 auto;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 0.85rem;
+  width: 100%;
+  text-align: center;
 }
 .credits a {
-  color: #296190;
+  color: #000000;
+  text-decoration: none;
 }
 .credits a:hover {
-  color: #337db9;
   text-decoration: underline;
-}
-.bind,
-.unbind {
-  margin: 0 5px;
 }
 .highlight {
   color: inherit;
   text-decoration: none;
   font-weight: 500;
-  padding: 2px 5px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  padding: 5px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
 }
 a.highlight:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.05);
+  text-decoration: none;
 }
-.logo {
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 100px;
-  height: 100px;
-  margin: auto;
-  background: url('assets/logo.svg') center no-repeat;
-  background-size: contain;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
 .scroll {
   background: url('assets/scroll.svg') center no-repeat;
   background-size: contain;
-  height: 80px;
-  width: 80px;
+  height: 60px;
+  width: 60px;
 }
 .arrow-big {
-  filter: invert();
   background: url('assets/arrow-down.svg') center no-repeat;
   background-size: contain;
   position: absolute;
   z-index: 2;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   pointer-events: none;
   opacity: 0.8;
 }
 .arrow-big.right {
-  bottom: 20px;
+  bottom: 50%;
+  top: 50%;
   right: 15px;
   animation: leftright 1s infinite alternate-reverse;
+}
+.first-page-paragraph code {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 10px;
 }
 .first-page-paragraph code b {
   color: #212121;
@@ -207,26 +254,25 @@ code b {
 .second-page-horizontal .snippet {
   width: 100%;
   min-width: 100%;
-  background-color: #2121215e;
+  background-color: #212121;
 }
 .second-page-horizontal .snippet code {
   width: 100%;
-  padding-left: 4rem;
-  background-color: #2121215e;
+  background-color: #212121;
 }
 .snippet {
-  margin: 20px auto;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
 .snippet code {
+  width: 100%;
   overflow: auto;
-  background-color: #2121215e;
+  background-color: #212121;
   color: #eceff4;
   text-align: left;
   display: block;
   padding: 20px;
-  border-radius: 5px;
   font-family: monospace;
 }
 .snippet code pre {
@@ -234,15 +280,8 @@ code b {
 }
 .github {
   background: url('assets/github.svg') center no-repeat;
-  background-size: contain;
-  position: absolute;
-  right: -100px;
-  bottom: -100px;
-  z-index: 2;
-  width: 400px;
-  height: 400px;
-  opacity: 0.1;
-  pointer-events: none;
+  width: 50px;
+  height: 50px;
 }
 
 @media screen and (max-width: 768px) {
@@ -252,22 +291,15 @@ code b {
   }
   h1 {
     font-size: 2.5em;
-    margin: 10px auto;
   }
   h2 {
     font-size: 1.3em;
-    margin-bottom: 10px;
   }
   code {
     font-size: 13px;
   }
   p {
     width: 90%;
-  }
-  .logo {
-    top: 20px;
-    left: 0;
-    right: 0;
   }
   .snippet {
     margin: 0;
@@ -277,7 +309,6 @@ code b {
   }
   .first-page-paragraph {
     width: 90%;
-    margin-bottom: 4rem;
   }
   .first-page-horizontal {
     align-items: start;
@@ -289,23 +320,12 @@ code b {
   .first-page-horizontal {
     padding: 0;
   }
-  .first-page-paragraph {
-    padding-left: 5%;
-  }
   .snippet {
     width: 100%;
   }
-  .snippet code {
-    border-radius: 0;
-  }
-  .second-page-horizontal {
-    padding: 1rem 0;
-  }
-  .second-page-paragraph {
-    padding-left: 5%;
-  }
-  .second-page-horizontal .snippet code {
-    padding-left: 1rem;
+  .container-inner {
+    width: 90%;
+    margin: auto;
   }
 }
 @media screen and (max-width: 350px) {
@@ -314,13 +334,6 @@ code b {
   code,
   pre {
     font-size: 12px;
-  }
-}
-
-@media screen and (min-width: 1500px) {
-  .first-page,
-  .third-page {
-    padding: 0 10rem;
   }
 }
 

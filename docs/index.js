@@ -17,7 +17,7 @@ const containerHorizontal = document.getElementById('container-horizontal')
 createScrollSnap(
   containerVertical,
   {
-    snapDestinationY: '90%',
+    snapDestinationY: '90vh',
     ...baseConfig,
   },
   callback
