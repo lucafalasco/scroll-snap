@@ -5,7 +5,7 @@ html,
 body {
   margin: 0;
   font-family: Inter, -apple-system, system-ui, sans-serif;
-  background-color: #f0f0f0;
+  background-color: #fcfcfc;
   color: #303030;
   letter-spacing: -0.05rem;
   font-size: 16px;
@@ -66,9 +66,12 @@ h3 {
 .header {
   position: fixed;
   width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
   top: 0px;
   left: 0px;
-  background-color: #f0f0f0;
+  right: 0px;
+  background-color: #fcfcfc;
   z-index: 999;
 }
 .header-inner {
@@ -79,7 +82,7 @@ h3 {
   padding: 15px 20px;
 }
 .header-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .links {
   display: flex;
@@ -95,8 +98,8 @@ h3 {
   align-items: center;
 }
 .logo {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
   background: url('assets/logo.svg') center no-repeat;
   background-size: contain;
@@ -190,7 +193,7 @@ h3 {
 .credits {
   position: absolute;
   bottom: 0;
-  background-color: #e2e2e2;
+  background-color: #eaeaea;
   padding: 20px 0;
   margin: 0 auto;
   font-weight: 500;
