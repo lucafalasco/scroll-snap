@@ -13,7 +13,7 @@ const NOOP = () => {}
 export interface ScrollSnapSettings {
   /**
    * snap-destination for x and y axes
-   * should be a valid css value expressed as px|%|vw|vh|vmin|vmax|svh|lvh|dvh|svw|lvw|dvw|svmin|lvmin|dvmin|svmax|lvmax|dvmax|vi|svi|lvi|dvi|vb|svb|lvb|dvb
+   * should be a valid css value expressed as px|%|vw|vh
    */
   snapDestinationX?: string | number
   snapDestinationY?: string | number
@@ -330,7 +330,7 @@ export default function createScrollSnap(
     y: ScrollSnapSettings['snapDestinationY']
   ) {
     // regex to parse lengths
-    const regex = /([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?)(px|%|vw|vh|vmin|vmax|svh|lvh|dvh|svw|lvw|dvw|svmin|lvmin|dvmin|svmax|lvmax|dvmax|vi|svi|lvi|dvi|vb|svb|lvb|dvb)/
+    const regex = /([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?)(px|%|vw|vh)/
     // defaults
     const parsed = {
       y: {
