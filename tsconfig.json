@@ -13,7 +13,6 @@
     "strict": true,
     "strictNullChecks": false,
     "noImplicitReturns": true,
-    "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true
