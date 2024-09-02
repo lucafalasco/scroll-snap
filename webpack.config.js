@@ -5,20 +5,21 @@ module.exports = {
   entry: './playground/index.ts',
   output: {
     filename: 'playground.js',
+    path: path.resolve(__dirname, 'dist'),
   },
-  devtool: '#eval-source-map',
+  devtool: 'eval-source-map',
   devServer: {
-    contentBase: './playground',
+    static: './playground',
     port: process.env.PORT || 9000,
     host: '0.0.0.0',
     open: true,
-    stats: 'minimal',
+    client: { overlay: false },
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        loader: require.resolve('ts-loader'),
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
     ],
