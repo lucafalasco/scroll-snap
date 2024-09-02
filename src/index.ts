@@ -416,13 +416,6 @@ export default function createScrollSnap(
       x: obj.scrollLeft,
     }
 
-    // get animation frame or a fallback
-    const requestAnimationFrame =
-      window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      function (fn) {
-        return window.setTimeout(fn, 15)
-      }
     const period = isEdge(start) ? 1 : duration
     let startTime: number
 
