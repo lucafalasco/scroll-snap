@@ -113,13 +113,14 @@ h3 {
   background-color: #212121;
 }
 .container-inner {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
   overflow: hidden;
 }
 .container-content {
-  padding: 20px;
+  width: 50%;
+  padding: 20px 0;
   font-size: 1.1rem;
 }
 .container-title {
@@ -144,10 +145,12 @@ h3 {
   box-sizing: border-box;
 }
 .first-page {
+  background: linear-gradient(180deg, #fff, #fefefe 11.3%, #bee0db 152.2%, #60ef84 381.2%);
   height: 95vh;
   min-height: 95vh;
 }
 .second-page {
+  background: linear-gradient(360deg, #fff, #fefefe 11.3%, #bee0db 152.2%, #60ef84 381.2%);
   height: 90vh;
   min-height: 90vh;
 }
@@ -175,6 +178,7 @@ h3 {
   margin: auto;
 }
 .second-page-horizontal {
+  padding: 0 3rem;
   width: 100%;
   min-width: 100%;
   align-items: start;
@@ -191,11 +195,13 @@ h3 {
   justify-content: space-between;
 }
 .credits {
+  background: linear-gradient(180deg, #fff, #fefefe 11.3%, #bee0db 152.2%, #60ef84 381.2%);
   position: absolute;
   bottom: 0;
   background-color: #eaeaea;
   padding: 20px 0;
   margin: 0 auto;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
   font-size: 0.85rem;
   width: 100%;
@@ -243,6 +249,7 @@ a.highlight:hover {
   animation: leftright 1s infinite alternate-reverse;
 }
 .first-page-paragraph code {
+  background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -252,30 +259,28 @@ a.highlight:hover {
   color: #212121;
 }
 code b {
-  color: #4aaeff;
-}
-.second-page-horizontal .snippet {
-  width: 100%;
-  min-width: 100%;
-  background-color: #212121;
-}
-.second-page-horizontal .snippet code {
-  width: 100%;
-  background-color: #212121;
+  background: radial-gradient(
+    120.36% 213.27% at 20.35% 233.83%,
+    rgba(247, 191, 239, 0.4) 60.4%,
+    rgba(200, 84, 215, 0.4) 97%
+  );
+  border-radius: 3px;
 }
 .snippet {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
 .snippet code {
   width: 100%;
   overflow: auto;
-  background-color: #212121;
-  color: #eceff4;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: #000;
   text-align: left;
   display: block;
-  padding: 20px;
+  padding: 30px;
   font-family: monospace;
 }
 .snippet code pre {
@@ -326,7 +331,11 @@ code b {
   .snippet {
     width: 100%;
   }
+  .container-content {
+    width: 100%;
+  }
   .container-inner {
+    flex-direction: column;
     width: 90%;
     margin: auto;
   }

@@ -37,7 +37,7 @@
             and a consistent <b>cross browser</b> behaviour. <br />
           </p>
           <p class="text-center">
-            <code> npm install scroll-snap </code>
+            <code> > yarn add scroll-snap </code>
           </p>
         </div>
         <div class="hint">
@@ -58,9 +58,9 @@
               <div class="snippet">
                 <code>
                   <pre>
-import createScrollSnap from <b>'scroll-snap'</b>
+import createScrollSnap from 'scroll-snap'
 
-<b>createScrollSnap</b>(element, {
+createScrollSnap(element, {
   <b>snapDestinationX</b>: '90%',
   <b>timeout</b>: 100,
   <b>duration</b>: 300,
@@ -88,7 +88,7 @@ import createScrollSnap from <b>'scroll-snap'</b>
                   <code>
                     <pre>
 <span class="comment">// Only snap once</span>
-const { unbind } = <b>createScrollSnap</b>(
+const { unbind } = createScrollSnap(
   element, 
   {
     snapDestinationX: '90%',
@@ -109,7 +109,11 @@ const { unbind } = <b>createScrollSnap</b>(
           </div>
         </div>
         <div class="credits">
-          &lt;/&gt;
+          Copyright ©
+          <script>
+            document.write(new Date().getFullYear())
+          </script>
+          -
           <a target="_blank" href="https://lucafalasco.dev">Luca Falasco</a>
         </div>
       </div>
