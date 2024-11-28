@@ -328,8 +328,18 @@ code b {
   .first-page-horizontal {
     padding: 0;
   }
+  .second-page-horizontal {
+    padding: 0;
+  }
+  .arrow-big.right {
+    top: unset;
+    bottom: 10%;
+    right: 15px;
+    animation: leftright 1s infinite alternate-reverse;
+  }
   .snippet {
     width: 100%;
+    max-width: 100vw;
   }
   .container-content {
     width: 100%;
