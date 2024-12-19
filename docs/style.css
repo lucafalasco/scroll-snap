@@ -350,7 +350,7 @@ code b {
   .container-inner {
     flex-direction: column;
     width: 90%;
-    margin: auto;
+    margin: 50px auto auto auto;
   }
   .credits {
     background: #bee0db;
