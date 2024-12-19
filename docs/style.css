@@ -346,6 +346,7 @@ code b {
   }
   .container-content {
     width: 100%;
+    padding-top: 0;
   }
   .container-inner {
     flex-direction: column;
@@ -357,6 +358,9 @@ code b {
     position: absolute;
     bottom: 0;
     padding: 10px 0;
+  }
+  .snippet code {
+    padding: 10px;
   }
 }
 @media screen and (max-width: 350px) {
