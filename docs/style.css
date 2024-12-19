@@ -331,6 +331,9 @@ code b {
   .second-page-horizontal {
     padding: 0;
   }
+  .second-page-paragraph {
+    margin: auto;
+  }
   .arrow-big.right {
     top: unset;
     bottom: 10%;
