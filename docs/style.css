@@ -332,11 +332,11 @@ code b {
     padding: 0;
   }
   .second-page-paragraph {
-    margin: auto;
+    margin: 0;
   }
   .arrow-big.right {
     top: unset;
-    bottom: 10%;
+    bottom: 13%;
     right: 15px;
     animation: leftright 1s infinite alternate-reverse;
   }
@@ -351,6 +351,12 @@ code b {
     flex-direction: column;
     width: 90%;
     margin: auto;
+  }
+  .credits {
+    background: #bee0db;
+    position: absolute;
+    bottom: 0;
+    padding: 10px 0;
   }
 }
 @media screen and (max-width: 350px) {
