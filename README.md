@@ -77,6 +77,16 @@ A configuration object consisting of one or more of the following keys:
 >
 > For reference: https://gist.github.com/gre/1650294 
 
+#### `showArrows: boolean`
+
+> When true, shows navigation arrows on container hover  
+> [default: false]
+
+#### `enableKeyboard: boolean`
+
+> When true, enables keyboard arrow keys navigation  
+> [default: true]
+
 ### `callback: () => void` [Optional]
 
 Optional callback to execute once the animation ends.

@@ -38,6 +38,121 @@ export interface ScrollSnapSettings {
    * @param t normalized time typically in the range [0, 1]
    */
   easing?: (t: number) => number
+  /**
+   * show navigation arrows on hover
+   */
+  showArrows?: boolean
+  /**
+   * enable keyboard navigation
+   */
+  enableKeyboard?: boolean
+}
+
+function getBackgroundBrightness(element: HTMLElement): 'light' | 'dark' {
+  const bgColor = window.getComputedStyle(element).backgroundColor
+  const rgb = bgColor.match(/\d+/g)?.map(Number) || [255, 255, 255]
+  const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000
+  return brightness > 128 ? 'light' : 'dark'
+}
+
+const ARROW_SVG = {
+  right: (color: string) =>
+    `data:image/svg+xml;base64,${btoa(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>`
+    )}`,
+  left: (color: string) =>
+    `data:image/svg+xml;base64,${btoa(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>`
+    )}`,
+  up: (color: string) =>
+    `data:image/svg+xml;base64,${btoa(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/></svg>`
+    )}`,
+  down: (color: string) =>
+    `data:image/svg+xml;base64,${btoa(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>`
+    )}`,
+} as const
+
+function createArrowElements(target: HTMLElement) {
+  const arrows = {
+    up: document.createElement('div'),
+    down: document.createElement('div'),
+    left: document.createElement('div'),
+    right: document.createElement('div'),
+  }
+
+  Object.entries(arrows).forEach(([direction, element]) => {
+    const theme = getBackgroundBrightness(target)
+    const iconColor = theme === 'light' ? '#1a1a1a' : '#ffffff'
+    const bgColor = theme === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'
+
+    element.className = `scroll-snap-arrow scroll-snap-arrow-${direction}`
+    element.style.cssText = `
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background-size: 24px;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      z-index: 1000;
+      background-image: url(${ARROW_SVG[direction as keyof typeof ARROW_SVG](iconColor)});
+      background-color: ${bgColor};
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      user-select: none;
+    `
+
+    // Add hover effect
+    element.addEventListener('mouseenter', () => {
+      element.style.opacity = '0.95'
+      element.style.transform = 'scale(1.05)'
+      element.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)'
+    })
+    element.addEventListener('mouseleave', () => {
+      element.style.opacity = '0.6'
+      element.style.transform = 'scale(1)'
+      element.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)'
+    })
+  })
+
+  return arrows
+}
+
+function updateArrowsPosition(element: HTMLElement, arrows: Record<string, HTMLElement>) {
+  const rect = element.getBoundingClientRect()
+  const padding = 16 // Consistent padding
+  const halfArrowSize = 20 // Half of arrow size for centering
+
+  // Center vertically for left/right arrows, horizontally for up/down arrows
+  arrows.up.style.top = `${rect.top + padding}px`
+  arrows.up.style.left = `${rect.left + rect.width / 2 - halfArrowSize}px`
+
+  arrows.down.style.bottom = `${window.innerHeight - rect.bottom + padding}px`
+  arrows.down.style.left = `${rect.left + rect.width / 2 - halfArrowSize}px`
+
+  arrows.left.style.left = `${rect.left + padding}px`
+  arrows.left.style.top = `${rect.top + rect.height / 2 - halfArrowSize}px`
+
+  arrows.right.style.right = `${window.innerWidth - rect.right + padding}px`
+  arrows.right.style.top = `${rect.top + rect.height / 2 - halfArrowSize}px`
+
+  // Only show arrows when there's scroll available in that direction
+  arrows.up.style.display = element.scrollTop > 0 ? 'flex' : 'none'
+  arrows.down.style.display =
+    element.scrollTop < element.scrollHeight - element.clientHeight ? 'flex' : 'none'
+  arrows.left.style.display = element.scrollLeft > 0 ? 'flex' : 'none'
+  arrows.right.style.display =
+    element.scrollLeft < element.scrollWidth - element.clientWidth ? 'flex' : 'none'
 }
 
 interface SnapLength {
@@ -125,6 +240,7 @@ export default function createScrollSnap(
     )
   }
   const threshold = settings.threshold || THRESHOLD_DEFAULT
+  let isSimulatedScroll = false
 
   if (settings.easing && typeof settings.easing !== 'function') {
     throw new Error(
@@ -139,6 +255,11 @@ export default function createScrollSnap(
     )
   }
   const snapStop = settings.snapStop || SNAPSTOP_DEFAULT
+
+  const showArrows = settings.showArrows ?? false
+  const enableKeyboard = settings.enableKeyboard ?? true
+
+  let arrows: Record<string, HTMLElement> = {}
 
   function checkScrollSpeed(value: number, axis: 'x' | 'y') {
     const clear = () => {
@@ -309,7 +430,8 @@ export default function createScrollSnap(
   }
 
   function isAboveThreshold(direction: number, value: number) {
-    return direction > 0 ? value % 1 > threshold : 1 - (value % 1) > threshold
+    const effectiveThreshold = isSimulatedScroll ? 0 : threshold
+    return direction > 0 ? value % 1 > effectiveThreshold : 1 - (value % 1) > effectiveThreshold
   }
 
   function roundByDirection(direction: number, value: number) {
@@ -403,11 +525,15 @@ export default function createScrollSnap(
   }
 
   function smoothScroll(obj: HTMLElement, end: Coordinates, callback: (...args: any) => void) {
+    // Clear any existing animation
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame)
+    }
+
     const position = (start: number, end: number, elapsed: number, period: number) => {
       if (elapsed > period) {
         return end
       }
-
       return start + (end - start) * easing(elapsed / period)
     }
 
@@ -416,7 +542,6 @@ export default function createScrollSnap(
       x: obj.scrollLeft,
     }
 
-    const period = isEdge(start) ? 1 : duration
     let startTime: number
 
     // setup the stepping function
@@ -428,34 +553,180 @@ export default function createScrollSnap(
 
       // change position on y-axis if result is a number.
       if (!isNaN(end.y)) {
-        obj.scrollTop = position(start.y, end.y, elapsed, period)
+        obj.scrollTop = position(start.y, end.y, elapsed, duration)
       }
 
       // change position on x-axis if result is a number.
       if (!isNaN(end.x)) {
-        obj.scrollLeft = position(start.x, end.x, elapsed, period)
+        obj.scrollLeft = position(start.x, end.x, elapsed, duration)
       }
 
-      // check if we are over due;
-      if (elapsed < period) {
-        requestAnimationFrame(step)
+      // check if we are over due
+      if (elapsed < duration) {
+        animationFrame = requestAnimationFrame(step)
       } else {
-        // is there a callback?
-        if (typeof callback === 'function') {
-          // stop execution and run the callback
-          return callback(end)
-        }
+        // Ensure final position is reached
+        if (!isNaN(end.y)) obj.scrollTop = end.y
+        if (!isNaN(end.x)) obj.scrollLeft = end.x
+
+        // Clean up and call callback
+        animationFrame = 0
+        wrappedCallback(end)
       }
     }
+
+    const wrappedCallback = (end: Coordinates) => {
+      isSimulatedScroll = false
+      if (typeof callback === 'function') {
+        callback(end)
+      }
+    }
+
     animationFrame = requestAnimationFrame(step)
+  }
+
+  function setupArrows() {
+    if (!showArrows) return
+
+    arrows = createArrowElements(target)
+
+    // Create a container for the arrows
+    const arrowContainer = document.createElement('div')
+    arrowContainer.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 999;
+    `
+
+    // Add arrows to container and attach click handlers
+    Object.entries(arrows).forEach(([direction, arrow]) => {
+      arrow.onclick = (e) => {
+        e.stopPropagation()
+        scrollToDirection(direction as 'up' | 'down' | 'left' | 'right')
+      }
+      arrowContainer.appendChild(arrow)
+    })
+
+    document.body.appendChild(arrowContainer)
+
+    // Initial position update
+    updateArrowsPosition(element, arrows)
+
+    // Update positions on scroll and resize
+    const updatePositions = () => updateArrowsPosition(element, arrows)
+    element.addEventListener('scroll', updatePositions)
+    window.addEventListener('resize', updatePositions)
+
+    // Show arrows on container hover
+    element.addEventListener('mouseenter', () => {
+      Object.values(arrows).forEach((arrow) => {
+        if (arrow.style.display !== 'none') {
+          arrow.style.opacity = '0.6' // Initial opacity when container is hovered
+        }
+      })
+    })
+
+    // Hide arrows when leaving container or arrows
+    const hideArrows = (e: MouseEvent) => {
+      const relatedTarget = e.relatedTarget as HTMLElement
+      if (!element.contains(relatedTarget) && !relatedTarget?.closest('.scroll-snap-arrow')) {
+        Object.values(arrows).forEach((arrow) => {
+          arrow.style.opacity = '0'
+        })
+      }
+    }
+
+    element.addEventListener('mouseleave', hideArrows)
+    Object.values(arrows).forEach((arrow) => {
+      arrow.addEventListener('mouseleave', hideArrows)
+    })
+  }
+
+  function scrollToDirection(direction: 'up' | 'down' | 'left' | 'right') {
+    if (animating) return // Prevent multiple animations
+
+    const dir = {
+      x: direction === 'left' ? -1 : direction === 'right' ? 1 : 0,
+      y: direction === 'up' ? -1 : direction === 'down' ? 1 : 0,
+    }
+
+    // Calculate snap length
+    const snapLength = {
+      y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
+      x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
+    }
+
+    // Get current position in snap units
+    const currentPoint = {
+      y: target.scrollTop / snapLength.y || 0,
+      x: target.scrollLeft / snapLength.x || 0,
+    }
+
+    // Calculate next point
+    const nextPoint = {
+      y: dir.y === 0 ? currentPoint.y : Math.round(currentPoint.y) + dir.y,
+      x: dir.x === 0 ? currentPoint.x : Math.round(currentPoint.x) + dir.x,
+    }
+
+    // Calculate scroll destination
+    const scrollTo = {
+      y: nextPoint.y * snapLength.y,
+      x: nextPoint.x * snapLength.x,
+    }
+
+    // Stay in bounds
+    scrollTo.y = stayInBounds(0, target.scrollHeight - target.clientHeight, scrollTo.y)
+    scrollTo.x = stayInBounds(0, target.scrollWidth - target.clientWidth, scrollTo.x)
+
+    // Perform the smooth scroll
+    animating = true
+    smoothScroll(target, scrollTo, () => {
+      animating = false
+      onAnimationEnd()
+    })
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (!enableKeyboard) return
+
+    switch (e.key) {
+      case 'ArrowUp':
+        scrollToDirection('up')
+        break
+      case 'ArrowDown':
+        scrollToDirection('down')
+        break
+      case 'ArrowLeft':
+        scrollToDirection('left')
+        break
+      case 'ArrowRight':
+        scrollToDirection('right')
+        break
+    }
   }
 
   function bind() {
     bindElement(element)
+    setupArrows()
+    if (enableKeyboard) {
+      window.addEventListener('keydown', handleKeydown)
+    }
   }
 
   function unbind() {
     unbindElement()
+    if (enableKeyboard) {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+    if (showArrows) {
+      window.removeEventListener('resize', () => updateArrowsPosition(element, arrows))
+      element.removeEventListener('scroll', () => updateArrowsPosition(element, arrows))
+      Object.values(arrows).forEach((arrow) => arrow.remove())
+    }
   }
 
   bind()
