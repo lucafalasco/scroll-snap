@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="">
   <head>
     <meta charset="utf-8" />
     <title>scroll-snap | playground</title>
@@ -7,25 +7,224 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <div class="ruler">
-      <div class="row hr"></div>
-      <div class="row vr"></div>
-    </div>
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg class="sun-icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" />
+        <path
+          d="M12 2v2m0 16v2M4 12H2m20 0h-2m-2.8-6.4L15.8 7M8.2 15.8l-1.4 1.4M17.2 17.2l1.4 1.4M6.8 6.8L5.4 5.4"
+        />
+      </svg>
+      <svg class="moon-icon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    </button>
     <div id="container">
       <div class="column first-column">
-        <div class="page first-page"></div>
-        <div class="page second-page"></div>
-        <div class="page third-page"></div>
+        <div class="page first-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">1</div>
+          </div>
+        </div>
+        <div class="page second-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">4</div>
+          </div>
+        </div>
+        <div class="page third-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">7</div>
+          </div>
+        </div>
       </div>
       <div class="column second-column">
-        <div class="page first-page"></div>
-        <div class="page second-page"></div>
-        <div class="page third-page"></div>
+        <div class="page first-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">2</div>
+          </div>
+        </div>
+        <div class="page second-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">5</div>
+          </div>
+        </div>
+        <div class="page third-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-right active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">8</div>
+          </div>
+        </div>
       </div>
       <div class="column third-column">
-        <div class="page first-page"></div>
-        <div class="page second-page"></div>
-        <div class="page third-page"></div>
+        <div class="page first-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">3</div>
+          </div>
+        </div>
+        <div class="page second-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-down active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 13l7 7 7-7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">6</div>
+          </div>
+        </div>
+        <div class="page third-page">
+          <div class="page-content">
+            <div class="direction-hint">
+              <div class="arrows-container">
+                <span class="arrow arrow-up active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 19V5M5 11l7-7 7 7" />
+                  </svg>
+                </span>
+                <span class="arrow arrow-left active">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M11 19l-7-7 7-7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="page-number">9</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="debug">
