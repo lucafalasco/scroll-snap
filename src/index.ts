@@ -1,7 +1,9 @@
+// Base easing function for smooth transitions
 function easeInOutQuad(t: number) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
+// Default configuration values
 const TIMEOUT_MIN = 50
 const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
@@ -12,42 +14,36 @@ const NOOP = () => {}
 
 export interface ScrollSnapSettings {
   /**
-   * snap-destination for x and y axes
-   * should be a valid css value expressed as px|%|vw|vh
+   * Snap destination for x and y axes (px|%|vw|vh)
    */
   snapDestinationX?: string | number
   snapDestinationY?: string | number
+
   /**
-   * time in ms after which scrolling is considered finished
+   * Timing configuration for snap behavior
    */
-  timeout?: number
+  timeout?: number // Time after which scrolling is considered finished
+  duration?: number // Duration of the smooth snap animation
+  threshold?: number // Threshold percentage [0,1] to reach before snapping
+
   /**
-   * duration in ms for the smooth snap
-   */
-  duration?: number
-  /**
-   * threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]
-   */
-  threshold?: number
-  /**
-   * when true, the scroll container is not allowed to "pass over" the other snap positions
+   * Prevents passing over intermediate snap positions when true
    */
   snapStop?: boolean
+
   /**
-   * custom easing function
-   * @param t normalized time typically in the range [0, 1]
+   * Optional custom easing function for animation
    */
   easing?: (t: number) => number
+
   /**
-   * show navigation arrows on hover
+   * Navigation options
    */
   showArrows?: boolean
-  /**
-   * enable keyboard navigation
-   */
   enableKeyboard?: boolean
 }
 
+// Determine optimal arrow colors based on background
 function getBackgroundBrightness(element: HTMLElement): 'light' | 'dark' {
   const bgColor = window.getComputedStyle(element).backgroundColor
   const rgb = bgColor.match(/\d+/g)?.map(Number) || [255, 255, 255]
@@ -179,7 +175,6 @@ export default function createScrollSnap(
 
   let listenerElement: HTMLElement | Window
   let target: HTMLElement
-  let animating = false
 
   let scrollHandlerTimer: number
   let scrollSpeedTimer: number
@@ -191,7 +186,6 @@ export default function createScrollSnap(
     x: 0,
     y: 0,
   }
-  let animationFrame: number
 
   const { snapDestinationX, snapDestinationY } = settings
 
@@ -239,8 +233,8 @@ export default function createScrollSnap(
       `Optional settings property 'threshold' is not valid, expected NUMBER but found ${(typeof settings.threshold).toUpperCase()}`
     )
   }
-  const threshold = settings.threshold || THRESHOLD_DEFAULT
-  let isSimulatedScroll = false
+  const threshold = settings.threshold ?? THRESHOLD_DEFAULT
+  let isControlledScroll = false
 
   if (settings.easing && typeof settings.easing !== 'function') {
     throw new Error(
@@ -260,6 +254,32 @@ export default function createScrollSnap(
   const enableKeyboard = settings.enableKeyboard ?? true
 
   let arrows: Record<string, HTMLElement> = {}
+
+  let lastWindowWidth = window.innerWidth
+  let lastWindowHeight = window.innerHeight
+
+  let animating = {
+    x: false,
+    y: false,
+  }
+  let animationFrame = {
+    x: 0,
+    y: 0,
+  }
+
+  // Add tracking for last valid snap points
+  let lastValidSnapPoints = {
+    x: 0,
+    y: 0,
+  }
+
+  function getLastValidSnapPoint(axis: 'x' | 'y') {
+    return lastValidSnapPoints[axis]
+  }
+
+  function setLastValidSnapPoint(axis: 'x' | 'y', value: number) {
+    lastValidSnapPoints[axis] = value
+  }
 
   function checkScrollSpeed(value: number, axis: 'x' | 'y') {
     const clear = () => {
@@ -288,17 +308,43 @@ export default function createScrollSnap(
 
     listenerElement.addEventListener('scroll', startAnimation, false)
     snapLengthUnit = parseSnapCoordinatesValue(snapDestinationX, snapDestinationY)
+
+    // Initialize last valid snap points
+    lastValidSnapPoints = {
+      x: roundToNearestSnapPoint(
+        element.scrollLeft,
+        Math.round(getXSnapLength(element, snapLengthUnit.x))
+      ),
+      y: roundToNearestSnapPoint(
+        element.scrollTop,
+        Math.round(getYSnapLength(element, snapLengthUnit.y))
+      ),
+    }
   }
 
   function unbindElement() {
     listenerElement.removeEventListener('scroll', startAnimation, false)
   }
 
+  // Track active directions
+  let activeDirections = {
+    x: 0,
+    y: 0,
+  }
+
   function startAnimation() {
     speedDeltaX = checkScrollSpeed(target.scrollLeft, 'x')
     speedDeltaY = checkScrollSpeed(target.scrollTop, 'y')
 
-    if (animating || (speedDeltaX === 0 && speedDeltaY === 0)) {
+    // Save directions if they are new
+    if (speedDeltaX !== 0 && !animating.x) {
+      activeDirections.x = Math.sign(speedDeltaX)
+    }
+    if (speedDeltaY !== 0 && !animating.y) {
+      activeDirections.y = Math.sign(speedDeltaY)
+    }
+
+    if ((animating.x && animating.y) || (speedDeltaX === 0 && speedDeltaY === 0)) {
       return
     }
 
@@ -311,8 +357,11 @@ export default function createScrollSnap(
    */
   function handler(target: HTMLElement) {
     // if currently animating, stop it. this prevents flickering.
-    if (animationFrame) {
-      clearTimeout(animationFrame)
+    if (animationFrame.x) {
+      clearTimeout(animationFrame.x)
+    }
+    if (animationFrame.y) {
+      clearTimeout(animationFrame.y)
     }
 
     // if a previous timeout exists, clear it.
@@ -329,124 +378,133 @@ export default function createScrollSnap(
     scrollHandlerTimer = window.setTimeout(animationHandler, timeout)
   }
 
+  // Update animation handler to handle consecutive scrolls
   function animationHandler() {
-    // if we don't move a thing, we can ignore the timeout: if we did, there'd be another timeout added for scrollStart+1.
+    // Skip if no actual scroll occurred
     if (scrollStart.y === target.scrollTop && scrollStart.x === target.scrollLeft) {
-      // ignore timeout
       return
     }
 
-    // detect direction of scroll. negative is up, positive is down.
+    // Use active directions instead of instantaneous ones for consistent behavior
     const direction = {
-      y: Math.sign(speedDeltaY),
-      x: Math.sign(speedDeltaX),
+      y: activeDirections.y,
+      x: activeDirections.x,
     }
 
-    // get the next snap-point to snap-to
-    const snapPoint = getNextSnapPoint(target, direction)
+    const snapPoints = {
+      x: calculateAxisSnapPoint(
+        'x',
+        direction.x,
+        Math.round(getXSnapLength(target, snapLengthUnit.x))
+      ),
+      y: calculateAxisSnapPoint(
+        'y',
+        direction.y,
+        Math.round(getYSnapLength(target, snapLengthUnit.y))
+      ),
+    }
 
-    listenerElement.removeEventListener('scroll', startAnimation, false)
+    const shouldAnimateX = activeDirections.x !== 0 && !animating.x
+    const shouldAnimateY = activeDirections.y !== 0 && !animating.y
 
-    animating = true
+    if (shouldAnimateX) {
+      listenerElement.removeEventListener('scroll', startAnimation, false)
+      animating.x = true
+      smoothScrollAxis(target, { x: snapPoints.x }, 'x', () => {
+        animating.x = false
+        activeDirections.x = 0 // Reset direction after animation
+        listenerElement.addEventListener('scroll', startAnimation, false)
+        if (!animating.y) onAnimationEnd()
+      })
+    }
 
-    // smoothly move to the snap point
-    smoothScroll(target, snapPoint, () => {
-      // after moving to the snap point, rebind the scroll event handler
-      animating = false
-      listenerElement.addEventListener('scroll', startAnimation, false)
-      onAnimationEnd()
+    if (shouldAnimateY) {
+      listenerElement.removeEventListener('scroll', startAnimation, false)
+      animating.y = true
+      smoothScrollAxis(target, { y: snapPoints.y }, 'y', () => {
+        animating.y = false
+        activeDirections.y = 0 // Reset direction after animation
+        listenerElement.addEventListener('scroll', startAnimation, false)
+        if (!animating.x) onAnimationEnd()
+      })
+    }
 
-      // reset scrollStart
-      scrollStart = {
-        y: target.scrollTop,
-        x: target.scrollLeft,
-      }
-    })
+    scrollStart = {
+      y: animating.y ? scrollStart.y : target.scrollTop,
+      x: animating.x ? scrollStart.x : target.scrollLeft,
+    }
+  }
+
+  function roundToNearestSnapPoint(value: number, snapLength: number) {
+    // Force precise rounding to avoid floating point errors
+    const multiplier = 1000
+    return Math.round((value * multiplier) / (snapLength * multiplier)) * snapLength
+  }
+
+  function shouldMove(direction: number, currentPoint: number) {
+    // For controlled scrolls, we always want to move
+    if (isControlledScroll) return true
+
+    const fractionalPart = currentPoint % 1
+    // Normalize fractional part to be positive
+    const normalizedFraction = fractionalPart >= 0 ? fractionalPart : 1 + fractionalPart
+
+    return direction > 0 ? normalizedFraction > threshold : 1 - normalizedFraction > threshold
+  }
+
+  function calculateAxisSnapPoint(axis: 'x' | 'y', direction: number, snapLength: number): number {
+    const prop = axis === 'x' ? 'scrollLeft' : 'scrollTop'
+    const size = axis === 'x' ? 'scrollWidth' : 'scrollHeight'
+    const clientSize = axis === 'x' ? 'clientWidth' : 'clientHeight'
+
+    let currentScroll = target[prop]
+    const lastValidPoint = getLastValidSnapPoint(axis)
+
+    if (Math.abs(currentScroll - lastValidPoint) < 1) {
+      currentScroll = lastValidPoint
+    }
+
+    const currentPoint = currentScroll / snapLength
+
+    // For controlled scrolls, always move one snap point
+    if (isControlledScroll) {
+      const nextPoint = Math.round(currentPoint) + direction
+      return stayInBounds(0, target[size] - target[clientSize], nextPoint * snapLength)
+    }
+
+    // For manual scrolls, check threshold
+    if (!shouldMove(direction, currentPoint)) {
+      return roundToNearestSnapPoint(currentScroll, snapLength)
+    }
+
+    // Move to next snap point based on direction
+    const nextPoint = direction > 0 ? Math.ceil(currentPoint) : Math.floor(currentPoint)
+    return stayInBounds(0, target[size] - target[clientSize], nextPoint * snapLength)
   }
 
   function getNextSnapPoint(target: HTMLElement, direction: Coordinates) {
-    // get snap length
     const snapLength = {
       y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
       x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
     }
-    const top = target.scrollTop
-    const left = target.scrollLeft
 
-    const startPoint = {
-      y: scrollStart.y / snapLength.y || 0,
-      x: scrollStart.x / snapLength.x || 0,
+    // For controlled scrolls (arrows/keyboard), always move exactly one snap point
+    return {
+      y: direction.y
+        ? roundToNearestSnapPoint(target.scrollTop + direction.y * snapLength.y, snapLength.y)
+        : roundToNearestSnapPoint(target.scrollTop, snapLength.y),
+      x: direction.x
+        ? roundToNearestSnapPoint(target.scrollLeft + direction.x * snapLength.x, snapLength.x)
+        : roundToNearestSnapPoint(target.scrollLeft, snapLength.x),
     }
-    const currentPoint = {
-      y: top / snapLength.y || 0,
-      x: left / snapLength.x || 0,
-    }
-    const nextPoint = {
-      y: 0,
-      x: 0,
-    }
-
-    /**
-     * Set target and bounds by direction,
-     * if threshold has not been reached, scroll back to currentPoint
-     **/
-    if (isAboveThreshold(direction.y, currentPoint.y)) {
-      if (snapStop) {
-        nextPoint.y = roundByDirection(-direction.y, startPoint.y + direction.y)
-      } else {
-        nextPoint.y = roundByDirection(direction.y, currentPoint.y)
-      }
-    } else {
-      nextPoint.y = roundByDirection(direction.y * -1, currentPoint.y)
-    }
-
-    if (isAboveThreshold(direction.x, currentPoint.x)) {
-      if (snapStop) {
-        nextPoint.x = roundByDirection(-direction.x, startPoint.x + direction.x)
-      } else {
-        nextPoint.x = roundByDirection(direction.x, currentPoint.x)
-      }
-    } else {
-      nextPoint.x = roundByDirection(direction.x * -1, currentPoint.x)
-    }
-
-    // DEBUG
-    // console.log('direction', direction)
-    // console.log('startPoint', startPoint)
-    // console.log('currentPoint', currentPoint)
-    // console.log('nextPoint', nextPoint)
-
-    // calculate where to scroll
-    const scrollTo = {
-      y: nextPoint.y * snapLength.y,
-      x: nextPoint.x * snapLength.x,
-    }
-
-    // stay in bounds (minimum: 0, maxmimum: absolute height)
-    scrollTo.y = stayInBounds(0, target.scrollHeight, scrollTo.y)
-    scrollTo.x = stayInBounds(0, target.scrollWidth, scrollTo.x)
-
-    return scrollTo
   }
 
-  function isAboveThreshold(direction: number, value: number) {
-    const effectiveThreshold = isSimulatedScroll ? 0 : threshold
-    return direction > 0 ? value % 1 > effectiveThreshold : 1 - (value % 1) > effectiveThreshold
-  }
-
-  function roundByDirection(direction: number, value: number) {
-    if (direction === -1) {
-      // when we go up, we floor the number to jump to the next snap-point in scroll direction
-      return Math.floor(value)
-    }
-    // go down, we ceil the number to jump to the next in view.
-    return Math.ceil(value)
-  }
-
+  // Ensure scroll position stays within valid boundaries
   function stayInBounds(min: number, max: number, destined: number) {
     return Math.max(Math.min(destined, max), min)
   }
 
+  // Convert snap coordinates from various units (px, %, vw, vh) to actual pixel values
   function parseSnapCoordinatesValue(
     x: ScrollSnapSettings['snapDestinationX'],
     y: ScrollSnapSettings['snapDestinationY']
@@ -520,69 +578,78 @@ export default function createScrollSnap(
     }
   }
 
-  function isEdge(Coordinates: Coordinates) {
-    return (Coordinates.x === 0 && speedDeltaY === 0) || (Coordinates.y === 0 && speedDeltaX === 0)
-  }
+  function smoothScrollAxis(
+    obj: HTMLElement,
+    end: Coordinates,
+    axis: 'x' | 'y',
+    callback: () => void
+  ) {
+    const prop = axis === 'x' ? 'scrollLeft' : 'scrollTop'
 
-  function smoothScroll(obj: HTMLElement, end: Coordinates, callback: (...args: any) => void) {
-    // Clear any existing animation
-    if (animationFrame) {
-      cancelAnimationFrame(animationFrame)
+    if (animationFrame[axis]) {
+      cancelAnimationFrame(animationFrame[axis])
     }
 
-    const position = (start: number, end: number, elapsed: number, period: number) => {
-      if (elapsed > period) {
-        return end
-      }
-      return start + (end - start) * easing(elapsed / period)
-    }
+    const snapLength =
+      axis === 'x'
+        ? Math.round(getXSnapLength(obj, snapLengthUnit.x))
+        : Math.round(getYSnapLength(obj, snapLengthUnit.y))
 
-    const start = {
-      y: obj.scrollTop,
-      x: obj.scrollLeft,
+    const start = obj[prop]
+    // Ensure precise snap point alignment
+    const targetEnd = end[axis]
+
+    // Validate end position is on a snap point
+    const validatedEnd = roundToNearestSnapPoint(targetEnd, snapLength)
+
+    // Skip animation if already at target or invalid
+    if (Math.abs(start - validatedEnd) < 1 || isNaN(validatedEnd)) {
+      callback()
+      return
     }
 
     let startTime: number
+    let lastPosition = start
 
-    // setup the stepping function
     function step(timestamp: number) {
-      if (!startTime) {
-        startTime = timestamp
-      }
+      if (!startTime) startTime = timestamp
       const elapsed = timestamp - startTime
 
-      // change position on y-axis if result is a number.
-      if (!isNaN(end.y)) {
-        obj.scrollTop = position(start.y, end.y, elapsed, duration)
-      }
-
-      // change position on x-axis if result is a number.
-      if (!isNaN(end.x)) {
-        obj.scrollLeft = position(start.x, end.x, elapsed, duration)
-      }
-
-      // check if we are over due
       if (elapsed < duration) {
-        animationFrame = requestAnimationFrame(step)
+        const nextPos = start + (validatedEnd - start) * easing(elapsed / duration)
+        // Ensure we're moving in the right direction
+        if (Math.abs(validatedEnd - nextPos) < Math.abs(validatedEnd - lastPosition)) {
+          obj[prop] = nextPos
+          lastPosition = nextPos
+        }
+        animationFrame[axis] = requestAnimationFrame(step)
       } else {
-        // Ensure final position is reached
-        if (!isNaN(end.y)) obj.scrollTop = end.y
-        if (!isNaN(end.x)) obj.scrollLeft = end.x
-
-        // Clean up and call callback
-        animationFrame = 0
-        wrappedCallback(end)
+        // Ensure exact final position
+        obj[prop] = validatedEnd
+        animationFrame[axis] = 0
+        isControlledScroll = false
+        setLastValidSnapPoint(axis, validatedEnd)
+        callback()
       }
     }
 
-    const wrappedCallback = (end: Coordinates) => {
-      isSimulatedScroll = false
-      if (typeof callback === 'function') {
-        callback(end)
+    animationFrame[axis] = requestAnimationFrame(step)
+  }
+
+  // Replace the existing smoothScroll function with this new one that uses smoothScrollAxis
+  function smoothScroll(obj: HTMLElement, end: Coordinates, callback: () => void) {
+    const bothAxes = () => {
+      if (!animating.x && !animating.y) {
+        callback()
       }
     }
 
-    animationFrame = requestAnimationFrame(step)
+    if (!isNaN(end.x)) {
+      smoothScrollAxis(obj, end, 'x', bothAxes)
+    }
+    if (!isNaN(end.y)) {
+      smoothScrollAxis(obj, end, 'y', bothAxes)
+    }
   }
 
   function setupArrows() {
@@ -647,45 +714,27 @@ export default function createScrollSnap(
   }
 
   function scrollToDirection(direction: 'up' | 'down' | 'left' | 'right') {
-    if (animating) return // Prevent multiple animations
+    const axis = direction === 'up' || direction === 'down' ? 'y' : 'x'
+    if (animating[axis]) return
 
-    const dir = {
-      x: direction === 'left' ? -1 : direction === 'right' ? 1 : 0,
-      y: direction === 'up' ? -1 : direction === 'down' ? 1 : 0,
+    const directionMap = {
+      up: { x: 0, y: -1 },
+      down: { x: 0, y: 1 },
+      left: { x: -1, y: 0 },
+      right: { x: 1, y: 0 },
     }
 
-    // Calculate snap length
-    const snapLength = {
-      y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
-      x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
-    }
+    isControlledScroll = true
+    const nextPoint = getNextSnapPoint(target, directionMap[direction])
 
-    // Get current position in snap units
-    const currentPoint = {
-      y: target.scrollTop / snapLength.y || 0,
-      x: target.scrollLeft / snapLength.x || 0,
-    }
+    activeDirections[axis] = directionMap[direction][axis]
+    animating[axis] = true
 
-    // Calculate next point
-    const nextPoint = {
-      y: dir.y === 0 ? currentPoint.y : Math.round(currentPoint.y) + dir.y,
-      x: dir.x === 0 ? currentPoint.x : Math.round(currentPoint.x) + dir.x,
-    }
-
-    // Calculate scroll destination
-    const scrollTo = {
-      y: nextPoint.y * snapLength.y,
-      x: nextPoint.x * snapLength.x,
-    }
-
-    // Stay in bounds
-    scrollTo.y = stayInBounds(0, target.scrollHeight - target.clientHeight, scrollTo.y)
-    scrollTo.x = stayInBounds(0, target.scrollWidth - target.clientWidth, scrollTo.x)
-
-    // Perform the smooth scroll
-    animating = true
-    smoothScroll(target, scrollTo, () => {
-      animating = false
+    smoothScrollAxis(target, nextPoint, axis, () => {
+      animating[axis] = false
+      activeDirections[axis] = 0
+      isControlledScroll = false
+      setLastValidSnapPoint(axis, nextPoint[axis])
       onAnimationEnd()
     })
   }
@@ -709,12 +758,55 @@ export default function createScrollSnap(
     }
   }
 
+  function handleResize() {
+    // Get current scroll position in terms of snap units
+    const oldSnapLength = {
+      y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
+      x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
+    }
+
+    const currentPoint = {
+      y: Math.round(target.scrollTop / oldSnapLength.y),
+      x: Math.round(target.scrollLeft / oldSnapLength.x),
+    }
+
+    // Wait for layout to settle
+    requestAnimationFrame(() => {
+      // Calculate new snap lengths after resize
+      const newSnapLength = {
+        y: Math.round(getYSnapLength(target, snapLengthUnit.y)),
+        x: Math.round(getXSnapLength(target, snapLengthUnit.x)),
+      }
+
+      // Calculate new scroll position
+      const scrollTo = {
+        y: currentPoint.y * newSnapLength.y,
+        x: currentPoint.x * newSnapLength.x,
+      }
+
+      // Only scroll if the window dimensions actually changed
+      if (window.innerWidth !== lastWindowWidth || window.innerHeight !== lastWindowHeight) {
+        isControlledScroll = true
+        smoothScroll(target, scrollTo, () => {
+          isControlledScroll = false
+          if (showArrows) {
+            updateArrowsPosition(element, arrows)
+          }
+        })
+
+        lastWindowWidth = window.innerWidth
+        lastWindowHeight = window.innerHeight
+      }
+    })
+  }
+
   function bind() {
     bindElement(element)
     setupArrows()
     if (enableKeyboard) {
       window.addEventListener('keydown', handleKeydown)
     }
+    window.addEventListener('resize', handleResize)
   }
 
   function unbind() {
@@ -722,11 +814,14 @@ export default function createScrollSnap(
     if (enableKeyboard) {
       window.removeEventListener('keydown', handleKeydown)
     }
+    window.removeEventListener('resize', handleResize)
     if (showArrows) {
       window.removeEventListener('resize', () => updateArrowsPosition(element, arrows))
       element.removeEventListener('scroll', () => updateArrowsPosition(element, arrows))
       Object.values(arrows).forEach((arrow) => arrow.remove())
     }
+    if (animationFrame.x) cancelAnimationFrame(animationFrame.x)
+    if (animationFrame.y) cancelAnimationFrame(animationFrame.y)
   }
 
   bind()
