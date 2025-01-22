@@ -524,8 +524,17 @@ export default function createScrollSnap(
       return roundToNearestSnapPoint(currentScroll, snapLength)
     }
 
-    // Move to next snap point based on direction
-    const nextPoint = direction > 0 ? Math.ceil(currentPoint) : Math.floor(currentPoint)
+    // Handle snap point calculation based on snapStop setting
+    let nextPoint: number
+    if (snapStop) {
+      // When snapStop is true, only move to the next consecutive point
+      const currentRoundedPoint = Math.round(lastValidPoint / snapLength)
+      nextPoint = currentRoundedPoint + (direction > 0 ? 1 : -1)
+    } else {
+      // When snapStop is false, allow skipping to any snap point
+      nextPoint = direction > 0 ? Math.ceil(currentPoint) : Math.floor(currentPoint)
+    }
+
     return stayInBounds(0, target[size] - target[clientSize], nextPoint * snapLength)
   }
 
