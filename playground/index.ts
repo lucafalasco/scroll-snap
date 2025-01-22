@@ -25,10 +25,10 @@ const toggleTheme = () => {
 
 // Initialize theme
 const savedTheme = localStorage.getItem('theme')
-setTheme(savedTheme || getPreferredTheme())
+const initialTheme = savedTheme || getPreferredTheme()
+setTheme(initialTheme)
 
 // Initialize theme icon
-const initialTheme = savedTheme || getPreferredTheme()
 const themeIcon = document.querySelector('.theme-icon') as SVGPathElement
 if (themeIcon) {
   themeIcon.style.transition = 'none'
@@ -43,13 +43,6 @@ const themeToggle = document.querySelector('.theme-toggle')
 if (themeToggle) {
   themeToggle.addEventListener('click', toggleTheme)
 }
-
-// Watch for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-  if (!localStorage.getItem('theme')) {
-    setTheme(e.matches ? 'dark' : 'light')
-  }
-})
 
 const container = document.getElementById('container')
 
