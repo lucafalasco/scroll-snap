@@ -124,7 +124,12 @@ function createArrowElements(target: HTMLElement) {
   return arrows
 }
 
+let arrowContainer: HTMLDivElement | null = null
+
 function updateArrowsPosition(element: HTMLElement, arrows: Record<string, HTMLElement>) {
+  // Add early return if arrows or container were cleaned up
+  if (!arrowContainer || !Object.keys(arrows).length) return
+
   const rect = element.getBoundingClientRect()
   const padding = 16 // Consistent padding
   const halfArrowSize = 20 // Half of arrow size for centering
@@ -652,13 +657,31 @@ export default function createScrollSnap(
     }
   }
 
+  // Extract arrow hover handlers to named functions for proper cleanup
+  const showArrowsOnHover = () => {
+    Object.values(arrows).forEach((arrow) => {
+      if (arrow.style.display !== 'none') {
+        arrow.style.opacity = '0.6'
+      }
+    })
+  }
+
+  const hideArrowsOnLeave = (e: MouseEvent) => {
+    const relatedTarget = e.relatedTarget as HTMLElement
+    if (!element.contains(relatedTarget) && !relatedTarget?.closest('.scroll-snap-arrow')) {
+      Object.values(arrows).forEach((arrow) => {
+        arrow.style.opacity = '0'
+      })
+    }
+  }
+
   function setupArrows() {
     if (!showArrows) return
 
     arrows = createArrowElements(target)
 
     // Create a container for the arrows
-    const arrowContainer = document.createElement('div')
+    arrowContainer = document.createElement('div')
     arrowContainer.style.cssText = `
       position: fixed;
       top: 0;
@@ -689,27 +712,12 @@ export default function createScrollSnap(
     window.addEventListener('resize', updatePositions)
 
     // Show arrows on container hover
-    element.addEventListener('mouseenter', () => {
-      Object.values(arrows).forEach((arrow) => {
-        if (arrow.style.display !== 'none') {
-          arrow.style.opacity = '0.6' // Initial opacity when container is hovered
-        }
-      })
-    })
+    element.addEventListener('mouseenter', showArrowsOnHover)
 
     // Hide arrows when leaving container or arrows
-    const hideArrows = (e: MouseEvent) => {
-      const relatedTarget = e.relatedTarget as HTMLElement
-      if (!element.contains(relatedTarget) && !relatedTarget?.closest('.scroll-snap-arrow')) {
-        Object.values(arrows).forEach((arrow) => {
-          arrow.style.opacity = '0'
-        })
-      }
-    }
-
-    element.addEventListener('mouseleave', hideArrows)
+    element.addEventListener('mouseleave', hideArrowsOnLeave)
     Object.values(arrows).forEach((arrow) => {
-      arrow.addEventListener('mouseleave', hideArrows)
+      arrow.addEventListener('mouseleave', hideArrowsOnLeave)
     })
   }
 
@@ -740,22 +748,122 @@ export default function createScrollSnap(
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (!enableKeyboard) return
+    // Only handle events when the target element is focused or the event originated from it
+    if (!enableKeyboard || !target.contains(e.target as Node)) return
 
     switch (e.key) {
       case 'ArrowUp':
+        e.preventDefault() // Prevent page scrolling
         scrollToDirection('up')
         break
       case 'ArrowDown':
+        e.preventDefault()
         scrollToDirection('down')
         break
       case 'ArrowLeft':
+        e.preventDefault()
         scrollToDirection('left')
         break
       case 'ArrowRight':
+        e.preventDefault()
         scrollToDirection('right')
         break
     }
+  }
+
+  // Track all event listeners for proper cleanup
+  const boundEventListeners = {
+    scroll: null as (() => void) | null,
+    keydown: null as ((e: KeyboardEvent) => void) | null,
+    resize: null as (() => void) | null,
+    containerScroll: null as (() => void) | null,
+  }
+
+  function bind() {
+    // Ensure we're not double-binding
+    unbind()
+
+    bindElement(element)
+    setupArrows()
+
+    if (enableKeyboard) {
+      // Make the container focusable
+      if (!element.getAttribute('tabindex')) {
+        element.setAttribute('tabindex', '0')
+      }
+
+      // Attach keydown listener to the container instead of window
+      boundEventListeners.keydown = handleKeydown
+      element.addEventListener('keydown', boundEventListeners.keydown)
+    }
+
+    // Store resize handler reference
+    boundEventListeners.resize = handleResize
+    window.addEventListener('resize', boundEventListeners.resize)
+
+    if (showArrows) {
+      boundEventListeners.containerScroll = () => updateArrowsPosition(element, arrows)
+      element.addEventListener('scroll', boundEventListeners.containerScroll)
+    }
+  }
+
+  function unbind() {
+    if (listenerElement) {
+      unbindElement()
+    }
+
+    // Clean up keyboard event listener
+    if (boundEventListeners.keydown) {
+      element.removeEventListener('keydown', boundEventListeners.keydown)
+      boundEventListeners.keydown = null
+    }
+
+    // Clean up resize listener
+    if (boundEventListeners.resize) {
+      window.removeEventListener('resize', boundEventListeners.resize)
+      boundEventListeners.resize = null
+    }
+
+    // Clean up arrow-related listeners and elements
+    if (showArrows) {
+      if (boundEventListeners.containerScroll) {
+        element.removeEventListener('scroll', boundEventListeners.containerScroll)
+        boundEventListeners.containerScroll = null
+      }
+
+      // Remove mouseenter/mouseleave events from the container
+      element.removeEventListener('mouseenter', showArrowsOnHover)
+      element.removeEventListener('mouseleave', hideArrowsOnLeave)
+
+      // Clean up arrows and their events
+      Object.values(arrows).forEach((arrow) => {
+        arrow.removeEventListener('mouseenter', () => {})
+        arrow.removeEventListener('mouseleave', () => {})
+        arrow.onclick = null
+      })
+
+      // Clean up arrow container
+      if (arrowContainer && arrowContainer.parentNode) {
+        arrowContainer.parentNode.removeChild(arrowContainer)
+        arrowContainer = null
+      }
+
+      arrows = {}
+    }
+
+    // Cancel any ongoing animations
+    if (animationFrame.x) {
+      cancelAnimationFrame(animationFrame.x)
+      animationFrame.x = 0
+    }
+    if (animationFrame.y) {
+      cancelAnimationFrame(animationFrame.y)
+      animationFrame.y = 0
+    }
+
+    // Reset animation states
+    animating = { x: false, y: false }
+    activeDirections = { x: 0, y: 0 }
   }
 
   function handleResize() {
@@ -798,30 +906,6 @@ export default function createScrollSnap(
         lastWindowHeight = window.innerHeight
       }
     })
-  }
-
-  function bind() {
-    bindElement(element)
-    setupArrows()
-    if (enableKeyboard) {
-      window.addEventListener('keydown', handleKeydown)
-    }
-    window.addEventListener('resize', handleResize)
-  }
-
-  function unbind() {
-    unbindElement()
-    if (enableKeyboard) {
-      window.removeEventListener('keydown', handleKeydown)
-    }
-    window.removeEventListener('resize', handleResize)
-    if (showArrows) {
-      window.removeEventListener('resize', () => updateArrowsPosition(element, arrows))
-      element.removeEventListener('scroll', () => updateArrowsPosition(element, arrows))
-      Object.values(arrows).forEach((arrow) => arrow.remove())
-    }
-    if (animationFrame.x) cancelAnimationFrame(animationFrame.x)
-    if (animationFrame.y) cancelAnimationFrame(animationFrame.y)
   }
 
   bind()
