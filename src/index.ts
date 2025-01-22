@@ -9,6 +9,8 @@ const TIMEOUT_DEFAULT = 100
 const DURATION_DEFAULT = 300
 const THRESHOLD_DEFAULT = 0.2
 const SNAPSTOP_DEFAULT = false
+const SHOW_ARROWS_DEFAULT = false
+const ENABLE_KEYBOARD_DEFAULT = true
 const EASING_DEFAULT = easeInOutQuad
 const NOOP = () => {}
 
@@ -272,10 +274,21 @@ export default function createScrollSnap(
       `Optional settings property 'snapStop' is not valid, expected BOOLEAN but found ${(typeof settings.snapStop).toUpperCase()}`
     )
   }
-  const snapStop = settings.snapStop || SNAPSTOP_DEFAULT
+  const snapStop = settings.snapStop ?? SNAPSTOP_DEFAULT
 
-  const showArrows = settings.showArrows ?? false
-  const enableKeyboard = settings.enableKeyboard ?? true
+  if (settings.showArrows && typeof settings.showArrows !== 'boolean') {
+    throw new Error(
+      `Optional settings property 'showArrows' is not valid, expected BOOLEAN but found ${(typeof settings.snapStop).toUpperCase()}`
+    )
+  }
+  const showArrows = settings.showArrows ?? SHOW_ARROWS_DEFAULT
+
+  if (settings.enableKeyboard && typeof settings.enableKeyboard !== 'boolean') {
+    throw new Error(
+      `Optional settings property 'enableKeyboard' is not valid, expected BOOLEAN but found ${(typeof settings.snapStop).toUpperCase()}`
+    )
+  }
+  const enableKeyboard = settings.enableKeyboard ?? ENABLE_KEYBOARD_DEFAULT
 
   let arrows: Record<string, HTMLElement> = {}
 
