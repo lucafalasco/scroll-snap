@@ -5,7 +5,7 @@
   --container-bg: #f5f5f5;
   --text-color: #212121;
   --border-color: #e0e0e0;
-  --debug-bg: rgba(134, 134, 134, 0.9);
+  --debug-bg: rgba(217, 217, 217, 0.9);
 }
 
 [data-theme='dark'] {
@@ -239,4 +239,140 @@ body {
 [data-theme='light'] .theme-toggle .sun-icon,
 [data-theme='dark'] .theme-toggle .moon-icon {
   display: block;
+}
+
+.controls {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  bottom: 20px;
+  left: 20px;
+  background-color: var(--debug-bg);
+  border-radius: 8px;
+  padding: 15px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  max-width: 300px;
+}
+
+.controls:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-group label {
+  min-width: 120px;
+  font-size: 12px;
+}
+
+.controls input[type='number'],
+.controls input[type='text'],
+.controls select {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  width: 100px;
+}
+
+.controls input[type='number'],
+.controls input[type='text'] {
+  width: 100px;
+  appearance: none;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: text;
+}
+
+.controls input[type='number']:hover,
+.controls input[type='text']:hover {
+  border-color: var(--text-color);
+}
+
+.controls input[type='number']:focus,
+.controls input[type='text']:focus {
+  outline: none;
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 1px var(--text-color);
+}
+
+.controls input[type='checkbox'] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+  position: relative;
+  cursor: pointer;
+}
+
+.controls input[type='checkbox']:checked {
+  background: var(--bg-color);
+  border-color: var(--text-color);
+}
+
+.controls input[type='checkbox']:hover {
+  border-color: var(--text-color);
+}
+
+.controls input[type='checkbox']:focus {
+  outline: none;
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 1px var(--text-color);
+}
+
+.controls input[type='checkbox']:checked::after {
+  content: '✓';
+  position: absolute;
+  color: var(--text-color);
+  font-size: 12px;
+  left: 2px;
+  top: -1px;
+}
+
+.controls select {
+  width: 140px;
+  appearance: none;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23212121' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+}
+
+[data-theme='dark'] .controls select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.controls select:hover {
+  border-color: var(--text-color);
+}
+
+.controls select:focus {
+  outline: none;
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 1px var(--text-color);
 }
