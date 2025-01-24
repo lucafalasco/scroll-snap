@@ -1,32 +1,42 @@
-import createScrollSnap from 'https://unpkg.com/scroll-snap/dist/esm/index.js'
+// import createScrollSnap from 'https://unpkg.com/scroll-snap/dist/esm/index.js'
+import createScrollSnap from '../dist/esm/index.js'
 
-function callback() {
-  console.log('snap')
+// Initialize scroll snap for documentation example
+const example = document.getElementById('example')
+
+if (example) {
+  createScrollSnap(
+    example,
+    {
+      snapDestinationY: '100%',
+      timeout: 100,
+      duration: 300,
+      threshold: 0.2,
+    },
+    () => {
+      console.log('snapped')
+    }
+  )
 }
 
-const baseConfig = {
-  timeout: 100,
-  duration: 300,
-  threshold: 0.2,
-  easing: (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+// Force initial scroll position to top
+example.scrollTop = 0
+
+// Add active class to nav links on scroll
+const observerOptions = {
+  threshold: 0.5,
+  rootMargin: '-100px 0px -50px 0px',
 }
 
-const containerVertical = document.getElementById('container')
-const containerHorizontal = document.getElementById('container-horizontal')
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id
+      document.querySelectorAll('.docs-nav-link').forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${id}`)
+      })
+    }
+  })
+}, observerOptions)
 
-createScrollSnap(
-  containerVertical,
-  {
-    snapDestinationY: '90vh',
-    ...baseConfig,
-  },
-  callback
-)
-createScrollSnap(
-  containerHorizontal,
-  {
-    snapDestinationX: '100%',
-    ...baseConfig,
-  },
-  callback
-)
+document.querySelectorAll('[id]').forEach((section) => observer.observe(section))
