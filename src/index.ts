@@ -711,6 +711,7 @@ export default function createScrollSnap(
   // Extract arrow hover handlers to named functions for proper cleanup
   const showArrowsOnHover = () => {
     requestAnimationFrame(() => {
+      updateArrowsPosition(element, arrows)
       Object.values(arrows).forEach((arrow) => {
         if (arrow.style.display === 'flex') {
           arrow.style.opacity = '0.6'
@@ -760,6 +761,7 @@ export default function createScrollSnap(
     addEventHandler(element, 'mouseenter', showArrowsOnHover)
     addEventHandler(element, 'mouseleave', hideArrowsOnLeave)
     addEventHandler(element, 'scroll', () => updateArrowsPosition(element, arrows))
+    addEventHandler(window, 'scroll', () => updateArrowsPosition(element, arrows))
 
     // Initial position and visibility
     updateArrowsPosition(element, arrows)
