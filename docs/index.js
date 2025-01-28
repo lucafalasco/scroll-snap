@@ -74,7 +74,6 @@ if (navigationExample) {
     showArrows: true,
     enableKeyboard: true,
   })
-  navigationExample.focus()
 }
 
 ;[example, horizontalExample, durationExample, thresholdExample, easingExample, navigationExample]

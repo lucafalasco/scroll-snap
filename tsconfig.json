@@ -1,9 +1,11 @@
 {
-  "include": ["src"],
+  "include": ["src/**/*"],
+  "exclude": ["playground/**/*", "dist/**/*", "node_modules/**/*"],
   "compilerOptions": {
     "target": "es5",
     "lib": ["esnext", "dom", "dom.iterable"],
-    "declaration": true,
+    "declaration": false,
+    "declarationMap": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowJs": true,

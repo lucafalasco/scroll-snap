@@ -31,21 +31,24 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/lucafalasco/scroll-snap",
+  "type": "module",
   "devDependencies": {
-    "del-cli": "^3.0.0",
-    "mkdirp": "^1.0.3",
-    "path": "^0.12.7",
-    "ts-loader": "^6.2.1",
-    "typescript": "^5.5.4",
-    "webpack": "^5.94.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "del-cli": "^5.1.0",
+    "mkdirp": "^3.0.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack serve",
     "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.umd.json",
+    "build:docs": "del ./docs/playground && webpack --env docs",
     "prebuild": "mkdirp dist && del ./dist/*",
-    "prepare": "yarn build"
+    "prepare": "npm run build && npm run build:docs"
   },
   "packageManager": "yarn@4.4.1"
 }
