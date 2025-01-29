@@ -2,12 +2,16 @@
   "name": "scroll-snap",
   "version": "4.0.5",
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/scroll-snap.min.js",
+  "module": "dist/scroll-snap.esm.js",
+  "unpkg": "dist/scroll-snap.min.js",
+  "jsdelivr": "dist/scroll-snap.min.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "dist/esm"
+    "dist/scroll-snap.js",
+    "dist/scroll-snap.min.js",
+    "dist/scroll-snap.esm.js",
+    "dist/index.d.ts"
   ],
   "author": {
     "name": "Luca Falasco",
@@ -44,10 +48,12 @@
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "start": "webpack serve",
-    "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.umd.json",
+    "start": "webpack serve --env development",
+    "build:clean": "del ./dist/*",
+    "build:bundles": "webpack --env production && webpack --env production --env minify && webpack --env production --env esm",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build": "yarn build:clean && yarn build:bundles && yarn build:types",
     "build:docs": "del ./docs/playground && webpack --env docs",
-    "prebuild": "mkdirp dist && del ./dist/*",
     "prepare": "npm run build && npm run build:docs"
   },
   "packageManager": "yarn@4.4.1"

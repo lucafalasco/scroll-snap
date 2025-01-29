@@ -4,8 +4,6 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["esnext", "dom", "dom.iterable"],
-    "declaration": false,
-    "declarationMap": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowJs": true,
@@ -17,6 +15,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": false,
     "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "module": "esnext"
   }
 }
