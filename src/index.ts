@@ -18,7 +18,7 @@ import {
 } from './utils'
 import { createArrowElements, updateArrowsPosition } from './arrows'
 import { smoothScrollAxis } from './animations'
-import { addEventHandler, handleKeydown } from './handlers'
+import { addEventHandler, cleanupEventHandlers, handleKeydown } from './handlers'
 import { validateSettings } from './validation'
 
 export type { ScrollSnapSettings }
@@ -183,6 +183,7 @@ export default function createScrollSnap(
   }
 
   function animationHandler() {
+    // If the scroll position has changed during the timeout, restart the timer
     if (scrollStart.y === target.scrollTop && scrollStart.x === target.scrollLeft) {
       return
     }
@@ -377,9 +378,7 @@ export default function createScrollSnap(
   }
 
   function unbind() {
-    activeHandlers.forEach(({ element, event, handler }) => {
-      element.removeEventListener(event, handler)
-    })
+    cleanupEventHandlers(activeHandlers)
     activeHandlers = []
 
     if (showArrows) {

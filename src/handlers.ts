@@ -10,11 +10,11 @@ export function addEventHandler(
   activeHandlers.push({ element, event, handler })
 }
 
-export function cleanupEventHandlers(activeHandlers: EventHandlers[]): EventHandlers[] {
+export function cleanupEventHandlers(activeHandlers: EventHandlers[]) {
   activeHandlers.forEach(({ element, event, handler }) => {
     element.removeEventListener(event, handler)
   })
-  return []
+  activeHandlers.splice(0, activeHandlers.length)
 }
 
 export function handleKeydown(

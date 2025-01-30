@@ -16,6 +16,7 @@
     "noUnusedLocals": false,
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
-    "module": "esnext"
+    "module": "esnext",
+    "types": ["jest", "node"]
   }
 }
