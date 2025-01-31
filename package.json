@@ -1,6 +1,6 @@
 {
   "name": "scroll-snap",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
   "main": "dist/scroll-snap.min.js",
   "module": "dist/scroll-snap.esm.js",
