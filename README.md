@@ -111,13 +111,13 @@ cd scroll-snap
 # Install dependencies
 yarn
 
-# Start development server with examples
-yarn dev
+# Start development server
+yarn start
 
 # Run unit tests
 yarn test
 
-# Run integration tests
+# Run e2e tests
 yarn test:e2e
 
 # Build for production
