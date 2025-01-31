@@ -61,7 +61,7 @@
     "build:types": "tsc -p tsconfig.types.json",
     "build": "yarn build:clean && yarn build:bundles && yarn build:types",
     "build:docs": "del ./docs/playground && webpack --env docs",
-    "prepare": "npm run build && npm run build:docs",
+    "prepare": "npm run build",
     "test": "yarn test:unit",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "yarn test:unit --watch",

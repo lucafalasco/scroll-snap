@@ -63,6 +63,20 @@ const createConfig = (env = {}) => {
         clean: true,
       },
       devtool: false,
+      module: {
+        rules: [
+          {
+            test: /\.ts$/,
+            use: {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+              },
+            },
+            exclude: /node_modules/,
+          },
+        ],
+      },
       plugins: [
         new CopyPlugin({
           patterns: [
