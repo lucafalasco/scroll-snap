@@ -9,136 +9,138 @@
 [![npm](https://img.shields.io/npm/v/scroll-snap.svg?style=for-the-badge&label)](https://www.npmjs.com/scroll-snap)
 [![npm downloads](https://img.shields.io/npm/dm/scroll-snap.svg?style=for-the-badge)](https://www.npmjs.com/package/scroll-snap)
 
-Snap page when user stops scrolling, basically implements [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap), adding a customizable configuration and a consistent cross browser behaviour.
+#### Overview
 
-- Works in all modern browsers
-- `requestAnimationFrame` for 60fps
-- Customizable settings (including easing functions)
-- No additional dependencies
-- No extra stylesheet
+`scroll-snap` is a powerful yet lightweight TypeScript library that provides smooth and customizable page snapping functionality. 
+Built as a modern implementation of [CSS Scroll Snap](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap).
 
-## Installation
+#### Features
 
-```sh
+- 🪶 Lightweight (~2KB gzipped)
+- 🌐 Cross-browser support
+- 💪 Zero dependencies
+- 🎯 TypeScript ready
+- ⚡ Smooth animations
+- 🎨 Customizable settings
+- ⌨️ Keyboard navigation support
+- 🖱️ Optional navigation arrows
+
+#### Installation
+
+```bash
 yarn add scroll-snap
 ```
 
-You can also grab a pre-built version from [unpkg](https://unpkg.com/scroll-snap/dist/index.js)
+#### Basic Usage
 
-## Usage
-
-```js
-createScrollSnap(element, settings, [callback])
-```
-
-## Arguments 
-
-### `element: HTMLElement`
-
-The HTML DOM Element to attach the scroll listener to.
-
-### `settings: Settings`
-
-A configuration object consisting of one or more of the following keys:
-
-#### `snapDestinationX: string | number`
-
-> Snap destination for x axis, should be a valid css value expressed as `px | % | vw | vh`
-
-#### `snapDestinationY: string | number`
-
-> Snap destination for y axis, should be a valid css value expressed as `px | % | vw | vh`
-
-#### `timeout: number`
-
-> Time in ms after which scrolling is considered finished  
-> [default: 100]
-
-#### `duration: number`
-
-> Duration in ms for the smooth snap   
-> [default: 300]
-
-#### `threshold: number`
-
-> Threshold to reach before scrolling to next/prev element, expressed as a percentage in the range [0, 1]  
-> [default: 0.2]
-
-#### `snapStop: boolean`
-
-> When true, the scroll container is not allowed to "pass over" the other snap positions  
-> [default: false]
-
-#### `easing: (t: number) => number`
-
-> Custom easing function  
-> `@param t`: normalized time typically in the range [0, 1]  
-> [default: `easeInOutQuad`]  
->
-> For reference: https://gist.github.com/gre/1650294 
-
-### `callback: () => void` [Optional]
-
-Optional callback to execute once the animation ends.
-
-## Returns
-
-An object including two handlers to manually attach and remove the scroll event listener
-
-```js
-{
-  // attaches the scroll event listener 
-  bind: () => void 
-  // removes the scroll event listener
-  unbind: () => void 
-}
-```
-
-## Example
-```js
+```typescript
 import createScrollSnap from 'scroll-snap'
 
 const element = document.getElementById('container')
-
 const { bind, unbind } = createScrollSnap(element, {
-  snapDestinationX: '0%',
-  snapDestinationY: '90%',
-  timeout: 100,
+  snapDestinationY: '100%',
+})
+```
+
+#### React Usage
+
+Check out the [React Hooks demo](https://codesandbox.io/p/sandbox/scroll-snap-react-hooks-pppv8w) to see how to integrate scroll-snap in a React application.
+
+#### Configuration Options
+
+| Option           | Type                  | Default | Description                                    |
+| ---------------- | --------------------- | ------- | ---------------------------------------------- |
+| snapDestinationX | string \| number      | -       | Horizontal snap points (e.g., '100%', '500px') |
+| snapDestinationY | string \| number      | -       | Vertical snap points (e.g., '100%', '500px')   |
+| timeout          | number                | 100     | Delay before snapping after scroll ends (ms)   |
+| duration         | number                | 300     | Animation duration (ms)                        |
+| threshold        | number                | 0.2     | Scroll distance threshold (0 to 1)             |
+| snapStop         | boolean               | false   | Prevents skipping intermediate snap positions  |
+| showArrows       | boolean               | false   | Shows navigation arrows when hovering          |
+| enableKeyboard   | boolean               | true    | Enables keyboard arrow keys navigation         |
+| easing           | (t: number) => number | linear  | Animation easing function                      |
+
+#### Examples
+
+##### Vertical Snapping
+
+```typescript
+const scrollSnap = createScrollSnap(element, {
+  snapDestinationY: '100vh',
   duration: 300,
-  threshold: 0.2,
-  snapStop: false,
-  easing: easeInOutQuad,
-}, () => console.log('element snapped'))
-
-// remove the listener 
-// unbind();
-
-// re-instantiate the listener 
-// bind();
+  easing: t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+})
 ```
 
-#### [Usage with React (custom hook)](https://codesandbox.io/s/scroll-snap-react-hooks-pppv8w?autoresize=1&hidenavigation=1)
+##### Horizontal Scrolling Gallery
 
-## Contributing
-
+```typescript
+const scrollSnap = createScrollSnap(element, {
+  snapDestinationX: '100%',
+  showArrows: true,
+  enableKeyboard: true
+})
 ```
+
+##### Custom Threshold
+
+```typescript
+const scrollSnap = createScrollSnap(element, {
+  snapDestinationY: '50vh',
+  threshold: 0.4, // Requires more scroll distance to trigger snap
+})
+```
+
+#### API Reference
+
+##### Methods
+
+##### `bind()`
+Enables scroll snapping and attaches event listeners.
+
+##### `unbind()`
+Disables scroll snapping and removes event listeners.
+
+#### Development
+
+```bash
+# Clone the repository
 git clone https://github.com/lucafalasco/scroll-snap.git
 cd scroll-snap
-yarn install
-```
 
-Start the testing environment from `playground/`:
+# Install dependencies
+yarn
 
-```
-yarn start
-```
+# Start development server with examples
+yarn dev
 
-Build lib for production:
+# Run unit tests
+yarn test
 
-```
+# Run integration tests
+yarn test:e2e
+
+# Build for production
 yarn build
 ```
 
-## License
+The dev server will start at `http://localhost:8080` with hot reloading enabled and a playground environment for testing.
 
-MIT
+#### Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/my-feature`
+3. Commit your changes: `git commit -am 'Add my feature'`
+4. Push to the branch: `git push origin feature/my-feature`
+5. Submit a pull request
+
+#### Browser Support
+
+- Chrome 61+
+- Firefox 63+
+- Safari 11+
+- Edge 79+
+
+#### License
+
+MIT © [Luca Falasco](LICENSE)

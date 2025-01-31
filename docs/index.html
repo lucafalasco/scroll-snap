@@ -1,125 +1,452 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Scroll Snap - Customizable page snapping</title>
+    <title>scroll-snap - Page snapping for the web</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta
+      name="description"
+      content="A lightweight, customizable JavaScript library for smooth page snapping with cross-browser support"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="header">
+    <header class="header">
       <div class="header-inner">
-        <div class="logo-wrapper">
-          <div class="logo"></div>
-          <h2>
-            <b class="header-title monospace">scroll-snap</b>
-          </h2>
-        </div>
-        <div class="links">
-          <a class="highlight" target="_blank" href="https://github.com/lucafalasco/scroll-snap"
-            >Github</a
-          >
+        <a href="/" class="logo-wrapper">
+          <img src="assets/logo.svg" alt="scroll-snap logo" class="logo" />
+          <span class="header-title">scroll-snap</span>
+        </a>
+        <nav class="links">
+          <button class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
           <a
-            class="highlight"
+            href="https://github.com/lucafalasco/scroll-snap"
+            class="button button-secondary"
             target="_blank"
-            href="https://codesandbox.io/s/n2ynjj8lj?autoresize=1&hidenavigation=1"
-            >Playground
+          >
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+              />
+            </svg>
+            GitHub
           </a>
-        </div>
+          <a href="/playground" class="button button-primary">Try it out</a>
+        </nav>
       </div>
-    </div>
-    <div id="container">
-      <div class="page first-page">
-        <div class="first-page-paragraph">
-          <div class="title"><b>Page Snapping</b> done right.</div>
-          <p class="text-center subtitle">
-            With a <b>customizable configuration</b> <br />
-            and a consistent <b>cross browser</b> behaviour. <br />
-          </p>
-          <p class="text-center">
-            <code> > yarn add scroll-snap </code>
-          </p>
-        </div>
-        <div class="hint">
-          <div class="scroll"></div>
-        </div>
-      </div>
-      <div class="page second-page">
-        <div id="container-horizontal">
-          <div class="page first-page-horizontal">
-            <div class="second-page-paragraph">
-              <div class="container-inner">
-                <div class="container-content">
-                  <div class="container-title"><b>Vanilla JS</b> implementation</div>
-                  <div>
-                    A native, consistent <b>cross-browser</b> implementation and a
-                    <b>simple API</b> to initialize the scroll listener.
-                  </div>
-                </div>
-                <div class="snippet">
-                  <code>
-                    <pre>
-import createScrollSnap from 'scroll-snap'
+    </header>
 
-createScrollSnap(element, {
-  <b>snapDestinationX</b>: '90%',
-  <b>timeout</b>: 100,
-  <b>duration</b>: 300,
-})
-</pre
-                    >
-                  </code>
+    <main>
+      <div class="landing-section">
+        <section class="hero">
+          <div class="hero-content">
+            <div class="hero-header fade-in">
+              <h1 class="hero-title">Seamless Scroll Snapping,<br />Pixel-Perfect Control.</h1>
+            </div>
+            <div class="hero-subtitle fade-in">
+              Build engaging web experiences with smooth transitions.<br />
+              <strong>Lightweight. Fast. Flexible.</strong>
+            </div>
+
+            <div class="features-grid">
+              <div class="feature-card fade-in">
+                <div class="feature-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                </div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p>Just 2KB gzipped. Zero dependencies. Built for performance.</p>
+              </div>
+              <div class="feature-card fade-in">
+                <div class="feature-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path
+                      d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="feature-title">Cross Platform</h3>
+                <p>Consistent behavior across all modern browsers.</p>
+              </div>
+              <div class="feature-card fade-in">
+                <div class="feature-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 20V10" />
+                    <path d="M18 20V4" />
+                    <path d="M6 20v-4" />
+                  </svg>
+                </div>
+                <h3 class="feature-title">Full Control</h3>
+                <p>Customize every aspect with a simple yet powerful API.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="docs-section">
+        <div class="docs-grid">
+          <nav class="docs-nav">
+            <div class="docs-nav-group">
+              <h3 class="docs-nav-title">Getting Started</h3>
+              <ul class="docs-nav-list">
+                <li class="docs-nav-item">
+                  <a href="#installation" class="docs-nav-link active">Installation</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#basic-usage" class="docs-nav-link">Basic Usage</a>
+                </li>
+              </ul>
+            </div>
+            <div class="docs-nav-group">
+              <h3 class="docs-nav-title">Examples</h3>
+              <ul class="docs-nav-list">
+                <li class="docs-nav-item">
+                  <a href="#horizontal-snapping" class="docs-nav-link">Horizontal Snapping</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#custom-duration" class="docs-nav-link">Custom Duration</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#threshold-example" class="docs-nav-link">Threshold Control</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#easing-functions" class="docs-nav-link">Easing Functions</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#navigation" class="docs-nav-link">Navigation Controls</a>
+                </li>
+              </ul>
+            </div>
+            <div class="docs-nav-group">
+              <h3 class="docs-nav-title">API Reference</h3>
+              <ul class="docs-nav-list">
+                <li class="docs-nav-item">
+                  <a href="#configuration" class="docs-nav-link">Configuration</a>
+                </li>
+                <li class="docs-nav-item">
+                  <a href="#methods" class="docs-nav-link">Methods</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+          <div class="docs-content">
+            <div id="installation">
+              <h2>Installation</h2>
+              <code class="code-block">npm install scroll-snap</code>
+            </div>
+
+            <div id="basic-usage">
+              <h2>Basic Usage</h2>
+              <p>Here's a simple example of vertical snapping:</p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-keyword">import</span> <span class="code-function">createScrollSnap</span> <span class="code-keyword">from</span> <span class="code-string">'scroll-snap'</span>
+
+<span class="code-keyword">const</span> element = <span class="code-function">document.getElementById</span>(<span class="code-string">'container'</span>)
+<span class="code-keyword">const</span> { bind, unbind } = <span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationY</span>: <span class="code-string">'100%'</span>
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example">
+                  <div class="example-page">Scroll down ↓</div>
+                  <div class="example-page">Keep going ↓</div>
+                  <div class="example-page">Almost there ↓</div>
+                  <div class="example-page">You made it! 🎉</div>
                 </div>
               </div>
             </div>
 
-            <div class="arrow-big right"></div>
-          </div>
-          <div class="page second-page-horizontal">
-            <div class="second-page-paragraph">
-              <div class="container-inner">
-                <div class="container-content">
-                  <div class="container-title">
-                    <b>Complete control</b> over the scroll snap behaviour
+            <div id="horizontal-snapping">
+              <h2>Horizontal Snapping</h2>
+              <p>Enable horizontal scroll snapping using snapDestinationX:</p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationX</span>: <span class="code-string">'100%'</span>,
+  <span class="code-property">timeout</span>: <span class="code-number">100</span>,
+  <span class="code-property">duration</span>: <span class="code-number">300</span>,
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example-horizontal" class="example-wrapper-horizontal">
+                  <div class="example-page">Scroll right →</div>
+                  <div class="example-page">Keep going →</div>
+                  <div class="example-page">You made it! 🎉</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="custom-duration">
+              <h2>Custom Duration</h2>
+              <p>Control the animation speed with custom duration and easing:</p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationY</span>: <span class="code-string">'100%'</span>,
+  <span class="code-property">duration</span>: <span class="code-number">800</span>, // Slower animation
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example-duration">
+                  <div class="example-page">Slow scroll ↓</div>
+                  <div class="example-page">Notice the easing ↓</div>
+                  <div class="example-page">Smooth! 🎉</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="threshold-example">
+              <h2>Threshold Control</h2>
+              <p>Adjust how far the user needs to scroll before snapping occurs:</p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationY</span>: <span class="code-string">'100%'</span>,
+  <span class="code-property">threshold</span>: <span class="code-number">0.5</span>, // Need to scroll halfway
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example-threshold">
+                  <div class="example-page">Scroll halfway ↓</div>
+                  <div class="example-page">Try both directions ↕️</div>
+                  <div class="example-page">Done! 🎉</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="easing-functions">
+              <h2>Easing Functions</h2>
+              <p>Choose from various easing functions or provide your own:</p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationY</span>: <span class="code-string">'100%'</span>,
+  <span class="code-property">easing</span>: <span class="code-function">t</span> => 1 - Math.pow(1 - t, 3), // Cubic
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example-easing">
+                  <div class="example-page">Cubic easing ↓</div>
+                  <div class="example-page">Smooth motion ↓</div>
+                  <div class="example-page">Perfect! 🎉</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="navigation">
+              <h2>Navigation Controls</h2>
+              <p>
+                Enable visual arrows and keyboard navigation. Click the container or press Tab to
+                focus it for keyboard controls:
+              </p>
+
+              <div class="code-editor">
+                <div class="code-editor-header">
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                  <div class="window-button"></div>
+                </div>
+                <pre><code><span class="code-function">createScrollSnap</span>(element, {
+  <span class="code-property">snapDestinationY</span>: <span class="code-string">'100%'</span>,
+  <span class="code-property">showArrows</span>: <span class="code-keyword">true</span>,
+  <span class="code-property">enableKeyboard</span>: <span class="code-keyword">true</span>,
+})</code></pre>
+              </div>
+
+              <div class="example-container">
+                <div id="example-navigation">
+                  <div class="keyboard-hint">
+                    Container is focused - Use <kbd>↑</kbd> <kbd>↓</kbd> arrow keys
                   </div>
-                  Manually <b>bind</b> and <b>unbind</b> the scrolling element. <br />
-                  Customize the settings, set a <b>threshold</b>, and
-                  <b>fine-tune the animation</b> through custom easing functions.
+                  <div class="example-page">Click container or press Tab to focus ⌨️</div>
+                  <div class="example-page">Now try arrows or keyboard ↕️</div>
+                  <div class="example-page">Full control! 🎉</div>
                 </div>
-                <div class="snippet">
-                  <code>
-                    <pre>
-<span class="comment">// Only snap once</span>
-const { unbind } = createScrollSnap(
-  element, 
-  {
-    snapDestinationX: '90%',
-    timeout: 100,
-    duration: 300,
-    <b>threshold</b>: 0.2,
-    <b>easing</b>: (t: number) => (
-      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t   
-    )
-  }, 
-  () => unbind()
-)
-</pre>
-                  </code>
-                </div>
+              </div>
+            </div>
+
+            <div id="configuration">
+              <h2>Configuration Options</h2>
+              <div class="api-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Option</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>snapDestinationX</td>
+                      <td>string | number</td>
+                      <td>-</td>
+                      <td>Horizontal snap points (e.g., '100%', '500px')</td>
+                    </tr>
+                    <tr>
+                      <td>snapDestinationY</td>
+                      <td>string | number</td>
+                      <td>-</td>
+                      <td>Vertical snap points (e.g., '100%', '500px')</td>
+                    </tr>
+                    <tr>
+                      <td>timeout</td>
+                      <td>number</td>
+                      <td>100</td>
+                      <td>Delay before snapping after scroll ends (ms)</td>
+                    </tr>
+                    <tr>
+                      <td>duration</td>
+                      <td>number</td>
+                      <td>300</td>
+                      <td>Animation duration (ms)</td>
+                    </tr>
+                    <tr>
+                      <td>threshold</td>
+                      <td>number</td>
+                      <td>0.2</td>
+                      <td>Scroll distance threshold (0 to 1)</td>
+                    </tr>
+                    <tr>
+                      <td>snapStop</td>
+                      <td>boolean</td>
+                      <td>false</td>
+                      <td>Prevents skipping intermediate snap positions when true</td>
+                    </tr>
+                    <tr>
+                      <td>showArrows</td>
+                      <td>boolean</td>
+                      <td>false</td>
+                      <td>Shows navigation arrows when hovering the container</td>
+                    </tr>
+                    <tr>
+                      <td>enableKeyboard</td>
+                      <td>boolean</td>
+                      <td>true</td>
+                      <td>Enables keyboard arrow keys navigation when focused</td>
+                    </tr>
+                    <tr>
+                      <td>easing</td>
+                      <td>function</td>
+                      <td>linear</td>
+                      <td>Animation easing function</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="methods">
+              <h2>Methods</h2>
+              <p>Control scroll snap behavior dynamically after initialization:</p>
+
+              <div class="api-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th>Description</th>
+                      <th>Example</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>bind()</td>
+                      <td>Enables scroll snapping</td>
+                      <td><code>scrollSnap.bind()</code></td>
+                    </tr>
+                    <tr>
+                      <td>unbind()</td>
+                      <td>Disables scroll snapping and cleans up listeners</td>
+                      <td><code>scrollSnap.unbind()</code></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
-        <div class="credits">
-          Copyright ©
-          <script>
-            document.write(new Date().getFullYear())
-          </script>
-          -
-          <a target="_blank" href="https://lucafalasco.dev">Luca Falasco</a>
-        </div>
+      </section>
+    </main>
+
+    <footer class="copyright">
+      <div class="copyright-inner">
+        ©
+        <script>
+          document.write(new Date().getFullYear())
+        </script>
+        Luca Falasco. All rights reserved.
       </div>
-    </div>
+    </footer>
+
     <script type="module" src="index.js"></script>
   </body>
 </html>

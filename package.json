@@ -1,13 +1,17 @@
 {
   "name": "scroll-snap",
-  "version": "4.0.5",
+  "version": "5.0.0",
   "description": "Snap page when user stops scrolling, with a customizable configuration and a consistent cross browser behaviour",
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/scroll-snap.min.js",
+  "module": "dist/scroll-snap.esm.js",
+  "unpkg": "dist/scroll-snap.min.js",
+  "jsdelivr": "dist/scroll-snap.min.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "dist/esm"
+    "dist/scroll-snap.js",
+    "dist/scroll-snap.min.js",
+    "dist/scroll-snap.esm.js",
+    "dist/index.d.ts"
   ],
   "author": {
     "name": "Luca Falasco",
@@ -31,21 +35,40 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/lucafalasco/scroll-snap",
+  "type": "module",
   "devDependencies": {
-    "del-cli": "^3.0.0",
-    "mkdirp": "^1.0.3",
-    "path": "^0.12.7",
-    "ts-loader": "^6.2.1",
-    "typescript": "^5.5.4",
-    "webpack": "^5.94.0",
+    "@playwright/test": "^1.40.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@types/jest": "^29.5.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "del-cli": "^5.1.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "mkdirp": "^3.0.1",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0",
+    "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.umd.json",
-    "prebuild": "mkdirp dist && del ./dist/*",
-    "prepare": "yarn build"
+    "start": "webpack serve --env development",
+    "build:clean": "del ./dist/*",
+    "build:bundles": "webpack --env production && webpack --env production --env minify && webpack --env production --env esm",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build": "yarn build:clean && yarn build:bundles && yarn build:types",
+    "build:docs": "del ./docs/playground && webpack --env docs",
+    "prepare": "npm run build && npm run build:docs",
+    "test": "yarn test:unit",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "yarn test:unit --watch",
+    "test:coverage": "yarn test:unit --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui"
   },
   "packageManager": "yarn@4.4.1"
 }

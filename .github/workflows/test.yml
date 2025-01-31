@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - 'releases/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+      
+    - name: Install Playwright browsers
+      run: yarn playwright install --with-deps
+      
+    - name: Run unit tests
+      id: unit-test
+      run: yarn test:unit
+      
+    - name: Run e2e tests
+      id: e2e-test
+      run: yarn test:e2e
+      
+    - name: Upload coverage
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+    
+    - name: Report Status
+      if: always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const unitStatus = '${{ steps.unit-test.outcome }}'
+          const e2eStatus = '${{ steps.e2e-test.outcome }}'
+          const status = unitStatus === 'success' && e2eStatus === 'success' ? 'success' : 'failure'
+          core.setOutput('status', status)

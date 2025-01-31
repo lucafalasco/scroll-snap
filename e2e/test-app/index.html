@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #scroll-container {
+        height: 600px;
+        overflow: auto;
+      }
+      .section {
+        height: 600px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="scroll-container" tabindex="0">
+      <div class="section">Section 1</div>
+      <div class="section">Section 2</div>
+      <div class="section">Section 3</div>
+    </div>
+    <script type="module">
+      import createScrollSnap from '../../src/index.ts'
+      const container = document.getElementById('scroll-container')
+      if (container) {
+        createScrollSnap(container, {
+          snapDestinationY: '600px',
+          threshold: 0.2,
+          enableKeyboard: true,
+          timeout: 50,
+          duration: 300,
+        })
+      }
+    </script>
+  </body>
+</html>

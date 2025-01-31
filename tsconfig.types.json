@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": null,
+    "outFile": "dist/index.d.ts",
+    "module": "AMD", // Required for outFile
+    "noEmit": false
+  },
+  "exclude": ["playground", "dist", "**/*.test.ts"]
+}

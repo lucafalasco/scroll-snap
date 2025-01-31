@@ -1,30 +1,134 @@
-const path = require('path')
+import path from 'path'
+import { fileURLToPath } from 'url'
+import CopyPlugin from 'copy-webpack-plugin'
 
-module.exports = {
-  context: path.resolve(__dirname),
-  entry: './playground/index.ts',
-  output: {
-    filename: 'playground.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  devtool: 'eval-source-map',
-  devServer: {
-    static: './playground',
-    port: process.env.PORT || 9000,
-    host: '0.0.0.0',
-    open: true,
-    client: { overlay: false },
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(ts|tsx)$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const createConfig = (env = {}) => {
+  const isDocs = Boolean(env.docs)
+  const isDev = Boolean(env.development)
+  const isProduction = isDocs || Boolean(env.production)
+  const isESM = Boolean(env.esm)
+  const isMinified = Boolean(env.minify)
+
+  if (isDev) {
+    return {
+      mode: 'development',
+      context: path.resolve(__dirname),
+      entry: './playground/index.ts',
+      output: {
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'playground/dist'),
       },
-    ],
-  },
-  resolve: {
-    extensions: ['.ts', '.js'],
-  },
+      module: {
+        rules: [
+          {
+            test: /\.ts$/,
+            use: {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+              },
+            },
+            exclude: /node_modules/,
+          },
+        ],
+      },
+      devServer: {
+        static: {
+          directory: path.join(__dirname, 'playground'),
+        },
+        hot: true,
+        open: true,
+        port: 8080,
+      },
+      resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        extensionAlias: {
+          '.js': ['.js', '.ts'],
+          '.jsx': ['.jsx', '.tsx'],
+        },
+      },
+    }
+  }
+
+  if (isDocs) {
+    return {
+      mode: 'production',
+      context: path.resolve(__dirname),
+      entry: './playground/index.ts',
+      output: {
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'docs/playground'),
+        clean: true,
+      },
+      devtool: false,
+      plugins: [
+        new CopyPlugin({
+          patterns: [
+            { from: 'playground/index.html', to: '.' },
+            { from: 'playground/styles.css', to: '.' },
+          ],
+        }),
+      ],
+      resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        extensionAlias: {
+          '.js': ['.js', '.ts'],
+          '.jsx': ['.jsx', '.tsx'],
+        },
+      },
+      performance: {
+        hints: 'warning',
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000,
+      },
+      cache: {
+        type: 'filesystem',
+      },
+    }
+  }
+
+  return {
+    mode: isProduction ? 'production' : 'development',
+    entry: './src/index.ts',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: isESM ? 'scroll-snap.esm.js' : isMinified ? 'scroll-snap.min.js' : 'scroll-snap.js',
+      library: isESM
+        ? undefined
+        : {
+            name: 'scrollSnap',
+            type: 'umd',
+            export: 'default',
+          },
+      globalObject: isESM ? undefined : 'this',
+    },
+    optimization: {
+      minimize: isMinified,
+    },
+    experiments: {
+      outputModule: isESM,
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          use: {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+            },
+          },
+          exclude: /node_modules/,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.ts', '.js'],
+    },
+    devtool: 'source-map',
+  }
 }
+
+export default (env = {}) => createConfig(env)
