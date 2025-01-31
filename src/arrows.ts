@@ -24,6 +24,8 @@ export function getBackgroundBrightness(element: HTMLElement): 'light' | 'dark' 
   return brightness > 128 ? 'light' : 'dark'
 }
 
+let hoveredArrow: HTMLElement | null = null
+
 export function createArrowElements(target: HTMLElement) {
   const arrows = {
     up: document.createElement('div'),
@@ -64,6 +66,7 @@ export function createArrowElements(target: HTMLElement) {
 
     element.addEventListener('mouseenter', () => {
       if (element.style.display !== 'none') {
+        hoveredArrow = element
         element.style.opacity = '0.95'
         element.style.transform = 'scale(1.05)'
         element.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)'
@@ -71,6 +74,7 @@ export function createArrowElements(target: HTMLElement) {
     })
     element.addEventListener('mouseleave', () => {
       if (element.style.display !== 'none') {
+        hoveredArrow = null
         element.style.opacity = '0.6'
         element.style.transform = 'scale(1)'
         element.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)'
@@ -104,18 +108,28 @@ export function updateArrowsPosition(
   arrows.right.style.right = `${window.innerWidth - rect.right + padding}px`
   arrows.right.style.top = `${rect.top + rect.height / 2 - halfArrowSize}px`
 
-  arrows.up.style.display = element.scrollTop > 0 ? 'flex' : 'none'
-  arrows.down.style.display =
-    element.scrollTop < element.scrollHeight - element.clientHeight ? 'flex' : 'none'
-  arrows.left.style.display = element.scrollLeft > 0 ? 'flex' : 'none'
-  arrows.right.style.display =
-    element.scrollLeft < element.scrollWidth - element.clientWidth ? 'flex' : 'none'
+  Object.values(arrows).forEach((arrow) => {
+    const shouldDisplay = getArrowVisibility(element, arrow.className)
+    arrow.style.display = shouldDisplay ? 'flex' : 'none'
 
-  if (element.matches(':hover')) {
-    Object.values(arrows).forEach((arrow) => {
-      if (arrow.style.display === 'flex') {
-        arrow.style.opacity = '0.6'
-      }
-    })
+    if (shouldDisplay) {
+      arrow.style.opacity = element.matches(':hover') || arrow === hoveredArrow ? '0.6' : '0'
+    }
+  })
+}
+
+function getArrowVisibility(element: HTMLElement, className: string): boolean {
+  if (className.includes('up')) {
+    return element.scrollTop > 0
   }
+  if (className.includes('down')) {
+    return element.scrollTop < element.scrollHeight - element.clientHeight
+  }
+  if (className.includes('left')) {
+    return element.scrollLeft > 0
+  }
+  if (className.includes('right')) {
+    return element.scrollLeft < element.scrollWidth - element.clientWidth
+  }
+  return false
 }

@@ -266,6 +266,16 @@ export default function createScrollSnap(
     )
     addEventHandler(
       element,
+      'mouseleave',
+      () => {
+        Object.values(arrows).forEach((arrow) => {
+          arrow.style.opacity = '0'
+        })
+      },
+      activeHandlers
+    )
+    addEventHandler(
+      element,
       'scroll',
       () => updateArrowsPosition(element, arrows, arrowContainer),
       activeHandlers
