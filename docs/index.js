@@ -1,4 +1,4 @@
-import createScrollSnap from '../dist/esm/index.js'
+import createScrollSnap from 'https://unpkg.com/scroll-snap/dist/scroll-snap.esm.js'
 
 const getPreferredTheme = () => {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {

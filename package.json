@@ -11,7 +11,10 @@
     "dist/scroll-snap.js",
     "dist/scroll-snap.min.js",
     "dist/scroll-snap.esm.js",
-    "dist/index.d.ts"
+    "dist/index.d.ts",
+    "dist/scroll-snap.js.map",
+    "dist/scroll-snap.min.js.map",
+    "dist/scroll-snap.esm.js.map"
   ],
   "author": {
     "name": "Luca Falasco",
