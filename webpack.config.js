@@ -109,13 +109,21 @@ const createConfig = (env = {}) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: isESM ? 'scroll-snap.esm.js' : isMinified ? 'scroll-snap.min.js' : 'scroll-snap.js',
-      library: {
-        name: 'scrollSnap',
-        type: isESM ? 'module' : 'umd',
-        export: 'default',
-        umdNamedDefine: true,
-      },
-      globalObject: isESM ? undefined : 'typeof self !== "undefined" ? self : this',
+      ...(isESM
+        ? {
+            library: {
+              type: 'module',
+            },
+          }
+        : {
+            library: {
+              name: 'scrollSnap',
+              type: 'umd',
+              export: 'default',
+              umdNamedDefine: true,
+            },
+            globalObject: 'typeof self !== "undefined" ? self : this',
+          }),
     },
     optimization: {
       minimize: isMinified,
