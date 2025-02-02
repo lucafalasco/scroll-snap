@@ -33,12 +33,12 @@ jobs:
       
     - name: Run unit tests
       id: unit-test
-      run: yarn test:unit
+      run: yarn test:coverage
       
     - name: Run e2e tests
       id: e2e-test
       run: yarn test:e2e
-      
+
     - name: Upload coverage
       uses: codecov/codecov-action@v5
       with:
