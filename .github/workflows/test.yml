@@ -19,17 +19,28 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Enable Corepack
+      run: corepack enable
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-
-    - name: Enable Corepack
-      run: corepack enable
 
     - name: Ensure correct Yarn version
       run: corepack prepare yarn@4.4.1 --activate
+
+    - name: Get Yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+    - name: Cache Yarn dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: yarn-cache-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          yarn-cache-${{ runner.os }}-
 
     - name: Install dependencies
       run: yarn install --frozen-lockfile
