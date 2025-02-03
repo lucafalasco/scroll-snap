@@ -50,7 +50,11 @@ jobs:
       
     - name: Run unit tests
       id: unit-test
-      run: yarn test:coverage --coverage-threshold=false
+      run: yarn test:coverage
+      
+    - name: Run coverage check
+      id: coverage-check
+      run: yarn test:coverage --coverageThreshold={}  
       
     - name: Upload coverage
       uses: codecov/codecov-action@v5
