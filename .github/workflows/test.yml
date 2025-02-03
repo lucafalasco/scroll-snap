@@ -24,7 +24,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        
+
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Ensure correct Yarn version
+      run: corepack prepare yarn@4.4.1 --activate
+
     - name: Install dependencies
       run: yarn install --frozen-lockfile
       
@@ -35,15 +41,15 @@ jobs:
       id: unit-test
       run: yarn test:coverage
       
-    - name: Run e2e tests
-      id: e2e-test
-      run: yarn test:e2e
-
     - name: Upload coverage
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
+
+    - name: Run e2e tests
+      id: e2e-test
+      run: yarn test:e2e
     
     - name: Report Status
       if: always()
