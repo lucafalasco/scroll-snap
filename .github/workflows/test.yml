@@ -50,13 +50,14 @@ jobs:
       
     - name: Run unit tests
       id: unit-test
-      run: yarn test:coverage
+      run: yarn test:coverage --coverageThreshold='{"global":{"branches":70,"functions":70,"lines":70,"statements":70}}'
       
     - name: Upload coverage
       uses: codecov/codecov-action@v5
+      if: success() || failure()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
+        fail_ci_if_error: false
 
     - name: Run e2e tests
       id: e2e-test
