@@ -42,6 +42,7 @@ export default function createScrollSnap(
   let snapLengthUnit: SnapCoordinates
   let lastScrollValue: Coordinates = { x: 0, y: 0 }
 
+  let isTouching = false
   let isControlledScroll = false
   let arrows: Record<string, HTMLElement> = {}
   let lastWindowWidth = window.innerWidth
@@ -91,6 +92,8 @@ export default function createScrollSnap(
     listenerElement = element === document.documentElement ? window : element
 
     addEventHandler(listenerElement, 'scroll', startAnimation, activeHandlers)
+    addEventHandler(element, 'touchstart', handleTouchStart, activeHandlers)
+    addEventHandler(element, 'touchend', handleTouchEnd, activeHandlers)
     snapLengthUnit = parseSnapCoordinatesValue(settings.snapDestinationX, settings.snapDestinationY)
 
     lastValidSnapPoints = {
@@ -136,7 +139,28 @@ export default function createScrollSnap(
       }
     }
 
-    scrollHandlerTimer = window.setTimeout(animationHandler, timeout)
+    // On touch devices, snapping is triggered by the touchend handler to avoid
+    // waiting for iOS momentum scroll to settle before snapping.
+    if (!isTouching) {
+      scrollHandlerTimer = window.setTimeout(animationHandler, timeout)
+    }
+  }
+
+  function handleTouchStart() {
+    isTouching = true
+    scrollStart = {
+      y: target.scrollTop,
+      x: target.scrollLeft,
+    }
+  }
+
+  function handleTouchEnd() {
+    isTouching = false
+    if (scrollHandlerTimer) {
+      clearTimeout(scrollHandlerTimer)
+    }
+    // Trigger snap on the next frame so scroll position has updated
+    scrollHandlerTimer = window.setTimeout(animationHandler, 0)
   }
 
   function shouldMove(direction: number, currentPoint: number) {
